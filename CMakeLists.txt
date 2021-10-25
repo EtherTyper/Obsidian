@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.12..3.20)
 
+project(Obsidian)
+
 include(cmake/CPM.cmake)
 
 add_subdirectory(source_files/lua_src)
@@ -11,6 +13,8 @@ add_subdirectory(source_files/zdbsp_src)
 add_subdirectory(source_files/slump_src)
 add_subdirectory(source_files/zlib_src)
 add_subdirectory(source_files/fmt_src)
+
+find_package(Fontconfig)
 
 project(
   obsidian
@@ -237,7 +241,7 @@ if(UNIX)
             obsidian_acc
             obsidian_zdbsp
             obsidian_slump
-            fontconfig
+    PUBLIC  ${FONTCONFIG_LIBRARIES}
   )
 else()
   target_link_libraries(

@@ -9,6 +9,8 @@
 #define __PHYSICSFS_INTERNAL__
 #include "physfs_platforms.h"
 
+#define PHYSFS_PLATFORM_UNIX 1
+
 #ifdef PHYSFS_PLATFORM_UNIX
 
 #include <ctype.h>

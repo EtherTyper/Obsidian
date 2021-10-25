@@ -569,7 +569,7 @@ static int v_row_bits;  // number of leafs or clusters
 static int v_bytes_per_row;
 
 // statistic stuff
-typedef struct {
+typedef struct vis_statistics_t {
     int uncompressed;
     int compressed;
 

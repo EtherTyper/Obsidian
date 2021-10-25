@@ -21,6 +21,14 @@
 #ifndef __OBLIGE_MAIN_H__
 #define __OBLIGE_MAIN_H__
 
+#include <locale.h>
+
+namespace std {
+inline const char *setlocale(int a, const char* b) {
+return ::setlocale(a, b);
+}
+}
+
 #include <cstddef>
 #include <fmt/format.h>
 #include <fmt/ostream.h>

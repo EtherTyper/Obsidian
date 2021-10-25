@@ -21,6 +21,7 @@
 #include "main.h"
 #include "fmt/core.h"
 #include "images.h"
+#include <array>
 
 #include "csg_main.h"
 #include "g_nukem.h"
@@ -258,7 +259,7 @@ void Determine_InstallDir(const char *argv0) {
     install_dir = home_dir;
 
 #else
-    constexpr std::array prefixes = {
+    std::array<const char*, 3> prefixes = {
         "/usr/local",
         "/usr",
         "/opt",
