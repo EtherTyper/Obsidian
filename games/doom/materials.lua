@@ -38,6 +38,12 @@ DOOM.MATERIALS =
   _SKY     = { t="METAL",  f="F_SKY1" },
 
   -- materials for generic prefab set --
+  _RUNIC = { t="FIREBLU1", f="FLOOR6_1" },
+  _STAIRS = { t="STEP3",    f="CEIL5_1" },
+  _VOID = { t="O_BLACK", f="XX" },
+  _FLATLIT = { t="METAL", f="TLITE6_6" },
+  _WALLLIT = { t="LITE5", f="XX"},
+  _LIFT  = { t="PLAT1", f="STEP1"},
   _SBARS = { t="MIDBRN1", f="XX" }, -- Short bars, i.e. railings
   _MBARS = { t="MIDBARS3", f="XX" }, -- Medium bars, i.e. barred windows
   _TBARS = { t="MIDBARS1", f="XX" }, -- Tall bars, i.e. cage/jail bars
@@ -46,11 +52,9 @@ DOOM.MATERIALS =
   _CRATE2  = { t="CRATE2",   f="CRATOP1" },
   _CRATWID = { t="CRATWIDE", f="CRATOP1" },
   
-  -- Slime instead of water for Doom
-  _WATER   = { f="NUKAGE1", t="SFALL1" }, -- "Standing water", sorta
-  _WTRFALL = { f="NUKAGE1", t="SFALL1"  }, -- "Flowing water", sorta
-  
-  _DOOR  = { t="DOOR1",    f="FLAT23" }, -- Open says me
+  _SMLDOOR = { t="DOOR1", f="FLAT23" },
+  _BIGDOOR = { t="BIGDOOR2", f="FLAT20" },
+  _TALDOOR = { t="SPCDOOR3", f="FLAT19" },
   _DORRAIL = { t="DOORTRAK", f="FLAT23" }, -- Inner door slider thingys
   
   _NPIC    = { t="COMPBLUE", f="FLAT14" }, -- Narrow (non-tiling) pic box insert, 64 pixels wide x 128 high
@@ -64,15 +68,15 @@ DOOM.MATERIALS =
   _KEYTRM3 = { t="DOORRED",  f="FLAT23" }, -- Trim for locked door, Key 3
   
   _EXITDR = { t="EXITDOOR", f="FLAT5_5" }, -- Exit door
-  _EXITSW  = { t="SW1BLUE",  f="FLAT14" }, -- Exit switch
-  _EXITTR  = { t="COMPBLUE",    f="FLAT14" }, -- Exit switch trim
-  _EXITRM  = { t="COMPBLUE",    f="FLAT14" }, -- Exit switch room
+  _EXITSW  = { t="SW1EXIT",  f="FLAT19" }, -- Exit switch, roughly 32x32
+  _EXITTR  = { t="GRAY1",    f="FLAT19" }, -- Exit switch trim
+  _EXITRM  = { t="GRAY1",    f="FLAT19" }, -- Exit switch room
   _EXITSGN = { t="EXITSIGN", f="CEIL5_1" }, -- Exit sign
   
   _STRUCT = {t="METAL", f="CEIL5_2"}, -- "Structural" texture (window trim, beams, other areas where a window/floor flat just isn't always right)
 
-  _SW  = { t="SW1COMP",  f="CEIL5_1" }, -- General purpose swtich, full size
-  _SWTRIM = { t="COMPSPAN", f="CEIL5_1" }, -- Trim for switch
+  _SW  = { t="SW1COMM",  f="FLAT23" }, -- Switch is roughly 32x32 in size, rest of the texture is 'hidden'
+  _SWTRIM = { t="SHAWN2", f="FLAT23" }, -- Trim for switch
   
   _TELE = { f="GATE4", t="METAL" }, -- Teleporter
 
@@ -697,6 +701,10 @@ DOOM.MATERIALS =
   SLIME05  = { t="BLODRIP1", f="SLIME05", sane=1 },
 
 
+  -- alternative assignments
+  TKGRASS1 = { t="TEKGREN2", f="GRASS1" },
+  TKGRASS2 = { t="BROWNGRN", f="GRASS2" },
+
   -- walls as flats and vice versa --
   XCEIL5_1 = { t="CEIL5_1", f="CEIL5_1" },
   XFLAT14 = { t="FLAT14", f="FLAT14" },
@@ -716,6 +724,9 @@ DOOM.MATERIALS =
   XFLAT3  = { t="FLAT3", f="FLAT3" },
   XG19  = { t="G19", f="G19" },
   XGRAY1  = { t="GRAY1", f="GRAY1" },
+
+  XFWATER = { t="FWATER1", f="FWATER1" },
+  XNUKAGE = { t="NUKAGE1", f="NUKAGE1" },
 
   -- Allows compatibility with Egypt theme prefabs (if Prefabs are set to not match Theme)
   MURAL2   = { t="MARBFAC3",   f="FLAT1_1" },
@@ -738,13 +749,26 @@ DOOM.PREFAB_FIELDS =
   line_700 = 26,
   line_701 = 27,
   line_702 = 28,
+  line_703 = 1,  -- Regular door open
+  line_704 = 11, -- Switch, exit
+  line_705 = 51, -- Switch, secret exit
+  line_706 = 52, -- Walk-over line, exit
+  line_707 = 124, -- Walk-over line, secret exit
+  line_708 = 97, -- Walk-over line, teleport
+  --line_709 = 888, -- Switch (don't think I need this one)
+  line_710 = 123, -- Switched, lower lift, wait, raise (fast) -- Is this too specific? - Dasho
+  line_711 = 31, -- Door open stay
+  line_712 = 109, -- Walk-over, door open stay (fast)
+  line_713 = 23, -- Switched, floor lower to nearest floor
+  line_714 = 103, -- Switched, door open stay
+  line_715 = 126, -- Walk-over line, teleport (monsters only)
 
   -- These are used for converting generic fab things --
   thing_11000 = 2035, -- Barrel
   thing_11001 = 0, -- Ceiling light
   thing_11002 = 86, -- Standalone light
   thing_11003 = 0, -- Wall light (torch)
-  thing_11004 = 85, -- Wide standalone light
+  thing_11004 = 34, -- Short standalone light
   thing_11005 = 70, -- Small pillar
   thing_11006 = 5, -- Key one
   thing_11007 = 6, -- Key two

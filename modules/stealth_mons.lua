@@ -31,6 +31,7 @@ STEALTH.MONSTERS =
     h = 56,
     replaces = "zombie",
     replace_prob = 30,
+    prob = 0,
     crazy_prob = 5,
     health = 20,
     damage = 4,
@@ -47,6 +48,7 @@ STEALTH.MONSTERS =
     h = 56,
     replaces = "shooter",
     replace_prob = 20,
+    prob = 0,
     crazy_prob = 11,
     health = 30,
     damage = 10,
@@ -62,6 +64,7 @@ STEALTH.MONSTERS =
     h = 56,
     replaces = "imp",
     replace_prob = 40,
+    prob = 0,
     crazy_prob = 25,
     health = 60,
     damage = 20,
@@ -76,6 +79,7 @@ STEALTH.MONSTERS =
     h = 56,
     replaces = "demon",
     replace_prob = 40,
+    prob = 0,
     crazy_prob = 30,
     health = 150,
     damage = 25,
@@ -90,6 +94,7 @@ STEALTH.MONSTERS =
     h = 56,
     replaces = "caco",
     replace_prob = 25,
+    prob = 0,
     crazy_prob = 41,
     health = 400,
     damage = 35,
@@ -106,6 +111,7 @@ STEALTH.MONSTERS =
     h = 64,
     replaces = "baron",
     replace_prob = 20,
+    prob = 0,
     crazy_prob = 10,
     health = 1000,
     damage = 45,
@@ -121,6 +127,7 @@ STEALTH.MONSTERS =
     h = 56,
     replaces = "gunner",
     replace_prob = 20,
+    prob = 0,
     crazy_prob = 21,
     health = 70,
     damage = 50,
@@ -136,6 +143,7 @@ STEALTH.MONSTERS =
     h = 64,
     replaces = "revenant",
     replace_prob = 30,
+    prob = 0,
     crazy_prob = 40,
     health = 300,
     damage = 70,
@@ -151,6 +159,7 @@ STEALTH.MONSTERS =
     h = 64,
     replaces = "knight",
     replace_prob = 25,
+    prob = 0,
     crazy_prob = 11,
     health = 500,
     damage = 45,
@@ -166,6 +175,7 @@ STEALTH.MONSTERS =
     h = 64,
     replaces = "mancubus",
     replace_prob = 25,
+    prob = 0,
     crazy_prob = 31,
     health = 600,
     damage = 70,
@@ -181,6 +191,7 @@ STEALTH.MONSTERS =
     h = 64,
     replaces = "arach",
     replace_prob = 25,
+    prob = 0,
     crazy_prob = 11,
     health = 500,
     damage = 70,
@@ -196,6 +207,7 @@ STEALTH.MONSTERS =
     h = 56,
     replaces = "vile",
     replace_prob = 10,
+    prob = 0,
     crazy_prob = 5,
     health = 700,
     damage = 40,
@@ -280,7 +292,8 @@ OB_MODULES["stealth_mons"] =
     qty =
     {
       label = _("Default Quantity"),
-      choices = STEALTH.CHOICES
+      choices = STEALTH.CHOICES,
+      randomize_group = "monsters"
     },
   },
 }
@@ -334,8 +347,10 @@ OB_MODULES["stealth_mon_control"] =
 {
   label = _("Stealth Monsters : Control"),
 
-  module = "stealth_mons",
+  game = "doomish",
 
+  engine = "zdoom",
+	  
   hooks =
   {
     setup = STEALTH.control_setup
@@ -343,19 +358,19 @@ OB_MODULES["stealth_mon_control"] =
 
   options =
   {
-    stealth_zombie   = { label=_("Zombieman"),     choices=STEALTH.CONTROL_CHOICES },
-    stealth_shooter  = { label=_("Shotgun Guy"),   choices=STEALTH.CONTROL_CHOICES },
-    stealth_imp      = { label=_("Imp"),           choices=STEALTH.CONTROL_CHOICES },
-    stealth_demon    = { label=_("Demon"),         choices=STEALTH.CONTROL_CHOICES },
-    stealth_caco     = { label=_("Cacodemon"),     choices=STEALTH.CONTROL_CHOICES },
-    stealth_baron    = { label=_("Baron of Hell"), choices=STEALTH.CONTROL_CHOICES },
+    stealth_zombie   = { label=_("Zombieman"),     choices=STEALTH.CONTROL_CHOICES, randomize_group = "monsters" },
+    stealth_shooter  = { label=_("Shotgun Guy"),   choices=STEALTH.CONTROL_CHOICES, randomize_group = "monsters" },
+    stealth_imp      = { label=_("Imp"),           choices=STEALTH.CONTROL_CHOICES, randomize_group = "monsters" },
+    stealth_demon    = { label=_("Demon"),         choices=STEALTH.CONTROL_CHOICES, randomize_group = "monsters" },
+    stealth_caco     = { label=_("Cacodemon"),     choices=STEALTH.CONTROL_CHOICES, randomize_group = "monsters" },
+    stealth_baron    = { label=_("Baron of Hell"), choices=STEALTH.CONTROL_CHOICES, randomize_group = "monsters" },
 
-    stealth_gunner   = { label=_("Chaingunner"),   choices=STEALTH.CONTROL_CHOICES },
-    stealth_knight   = { label=_("Hell Knight"),   choices=STEALTH.CONTROL_CHOICES },
-    stealth_revenant = { label=_("Revenant"),      choices=STEALTH.CONTROL_CHOICES },
-    stealth_mancubus = { label=_("Mancubus"),      choices=STEALTH.CONTROL_CHOICES },
-    stealth_arach    = { label=_("Arachnotron"),   choices=STEALTH.CONTROL_CHOICES },
-    stealth_vile     = { label=_("Arch-vile"),     choices=STEALTH.CONTROL_CHOICES },
+    stealth_gunner   = { label=_("Chaingunner"),   choices=STEALTH.CONTROL_CHOICES, randomize_group = "monsters" },
+    stealth_knight   = { label=_("Hell Knight"),   choices=STEALTH.CONTROL_CHOICES, randomize_group = "monsters" },
+    stealth_revenant = { label=_("Revenant"),      choices=STEALTH.CONTROL_CHOICES, randomize_group = "monsters" },
+    stealth_mancubus = { label=_("Mancubus"),      choices=STEALTH.CONTROL_CHOICES, randomize_group = "monsters" },
+    stealth_arach    = { label=_("Arachnotron"),   choices=STEALTH.CONTROL_CHOICES, randomize_group = "monsters" },
+    stealth_vile     = { label=_("Arch-vile"),     choices=STEALTH.CONTROL_CHOICES, randomize_group = "monsters" },
   },
 }
 

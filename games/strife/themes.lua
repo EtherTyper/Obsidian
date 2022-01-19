@@ -147,6 +147,7 @@ STRIFE.THEMES =
 
     wide_halls =
     {
+      curve = 50,
       deuce = 50,
     },
 
@@ -179,6 +180,7 @@ STRIFE.THEMES =
     fence_groups =
     {
       PLAIN = 50,
+      crenels = 12,
     },
 
     fence_posts =
@@ -191,15 +193,35 @@ STRIFE.THEMES =
       beam_metal = 50,
     },
 
-    window_groups =
+    window_groups = 
     {
-      square = 70,
-      tall   = 30,
+      straddle = 70,
+      tall   = 80,
+      grate  = 45,
+      barred = 10,
+      supertall = 60,
+      slits = 20,
+      pillbox = 20,
+      slumpish = 30,
+      window_crossfire = 10,
+      window_arched = 10,
+      window_arched_tall = 10,
+      window_arched_inverted = 10
     },
 
     wall_groups =
     {
-      PLAIN = 50,
+      PLAIN = 0.01,
+      mid_band = 10,
+      lite1 = 20,
+      lite2 = 20,
+      torches1 = 12,
+      torches2 = 12,
+      high_gap = 25,
+      vert_gap = 25,
+      wallgutters = 10,
+      lamptorch = 16,
+      runic = 10,
     },
 
     ceil_light_prob = 70,
@@ -243,7 +265,30 @@ STRIFE.ROOM_THEMES =
     },
   },
 
-  any_Hallway_Deuce =
+  any_Hallway_curve =
+  {
+    env  = "hallway",
+    group = "curve",
+    prob = 1,
+
+    walls =
+    {
+      BRKGRY01  = 60,
+      BRKGRY17  = 20,
+    },
+
+    floors =
+    {
+      F_BRKTOP = 50,
+    },
+
+    ceilings =
+    {
+      F_BRKTOP = 50,
+    },
+  },
+
+  any_Hallway_deuce =
   {
     env  = "hallway",
     group = "deuce",

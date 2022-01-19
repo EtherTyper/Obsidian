@@ -317,12 +317,157 @@ SKY_GEN_HERETIC.themes =
       WHITE_CLOUDS = 30,
       HELLISH_CLOUDS = 20,
     },
-
-    -- no dark_hills
   },
 
   castle =
-    -- at the moment a 1:1 copy of the Doom generator urban theme values
+  {
+    clouds =
+    {
+      SKY_CLOUDS = 130,
+      BLUE_CLOUDS = 80,
+      WHITE_CLOUDS = 80,
+      GREY_CLOUDS = 100,
+      DARK_CLOUDS = 100,
+
+      BROWN_CLOUDS = 60,
+      BROWNISH_CLOUDS = 40,
+      PEACH_CLOUDS = 40,
+      YELLOW_CLOUDS = 40,
+      ORANGE_CLOUDS = 40,
+      GREEN_CLOUDS = 25,
+      JADE_CLOUDS = 25,
+    },
+
+    hills =
+    {
+      TAN_HILLS = 30,
+      BROWN_HILLS = 50,
+      DARKBROWN_HILLS = 50,
+      GREENISH_HILLS = 30,
+      ICE_HILLS = 12,
+      BLACK_HILLS = 5,
+    },
+
+    dark_hills =
+    {
+      DARKGREEN_HILLS = 50,
+      DARKBROWN_HILLS = 50,
+      ICE_HILLS = 25,
+    },
+  },
+
+  maw =
+  {
+    clouds =
+    {
+      SKY_CLOUDS = 130,
+      BLUE_CLOUDS = 80,
+      WHITE_CLOUDS = 80,
+      GREY_CLOUDS = 100,
+      DARK_CLOUDS = 100,
+
+      BROWN_CLOUDS = 60,
+      BROWNISH_CLOUDS = 40,
+      PEACH_CLOUDS = 40,
+      YELLOW_CLOUDS = 40,
+      ORANGE_CLOUDS = 40,
+      GREEN_CLOUDS = 25,
+      JADE_CLOUDS = 25,
+    },
+
+    hills =
+    {
+      TAN_HILLS = 30,
+      BROWN_HILLS = 50,
+      DARKBROWN_HILLS = 50,
+      GREENISH_HILLS = 30,
+      ICE_HILLS = 12,
+      BLACK_HILLS = 5,
+    },
+
+    dark_hills =
+    {
+      DARKGREEN_HILLS = 50,
+      DARKBROWN_HILLS = 50,
+      ICE_HILLS = 25,
+    },
+  },
+
+  ossuary =
+  {
+    clouds =
+    {
+      SKY_CLOUDS = 130,
+      BLUE_CLOUDS = 80,
+      WHITE_CLOUDS = 80,
+      GREY_CLOUDS = 100,
+      DARK_CLOUDS = 100,
+
+      BROWN_CLOUDS = 60,
+      BROWNISH_CLOUDS = 40,
+      PEACH_CLOUDS = 40,
+      YELLOW_CLOUDS = 40,
+      ORANGE_CLOUDS = 40,
+      GREEN_CLOUDS = 25,
+      JADE_CLOUDS = 25,
+    },
+
+    hills =
+    {
+      TAN_HILLS = 30,
+      BROWN_HILLS = 50,
+      DARKBROWN_HILLS = 50,
+      GREENISH_HILLS = 30,
+      ICE_HILLS = 12,
+      BLACK_HILLS = 5,
+    },
+
+    dark_hills =
+    {
+      DARKGREEN_HILLS = 50,
+      DARKBROWN_HILLS = 50,
+      ICE_HILLS = 25,
+    },
+  },
+
+  dome =
+  {
+    clouds =
+    {
+      SKY_CLOUDS = 130,
+      BLUE_CLOUDS = 80,
+      WHITE_CLOUDS = 80,
+      GREY_CLOUDS = 100,
+      DARK_CLOUDS = 100,
+
+      BROWN_CLOUDS = 60,
+      BROWNISH_CLOUDS = 40,
+      PEACH_CLOUDS = 40,
+      YELLOW_CLOUDS = 40,
+      ORANGE_CLOUDS = 40,
+      GREEN_CLOUDS = 25,
+      JADE_CLOUDS = 25,
+    },
+
+    hills =
+    {
+      TAN_HILLS = 30,
+      BROWN_HILLS = 50,
+      DARKBROWN_HILLS = 50,
+      GREENISH_HILLS = 30,
+      ICE_HILLS = 12,
+      BLACK_HILLS = 5,
+    },
+
+    dark_hills =
+    {
+      DARKGREEN_HILLS = 50,
+      DARKBROWN_HILLS = 50,
+      ICE_HILLS = 25,
+    },
+  },
+
+  demense =
   {
     clouds =
     {
@@ -363,16 +508,58 @@ SKY_GEN_HERETIC.themes =
 
 function SKY_GEN_HERETIC.setup(self)
   for name,opt in pairs(self.options) do
-    if opt.valuator then
-      if opt.valuator == "button" then
-        PARAM[opt.name] = gui.get_module_button_value(self.name, opt.name)
-      elseif opt.valuator == "slider" then
-        PARAM[opt.name] = gui.get_module_slider_value(self.name, opt.name)      
+    if OB_CONFIG.batch == "yes" then
+      if opt.valuator then
+        if opt.valuator == "slider" then 
+          if opt.increment < 1 then
+            PARAM[opt.name] = tonumber(OB_CONFIG[opt.name])
+          else
+            PARAM[opt.name] = int(tonumber(OB_CONFIG[opt.name]))
+          end
+        elseif opt.valuator == "button" then
+          PARAM[opt.name] = tonumber(OB_CONFIG[opt.name])
+        end
+      else
+        PARAM[opt.name] = OB_CONFIG[opt.name]
       end
+      if RANDOMIZE_GROUPS then
+        for _,group in pairs(RANDOMIZE_GROUPS) do
+          if opt.randomize_group and opt.randomize_group == group then
+            if opt.valuator then
+              if opt.valuator == "button" then
+                  PARAM[opt.name] = rand.sel(50, 1, 0)
+                  goto done
+              elseif opt.valuator == "slider" then
+                  if opt.increment < 1 then
+                    PARAM[opt.name] = rand.range(opt.min, opt.max)
+                  else
+                    PARAM[opt.name] = rand.irange(opt.min, opt.max)
+                  end
+                  goto done
+              end
+            else
+              local index
+              repeat
+                index = rand.irange(1, #opt.choices)
+              until (index % 2 == 1)
+              PARAM[opt.name] = opt.choices[index]
+              goto done
+            end
+          end
+        end
+      end
+      ::done::
     else
-      local value = self.options[name].value
-      PARAM[name] = value
-    end
+	    if opt.valuator then
+		    if opt.valuator == "button" then
+		        PARAM[opt.name] = gui.get_module_button_value(self.name, opt.name)
+		    elseif opt.valuator == "slider" then
+		        PARAM[opt.name] = gui.get_module_slider_value(self.name, opt.name)      
+		    end
+      else
+        PARAM[opt.name] = opt.value
+	    end
+	  end
   end
 
   PARAM.episode_sky_color = {}
@@ -614,6 +801,7 @@ OB_MODULES["sky_generator_heretic"] =
       "Default means vanilla Oblige behavior of picking one episode to be night. Random means 50% chance of " ..
       "night or day to be picked per episode.",
       default = "sky_default",
+      randomize_group = "misc"
     },
 
     force_hills =
@@ -623,6 +811,7 @@ OB_MODULES["sky_generator_heretic"] =
       priority = 9,
       tooltip = "Influences whether the sky generator should generate terrain in the skybox.",
       default = "hs_random",
+      randomize_group = "misc"
     },
 
     force_hill_params =
@@ -635,6 +824,7 @@ OB_MODULES["sky_generator_heretic"] =
                 "making an impression of being inside a cave or crater.",
       default = "hp_random",
       gap = 1,
+      randomize_group = "misc"
     },
 
     cloud_color =
@@ -644,6 +834,7 @@ OB_MODULES["sky_generator_heretic"] =
       priority= 7,
       tooltip = "Picks the color of the sky if day. Default means random and theme-ish.",
       default = "default",
+      randomize_group = "misc"
     },
 
     terrain_color =
@@ -653,6 +844,7 @@ OB_MODULES["sky_generator_heretic"] =
       priority = 6,
       tooltip = "Picks the color of the terrain in the sky if available. Default means random and theme-ish.",
       default = "default",
+      randomize_group = "misc"
     },
 
     nebula_color =
@@ -664,6 +856,7 @@ OB_MODULES["sky_generator_heretic"] =
                 "Default means random and theme-ish.",
       default = "default",
       gap = 1,
+      randomize_group = "misc"
     },
 
     bool_influence_map_darkness =

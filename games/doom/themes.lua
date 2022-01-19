@@ -3,8 +3,8 @@
 --------------------------------------------------------------------
 --
 --  Copyright (C) 2006-2017 Andrew Apted
---  Copyright (C) 2011,2019, 2021 Armaetus
---  Copyright (C) 2019-2021 MsrSgtShooterPerson
+--  Copyright (C) 2011,2019, 2021-2022 Armaetus
+--  Copyright (C) 2019-2022 MsrSgtShooterPerson
 --
 --  This program is free software; you can redistribute it and/or
 --  modify it under the terms of the GNU General Public License
@@ -1063,6 +1063,12 @@ DOOM.THEMES =
 
   tech =
   {
+
+    wide_halls = -- Added empty table to use with themes_alt function - Dasho
+    {
+
+    },
+
     narrow_halls =
     {
       vent = 50,
@@ -1254,14 +1260,18 @@ DOOM.THEMES =
       --
       gtd_wall_sewer = 35,
       gtd_sewer_set_2 = 35,
+      gtd_sewer_set_3 = 35,
+      --
+      gtd_water_purifier = 50,
+      gtd_toilet_gallery = 50,
       --
       gtd_generic_beamed_inset = 25,
       gtd_generic_beamed_green_inset = 25,
       gtd_generic_beamed_brown_inset = 25,
       --
-      gtd_computers = 32,
-      gtd_computers_lite5 = 32,
-      gtd_computers_blue_shawn = 32,
+      gtd_computers = 17,
+      gtd_computers_lite5 = 25,
+      gtd_computers_blue_shawn = 25,
       --
       gtd_writhing_mass = 10,
       gtd_wall_octagon_insets = 50,
@@ -1312,6 +1322,7 @@ DOOM.THEMES =
       gtd_generic_artsy_slope_y_inset = 20,
       gtd_generic_artsy_base_braced = 20,
       gtd_generic_artsy_sloped_bump = 20,
+      gtd_generic_small_lite = 20,
       --
       gtd_modquake_set = 18,
       gtd_modquake_jawlike = 18,
@@ -1328,7 +1339,10 @@ DOOM.THEMES =
       gtd_sunderfall = 13,
       gtd_sunderfall_barred = 13,
       --
-      cran_bunkbeds = 50
+      cran_bunkbeds = 50,
+      gtd_craneo_bank_set = 10,
+      --
+      gtd_mining_set = 50
     },
 
     outdoor_wall_groups =
@@ -1404,7 +1418,8 @@ DOOM.THEMES =
       fence_sloped_silver = 50,
       fence_highway_bars = 10,
       fence_jurassic_park = 50,
-      fence_planters = 10
+      fence_planters = 10,
+      fence_tech_cover = 50
     },
 
     fence_posts =
@@ -1511,6 +1526,11 @@ DOOM.THEMES =
 
   urban =
   {
+    wide_halls = -- Added empty table to use with themes_alt function - Dasho
+    {
+
+    },
+
     narrow_halls =
     {
       vent = 50,
@@ -1677,14 +1697,18 @@ DOOM.THEMES =
       --
       gtd_wall_sewer = 30,
       gtd_sewer_set_2 = 30,
+      gtd_sewer_set_3 = 30,
+      --
+      gtd_water_purifier = 50,
+      gtd_toilet_gallery = 50,
       --
       gtd_generic_beamed_inset = 25,
       gtd_generic_beamed_green_inset = 25,
       gtd_generic_beamed_brown_inset = 25,
       --
-      gtd_computers = 20,
-      gtd_computers_lite5 = 20,
-      gtd_computers_blue_shawn = 20,
+      gtd_computers = 12,
+      gtd_computers_lite5 = 18,
+      gtd_computers_blue_shawn = 18,
       --
       gtd_drywall = 50,
       gtd_writhing_mass = 20,
@@ -1740,6 +1764,7 @@ DOOM.THEMES =
       gtd_generic_artsy_slope_y_inset = 20,
       gtd_generic_artsy_base_braced = 20,
       gtd_generic_artsy_sloped_bump = 20,
+      gtd_generic_small_lite = 20,
       --
       gtd_modquake_set = 11,
       gtd_modquake_jawlike = 11,
@@ -1766,7 +1791,10 @@ DOOM.THEMES =
       gtd_sunderfall = 25,
       gtd_sunderfall_barred = 25,
       --
-      cran_bunkbeds = 50
+      cran_bunkbeds = 50,
+      gtd_craneo_bank_set = 50,
+      --
+      gtd_mining_set = 50
     },
 
     window_groups =
@@ -1813,7 +1841,8 @@ DOOM.THEMES =
       fence_sloped_silver = 12,
       fence_highway_bars = 25,
       fence_jurassic_park = 12,
-      fence_planters = 40
+      fence_planters = 40,
+      fence_tech_cover = 25
     },
 
     fence_posts =
@@ -2220,6 +2249,7 @@ DOOM.THEMES =
       gtd_generic_artsy_slope_y_inset = 20,
       gtd_generic_artsy_base_braced = 20,
       gtd_generic_artsy_sloped_bump = 20,
+      gtd_generic_small_lite = 20,
       --
       gtd_modquake_set = 11,
       gtd_modquake_jawlike = 11,
@@ -2523,6 +2553,60 @@ DOOM.ROOM_THEMES =
     }
   },
 
+  any_subway_Hallway =
+  {
+    env   = "hallway",
+    group = "subway",
+    prob  = 1,
+
+    walls =
+    {
+      GRAY1 = 50
+    },
+
+    floors =
+    {
+      FLAT1 = 30
+    },
+
+    ceilings =
+    {
+      FLAT1 = 30
+    }
+  },
+
+  -- For Limit-Removing/generics - Dasho
+  any_curve_Hallway =
+  {
+    env   = "hallway",
+    group = "curve",
+    prob  = 1,
+
+    walls =
+    {
+      GRAY1 = 50,
+      GRAY5 = 50,
+      ICKWALL1 = 30,
+      ICKWALL3 = 30
+    },
+
+    floors =
+    {
+      FLAT3 = 30,
+      FLOOR0_3 = 10,
+      FLAT20  = 15,
+      FLAT23 = 20
+    },
+
+    ceilings =
+    {
+      FLAT3 = 30,
+      FLAT23 = 15,
+      FLAT20 = 20,
+      FLAT5_4 = 10,
+    }
+  },
+
 
   any_deuce_Hallway =
   {
@@ -2696,7 +2780,7 @@ DOOM.ROOM_THEMES =
   tech_Tekgren =
   {
     env  = "building",
-    prob = 20,
+    prob = 30,
 
     walls =
     {
@@ -2705,29 +2789,38 @@ DOOM.ROOM_THEMES =
 
     floors =
     {
-      FLAT14 = 45,
+      TKGRASS1 = 50,
+      TKGRASS2 = 50,
+
       FLAT4 = 30,
       FLAT5_4 = 30,
-      CEIL4_2  = 20,
-      CEIL4_1  = 20,
       FLOOR1_1 = 20,
       FLOOR0_3 = 20,
+      FLOOR0_5 = 20,
       FLOOR3_3 = 40,
-      FLOOR5_1 = 20,
+      FLOOR4_6 = 20,
       FLOOR4_8 = 20,
       FLOOR5_1 = 20,
-      FLOOR4_6 = 20,
+      FLOOR5_3 = 20,
+      FLOOR5_4 = 20,
       FLAT5 = 10,
+
+      SLIME14 = 20,
+      SLIME16 = 10
     },
 
     ceilings =
     {
+      TKGRASS1 = 50,
+      TKGRASS2 = 50,
+
       FLAT1   = 15,
       CEIL3_5 = 5,
       SLIME15 = 5,
       SLIME14 = 5,
-      CEIL4_1 = 3,
-      CEIL4_2 = 3,
+
+      SLIME14 = 20,
+      SLIME16 = 10
     },
   },
 

@@ -5,7 +5,7 @@
 --  // Obsidian //
 --
 --  Copyright (C) 2006-2017 Andrew Apted
---  Copyright (C) 2019-2021 MsrSgtShooterPerson
+--  Copyright (C) 2019-2022 MsrSgtShooterPerson
 --
 --  This program is free software; you can redistribute it and/or
 --  modify it under the terms of the GNU General Public License
@@ -645,10 +645,10 @@ function ob_set_config(name, value)
   -- description of the flow of configuration values
   -- between the C++ GUI and the Lua scripts.
 
-  assert(name and value and type(value) == "string")
+  assert(name and value)
 
   if name == "seed" then
-    OB_CONFIG[name] = tonumber(value) or 0
+    OB_CONFIG[name] = value or 0
     return
   end
   
@@ -664,6 +664,9 @@ function ob_set_config(name, value)
       for _,opt in pairs(mod.options) do
         if opt.name == name then
           ob_set_mod_option(mod.name, name, value)
+          if OB_CONFIG.batch == "yes" then
+            OB_CONFIG[name] = value
+          end
           return
         end
       end
@@ -739,7 +742,7 @@ function ob_read_all_config(need_full, log_only)
      need_full = false
   end
 
-  do_line("-- Obsidian (C) 2018-2021")
+  do_line("-- Obsidian (C) 2018-2022")
   do_line("-- MsrSgtShooterPerson")
   do_line("-- Armaetus")
   do_line("-- Garrett")
@@ -785,18 +788,37 @@ function ob_read_all_config(need_full, log_only)
       for _,opt in pairs(def.options) do
         if string.match(opt.name, "float_") then
             if OB_CONFIG.batch == "yes" then
-              do_value(opt.name, opt.default)
+              if OB_CONFIG[opt.name] then
+                do_value(opt.name, OB_CONFIG[opt.name])
+              else
+                do_value(opt.name, opt.default)
+                ob_set_config(opt.name, opt.default)
+              end
             else
               do_value(opt.name, gui.get_module_slider_value(name, opt.name))
             end
         elseif string.match(opt.name, "bool_") then
             if OB_CONFIG.batch == "yes" then
-              do_value(opt.name, opt.default)
+              if OB_CONFIG[opt.name] then
+                do_value(opt.name, OB_CONFIG[opt.name])
+              else
+                do_value(opt.name, opt.default)
+                ob_set_config(opt.name, opt.default)
+              end
             else
               do_value(opt.name, gui.get_module_button_value(name, opt.name))
             end
         else
-          do_value(opt.name, opt.value)
+          if OB_CONFIG.batch == "yes" then
+            if OB_CONFIG[opt.name] then
+              do_value(opt.name, OB_CONFIG[opt.name])
+            else
+              do_value(opt.name, opt.default)
+              ob_set_config(opt.name, opt.default)
+            end
+          else
+            do_value(opt.name, opt.value)
+          end
         end
       end
 
@@ -823,36 +845,74 @@ function ob_read_all_config(need_full, log_only)
           for _,opt in pairs(def.options) do
             if string.match(opt.name, "float_") then
                 if OB_CONFIG.batch == "yes" then
-                  do_mod_value(opt.name, opt.default)
+                  if OB_CONFIG[opt.name] then
+                    do_mod_value(opt.name, OB_CONFIG[opt.name])
+                  else
+                    do_mod_value(opt.name, opt.default)
+                    ob_set_config(opt.name, opt.default)
+                  end
                 else
                   do_mod_value(opt.name, gui.get_module_slider_value(name, opt.name))
                 end
             elseif string.match(opt.name, "bool_") then
                 if OB_CONFIG.batch == "yes" then
-                  do_mod_value(opt.name, opt.default)
+                  if OB_CONFIG[opt.name] then
+                    do_mod_value(opt.name, OB_CONFIG[opt.name])
+                  else
+                    do_mod_value(opt.name, opt.default)
+                    ob_set_config(opt.name, opt.default)
+                  end
                 else
                   do_mod_value(opt.name, gui.get_module_button_value(name, opt.name))
                 end
             else
-              do_mod_value(opt.name, opt.value)
+              if OB_CONFIG.batch == "yes" then
+                if OB_CONFIG[opt.name] then
+                  do_mod_value(opt.name, OB_CONFIG[opt.name])
+                else
+                  do_mod_value(opt.name, opt.default)
+                  ob_set_config(opt.name, opt.default)
+                end
+              else
+                do_mod_value(opt.name, opt.value)
+              end
             end
           end
         else
           for o_name,opt in pairs(def.options) do
             if string.match(o_name, "float_") then
                 if OB_CONFIG.batch == "yes" then
-                  do_mod_value(o_name, opt.default)
+                  if OB_CONFIG[opt.name] then
+                    do_mod_value(o_name, OB_CONFIG[opt.name])
+                  else
+                    do_mod_value(o_name, opt.default)
+                    ob_set_config(o_name, opt.default)
+                  end
                 else
                   do_mod_value(o_name, gui.get_module_slider_value(name, opt.name))
                 end
             elseif string.match(o_name, "bool_") then
                 if OB_CONFIG.batch == "yes" then
-                  do_mod_value(o_name, opt.default)
+                  if OB_CONFIG[opt.name] then
+                    do_mod_value(o_name, OB_CONFIG[opt.name])
+                  else
+                    do_mod_value(o_name, opt.default)
+                    ob_set_config(o_name, opt.default)
+                  end
                 else
                   do_mod_value(o_name, gui.get_module_button_value(name, opt.name))
                 end
             else
-              do_mod_value(o_name, opt.value)
+              if OB_CONFIG.batch == "yes" then
+                if OB_CONFIG[opt.name] then
+                  do_mod_value(o_name, OB_CONFIG[opt.name])
+                else
+                  do_mod_value(o_name, opt.default)
+                  ob_set_config(o_name, opt.default)
+                end
+              else
+                do_mod_value(o_name, opt.value)
+              end
             end
           end
         end
@@ -980,7 +1040,7 @@ function ob_init()
   end
 
   gui.printf("****************************\n")
-  gui.printf("** Obsidian (C) 2018-2021 **\n")
+  gui.printf("** Obsidian (C) 2018-2022 **\n")
   gui.printf("****************************\n")
   gui.printf("|    A Creation of the     |\n")
   gui.printf("|        Community         |\n")
@@ -1161,14 +1221,14 @@ function ob_init()
               if not opt.nan then
                 opt.nan = ""
               end
-              gui.add_module_slider_option(mod.name, opt.name, opt.label, opt.tooltip, opt.longtip, opt.gap, opt.min, opt.max, opt.increment, opt.units, opt.presets, opt.nan)
+              gui.add_module_slider_option(mod.name, opt.name, opt.label, opt.tooltip, opt.longtip, opt.gap, opt.min, opt.max, opt.increment, opt.units, opt.presets, opt.nan, opt.randomize_group or "")
               if not opt.default then
                 opt.default = (opt.min + opt.max) / 2
               end
               opt.value = opt.default
               gui.set_module_slider_option(mod.name, opt.name, opt.value)
             elseif opt.valuator == "button" then
-              gui.add_module_button_option(mod.name, opt.name, opt.label, opt.tooltip, opt.longtip, opt.gap)
+              gui.add_module_button_option(mod.name, opt.name, opt.label, opt.tooltip, opt.longtip, opt.gap, opt.randomize_group or "")
               if not opt.default then
                 opt.default = 0
               end
@@ -1176,7 +1236,7 @@ function ob_init()
               gui.set_module_button_option(mod.name, opt.name, opt.value)
             end
           else
-            gui.add_module_option(mod.name, opt.name, opt.label, opt.tooltip, opt.longtip, opt.gap)
+            gui.add_module_option(mod.name, opt.name, opt.label, opt.tooltip, opt.longtip, opt.gap, opt.randomize_group or "")
             opt.avail_choices = {}
 
             for i = 1,#opt.choices,2 do
@@ -1250,19 +1310,13 @@ function ob_get_param(parameter)
 
   local param
 
-  if OB_CONFIG.batch_mode == "yes" then
-    if OB_CONFIG[parameter] then
-      param = OB_CONFIG[parameter]
-    else
-      error("ERROR! " .. parameter .. " not found in config!")
-    end
+  if PARAM[parameter] then
+    param = PARAM[parameter]
+  elseif OB_CONFIG[parameter] then
+    param = OB_CONFIG[parameter]
   else
-    if PARAM[parameter] or OB_CONFIG[parameter] then
-      if (PARAM[parameter]) then
-        param = PARAM[parameter]
-      else
-        param = OB_CONFIG[parameter]
-      end
+    if OB_CONFIG.batch == "yes" then
+      print("MISSING PARAMETER: " .. parameter)
     else
       error("ERROR! " .. parameter .. " not found in config!")
     end
@@ -1285,6 +1339,8 @@ function ob_default_filename()
   assert(OB_CONFIG)
   assert(OB_CONFIG.game)
   
+  print("SEED: " .. tostring(OB_CONFIG.seed))
+
   gui.rand_seed(OB_CONFIG.seed)
 
   Naming_init()
@@ -1604,8 +1660,11 @@ function ob_build_setup()
 
   table.merge_missing(PARAM, GLOBAL_PARAMETERS)
 
-
   -- load all the prefab definitions
+  if OB_CONFIG.batch == "yes" then
+    RANDOMIZE_GROUPS = gui.get_batch_randomize_groups()
+  end
+
   ob_invoke_hook("setup")
 
   Fab_load_all_definitions()
@@ -1667,8 +1726,23 @@ function ob_build_cool_shit()
   local status
 
   ob_build_setup()
-  
+
+  if PARAM["bool_save_gif"] == 1 then
+    -- Set frame delay based on how detailed the live minimap is - Dasho
+    if PARAM["live_minimap"] == "step" then
+      gui.minimap_gif_start(10)
+    elseif PARAM["live_minimap"] == "room" then
+      gui.minimap_gif_start(75)
+    else
+      gui.minimap_gif_start(250)
+    end
+  end
+
   status = Level_make_all()
+
+  if PARAM["bool_save_gif"] == 1 then
+    gui.minimap_gif_finish()
+  end
 
   ob_clean_up()
 

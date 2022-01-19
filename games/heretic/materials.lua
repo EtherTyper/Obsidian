@@ -31,7 +31,12 @@ HERETIC.MATERIALS =
   _DEFAULT = { t="GRSTNPB", f="FLOOR03" },
   _SKY     = { t="CHAINSD", f="F_SKY1"  },
   
-  -- materials for generic prefab set --  
+  -- materials for generic prefab set --
+  _LIFT = { t="SKULLSB1", f="FLOOR30" },
+  _RUNIC = { t="REDWALL", f="FLOOR09" },
+  _STAIRS = { t="WOODWL", f="FLOOR10" },
+  _VOID = { t="STNGLS3", f="XX" }, -- Only works with small areas and exact offsets, but it's the only thing I could find with solid black areas
+  _WALLLIT = { t="STNGLS1", f="XX" }, -- Same as above, but for "wall lights"
   _SBARS = { t="GATMETL3", f="FLOOR30" }, -- Short bars, i.e. railings
   _MBARS = { t="GATMETL4", f="FLOOR30" }, -- Medium bars, i.e. barred windows
   _TBARS = { t="GATMETL5", f="FLOOR30" }, -- Tall bars, i.e. cage/jail bars
@@ -39,11 +44,10 @@ HERETIC.MATERIALS =
   _CRATE   = { t="DOORWOOD",  f="FLAT507" }, -- Crate/box
   _CRATE2  = { t="CTYSTCI4", f="FLOOR10" },
   _CRATWID = { t="DOORWOOD",  f="FLAT507" }, -- Wide crates
-  
-  _WATER   = { t="WATRWAL1", f="FLTWAWA1" }, -- "Standing water", sorta
-  _WTRFALL = { t="WATRWAL1", f="FLTFLWW1" }, -- "Flowing water", sorta
     
-  _DOOR  = { t="DOORWOOD", f="FLAT507" }, -- Open says me
+  _SMLDOOR  = { t="DOORWOOD", f="FLAT507" }, -- Open says me
+  _BIGDOOR = { t="DOORSTON", f="FLOOR30" },
+  _BIGDOOR = { t="DOORWOOD", f="FLAT507" },
   _DORRAIL = { t="METL2", f="FLOOR28"}, -- Inner door slider thingys
   
   _NPIC    = { t="CELTIC", f="FLOOR06"}, -- Narrow (non-tiling) pic box insert, 64 pixels wide
@@ -58,7 +62,9 @@ HERETIC.MATERIALS =
   
   _EXITDR = { t="DOOREXIT", f="FLAT520" }, -- Exit door
   _EXITSW  = { t="SW2OFF", f="FLOOR28" }, -- Exit switch
-  _EXITRM  = { t="METL2", f="FLOOR28" }, -- Exit switch
+  _EXITTR  = { t="METL2", f="FLOOR28" }, -- Exit switch trim
+  _EXITRM  = { t="METL2", f="FLOOR28" }, -- Exit room
+  _EXITSGN = { t="HER_EXIT", f="FLOOR04"},
   
   _STRUCT = {t="METL2", f="FLOOR30"}, -- "Structural" texture (window trim, beams, other areas where a window/floor flat just isn't always right)
 
@@ -255,13 +261,26 @@ HERETIC.PREFAB_FIELDS =
   line_700 = 27,
   line_701 = 28,
   line_702 = 26,
+  line_703 = 1,  -- Regular door open
+  line_704 = 11, -- Switch, exit
+  line_705 = 51, -- Switch, secret exit
+  line_706 = 52, -- Walk-over line, exit
+  line_707 = 124, -- Walk-over line, secret exit
+  line_708 = 97, -- Walk-over line, teleport
+  --line_709 = 888, -- Switch (don't think I need this one)
+  line_710 = 123, -- Switched, lower lift, wait, raise (fast) -- Is this too specific? - Dasho
+  line_711 = 31, -- Door open stay
+  line_712 = 109, -- Walk-over, door open stay (fast)
+  line_713 = 23, -- Switched, floor lower to nearest floor
+  line_714 = 103, -- Switched, door open stay
+  line_715 = 126, -- Walk-over line, teleport (monsters only)
 
   -- These are used for converting generic fab things --
   thing_11000 = 2035, -- Barrel
   thing_11001 = 28, -- Ceiling light
-  thing_11002 = 27, -- Standalone light
+  thing_11002 = 76, -- Standalone light
   thing_11003 = 50, -- Wall light (torch)
-  thing_11004 = 76, -- Wide standalone light
+  thing_11004 = 27, -- Short standalone light (Heretic's serpent torch is a little tall, but still)
   thing_11005 = 29, -- Small pillar
   thing_11006 = 80, -- Key one
   thing_11007 = 73, -- Key two

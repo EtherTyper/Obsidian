@@ -5,7 +5,7 @@
 --  // Obsidian //
 --
 --  Copyright (C) 2013-2017 Andrew Apted
---  Copyright (C) 2019-2021 MsrSgtShooterPerson
+--  Copyright (C) 2019-2022 MsrSgtShooterPerson
 --
 --  This program is free software; you can redistribute it and/or
 --  modify it under the terms of the GNU General Public License
@@ -662,6 +662,16 @@ function Fab_transform_Z(fab, T)
       if E.angles then
         E.angles = Trans.apply_angles_z(E.angles)
       end
+
+      for _, table in pairs(GAME.ENTITIES) do -- Put Hexen stuff back on the ceiling? - Dasho
+        if table.id == E.id then
+            if table.ceil and table.ceil == true then
+              E.z = 0
+            end
+            goto continue
+        end
+      end
+      ::continue::
     end
   end
 
@@ -1322,6 +1332,10 @@ function Fab_load_wad(def)
       C2.v1 = convert_offset(side.y_offset)
     end
 
+    if side and side.sidedef_index then
+      C2.sidedef_index = side.sidedef_index
+    end
+
     return C2
   end
 
@@ -1696,12 +1710,26 @@ function Fab_load_wad(def)
       end
 
       -- create the brush
-      local props =
-      {
-        tex = tex,
-        u1  = convert_offset(side.x_offset),
-        v1  = convert_offset(side.y_offset)
-      }
+
+      local props = { tex = tex }
+
+      if not def.forced_offsets then
+        props.u1 = convert_offset(side.x_offset)
+        props.v1 = convert_offset(side.y_offset)
+      else
+        if def.forced_offsets[side.sidedef_index] then
+          if def.forced_offsets[side.sidedef_index].x then
+            props.u1 = def.forced_offsets[side.sidedef_index].x
+          else
+            props.u1 = convert_offset(side.x_offset)
+          end
+          if def.forced_offsets[side.sidedef_index].y then
+            props.v1 = def.forced_offsets[side.sidedef_index].y
+          else
+            props.v1 = convert_offset(side.y_offset)
+          end
+        end
+      end
 
       local B = brushlib.rail_brush(x1,y1, x2,y2, z, props)
 
@@ -1869,8 +1897,11 @@ function Fab_merge_skins(fab, room, list)
     table.merge(result, room.skin)
   end
 
-  for _,skin in pairs(list) do
+  for _,skin in pairs(list) do 
     table.merge(result, skin)
+    if OB_CONFIG.game == "hexen" then
+      table.merge_missing(result, skin)
+    end
   end
 
   return result
@@ -1899,6 +1930,7 @@ function Fab_collect_fields(fab)
     if string.match(name, "^offset_") then return true end
     if string.match(name, "^delta") then return true end
     if string.match(name, "^forced_offsets") then return true end
+    if string.match(name, "^doom_line_to_hexen_") then return true end
 
     return false
   end
@@ -1934,6 +1966,7 @@ function Fab_collect_fields(fab)
   end
 
   table.merge_missing(fab.fields, GLOBAL_PREFAB_FIELDS)
+
 end
 
 
@@ -1952,7 +1985,7 @@ function Fab_substitutions(fab, SKIN)
     for _,name in pairs(keys) do
       local value = fab.fields[name]
 
-      if type(value) ~= "table" or string.match(name, "^forced_offsets") then goto continue end
+      if type(value) ~= "table" or string.match(name, "^forced_offsets") or string.match(name, "^doom_line_to_hexen") then goto continue end
 
       if table.size(value) == 0 then
         error("Fab_substitutions: random table is empty: " .. tostring(name))
@@ -2013,6 +2046,7 @@ function Fab_substitutions(fab, SKIN)
   subst_pass(keys)
 
   random_pass(keys)
+  
 end
 
 
@@ -2061,7 +2095,6 @@ function Fab_replacements(fab)
 
     return val
   end
-
 
   local function check_tex(val)
     local k = "tex_" .. val
@@ -2201,16 +2234,16 @@ function Fab_replacements(fab)
   end
 
   local function forced_offset_check(C)
-	if C.sidedef_index and fab.fields["forced_offsets"] then 
-	    if fab.fields["forced_offsets"][C.sidedef_index] then
-	      if fab.fields["forced_offsets"][C.sidedef_index].x then
-	        C.u1 = fab.fields["forced_offsets"][C.sidedef_index].x
-	      end
-	      if fab.fields["forced_offsets"][C.sidedef_index].y then
-	        C.v1 = fab.fields["forced_offsets"][C.sidedef_index].y
-	      end
-	    end
-	end
+    if C.sidedef_index and fab.fields["forced_offsets"] then
+        if fab.fields["forced_offsets"][C.sidedef_index] then
+          if fab.fields["forced_offsets"][C.sidedef_index].x then
+            C.u1 = fab.fields["forced_offsets"][C.sidedef_index].x
+          end
+          if fab.fields["forced_offsets"][C.sidedef_index].y then
+            C.v1 = fab.fields["forced_offsets"][C.sidedef_index].y
+          end
+        end
+    end
   end
 
   ---| Fab_replacements |---
@@ -2221,17 +2254,73 @@ function Fab_replacements(fab)
 
   for _,B in pairs(fab.brushes) do
     for _,C in pairs(B) do
-      if C.special and C.x     then C.special = check("line",   C.special) end
+      if C.special and C.x then
+        if OB_CONFIG.game ~= "hexen" then 
+          C.special = check("line", C.special)
+        else
+          local info = check("doom_line_to_hexen", C.special) -- In the future there might be a need for hexen->hexen subs, but this should work for now - Dasho
+          if type(info) == "table" then
+            C.special = info.special
+            if info.arg1 then C.arg1 = info.arg1 end
+            if info.arg2 then C.arg2 = info.arg2 end
+            if info.arg3 then C.arg3 = info.arg3 end
+            if info.arg4 then C.arg4 = info.arg4 end
+            if info.arg5 then C.arg5 = info.arg5 end
+            if info.flags then C.flags = info.flags end
+          else
+            C.special = check("line", C.special)
+          end
+        end
+      end
       if C.special and not C.x then C.special = check("sector", C.special) end
 
-      if C.tag then 
-        C.tag = check_tag(C.tag) 
-        current_tag = C.tag  
-      end
-      
+      -- Convulted solution for Hexen-format remote/local switch rendering - Dasho
       if OB_CONFIG.game == "hexen" then
-        if C.x and C.special and (C.special >= 10 and C.special <= 12) then C.arg1 = current_tag end -- Flesh out which special ranges need to have arg1 match a sector tag
+        if fab.switch_action and C.special and C.special ~= 0 then
+          if C.special == fab.switch_action then
+            if fab.switch_arg1 then
+              C.arg1 = fab.switch_arg1
+            end
+            if fab.switch_arg2 then
+              C.arg2 = fab.switch_arg2
+            end
+            if fab.switch_arg3 then
+              C.arg3 = fab.switch_arg3
+            end
+            if fab.switch_arg4 then
+              C.arg4 = fab.switch_arg4
+            end
+            if fab.switch_arg5 then
+              C.arg5 = fab.switch_arg5
+            end
+            if fab.switch_flags then
+              C.flags = fab.switch_flags
+            end
+          end
+          -- Switch goal tags are already properly allocated/reserved - Dasho
+          goto skiptagcheck
+        end
       end
+
+      if C.tag then
+        C.tag = check_tag(C.tag) 
+        current_tag = C.tag
+      end
+
+      -- This is in severe need of fleshing out, probably need something like a miniature XLAT table - Dasho
+      if OB_CONFIG.game == "hexen" then
+        if C.x and C.special then 
+          if (C.special >= 10 and C.special <= 12) then 
+            C.arg1 = current_tag 
+          elseif C.special == 13 then
+            C.arg5 = current_tag
+          elseif C.special == 22 then
+            C.arg1 = current_tag
+          end
+        end
+      end
+
+      ::skiptagcheck::
 
       if C.u1  then C.u1  = check("offset", C.u1) end
       if C.v1  then C.v1  = check("offset", C.v1) end
@@ -2296,6 +2385,34 @@ function Fabricate(room, def, T, skins)
   Fab_collect_fields(fab)
 
   Fab_substitutions(fab, SKIN)
+
+  if OB_CONFIG.game == "hexen" then
+    if SKIN.switch_action and type(SKIN.switch_action) == "number" then
+      fab.switch_action = SKIN.switch_action
+      if SKIN.switch_arg1 and type(SKIN.switch_arg1) == "number" then
+        fab.switch_arg1 = SKIN.switch_arg1
+      end
+      if SKIN.switch_arg2 and type(SKIN.switch_arg2) == "number" then
+        fab.switch_arg2 = SKIN.switch_arg2
+      end
+      if SKIN.switch_arg3 and type(SKIN.switch_arg3) == "number" then
+        fab.switch_arg3 = SKIN.switch_arg3
+      end
+      if SKIN.switch_arg4 and type(SKIN.switch_arg4) == "number" then
+        fab.switch_arg4 = SKIN.switch_arg4
+      end
+      if SKIN.switch_arg5 and type(SKIN.switch_arg5) == "number" then
+        fab.switch_arg5 = SKIN.switch_arg5
+      end
+      if SKIN.switch_flags and type(SKIN.switch_flags) == "number" then
+        fab.switch_flags = SKIN.switch_flags
+      end
+      if SKIN.switch_tag and type(SKIN.switch_tag) == "number" then
+        fab.switch_tag = SKIN.switch_tag
+      end
+    end
+  end
+
   Fab_replacements (fab)
 
   if PARAM.marine_gen and PARAM.level_has_marine_closets and fab.group == "marine_closet" then

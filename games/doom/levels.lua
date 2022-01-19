@@ -4,7 +4,7 @@
 --
 --  Copyright (C) 2006-2016 Andrew Apted
 --  Copyright (C)      2011 Armaetus
---  Copyright (C) 2019 MsrSgtShooterPerson
+--  Copyright (C) 2019-2022 MsrSgtShooterPerson
 --
 --  This program is free software; you can redistribute it and/or
 --  modify it under the terms of the GNU General Public License
@@ -75,33 +75,145 @@ DOOM.PREBUILT_LEVELS =
 
 --------------------------------------------------------------------
 
-function DOOM.nolimit_themes()
+function DOOM.themes_alts()
   if OB_CONFIG.engine == "nolimit" then
     GAME.THEMES.DEFAULTS.narrow_halls = { vent = 50 }
-    GAME.THEMES.DEFAULTS.wide_halls = { deuce = 50 }
+    GAME.THEMES.DEFAULTS.wide_halls = { curve = 50, deuce = 50 }
     GAME.THEMES.DEFAULTS.has_triple_key_door = false
     GAME.THEMES.DEFAULTS.has_double_switch_door = false
     GAME.THEMES.tech.narrow_halls = { vent = 50 }
     GAME.THEMES.tech.beam_groups = { beam_metal = 50 }
-    GAME.THEMES.tech.wall_groups = { PLAIN = 50 }
+    GAME.THEMES.tech.wall_groups = 
+    {
+      PLAIN = 0.01,
+      mid_band = 10,
+      lite1 = 20,
+      lite2 = 20,
+      torches1 = 12,
+      torches2 = 12,
+      high_gap = 25,
+      vert_gap = 25,
+      wallgutters = 10,
+      lamptorch = 16,
+      runic = 10,
+      croix = 10,
+    }
     GAME.THEMES.tech.outdoor_wall_groups = { PLAIN = 50 }
-    GAME.THEMES.tech.window_groups = { square = 70, tall = 30 }
-    GAME.THEMES.tech.fence_groups = { PLAIN = 50 }
+    GAME.THEMES.tech.window_groups = 
+    {
+      straddle = 70,
+      tall   = 80,
+      grate  = 45,
+      barred = 10,
+      supertall = 60,
+      slits = 20,
+      pillbox = 20,
+      slumpish = 30,
+      window_crossfire = 10,
+    }
+    GAME.THEMES.tech.fence_groups = { PLAIN = 50, crenels = 12 }
     GAME.THEMES.tech.fence_posts = { Post = 50 }
     GAME.THEMES.urban.narrow_halls = { vent = 50 }
     GAME.THEMES.urban.beam_groups = { beam_metal = 50 }
-    GAME.THEMES.urban.wall_groups = { PLAIN = 50 }
+    GAME.THEMES.urban.wall_groups =
+    {
+      PLAIN = 0.01,
+      mid_band = 10,
+      lite1 = 20,
+      lite2 = 20,
+      torches1 = 12,
+      torches2 = 12,
+      high_gap = 25,
+      vert_gap = 25,
+      wallgutters = 10,
+      lamptorch = 16,
+      runic = 10,
+      croix = 10,
+    }
     GAME.THEMES.urban.outdoor_wall_groups = { PLAIN = 50 }
-    GAME.THEMES.urban.window_groups = { square = 70, tall = 30 }
-    GAME.THEMES.urban.fence_groups = { PLAIN = 50 }
+    GAME.THEMES.urban.window_groups = 
+    {
+      straddle = 70,
+      tall   = 80,
+      grate  = 45,
+      barred = 10,
+      supertall = 60,
+      slits = 20,
+      pillbox = 20,
+      slumpish = 30,
+      window_crossfire = 10,
+    }
+    GAME.THEMES.urban.fence_groups = { PLAIN = 50, crenels = 12 }
     GAME.THEMES.urban.fence_posts = { Post = 50 }
     GAME.THEMES.hell.narrow_halls = { vent = 50 }
     GAME.THEMES.hell.beam_groups = { beam_metal = 50 }
-    GAME.THEMES.hell.wall_groups = { PLAIN = 50 }
+    GAME.THEMES.hell.wall_groups =
+    {
+      PLAIN = 0.01,
+      mid_band = 10,
+      lite1 = 20,
+      lite2 = 20,
+      torches1 = 12,
+      torches2 = 12,
+      high_gap = 25,
+      vert_gap = 25,
+      wallgutters = 10,
+      lamptorch = 16,
+      runic = 10,
+      croix = 10,
+    }
     GAME.THEMES.hell.outdoor_wall_groups = { PLAIN = 50 }
-    GAME.THEMES.hell.window_groups = { square = 70, tall = 30 }
-    GAME.THEMES.hell.fence_groups = { PLAIN = 50 }
+    GAME.THEMES.hell.window_groups =
+    {
+      straddle = 70,
+      tall   = 80,
+      grate  = 45,
+      barred = 10,
+      supertall = 60,
+      slits = 20,
+      pillbox = 20,
+      slumpish = 30,
+      window_crossfire = 10,
+    }
+    GAME.THEMES.hell.fence_groups = { PLAIN = 50, crenels=12 }
     GAME.THEMES.hell.fence_posts = { Post = 50 }
+  end
+
+  if OB_CONFIG.engine == "zdoom" or OB_CONFIG.engine == "gzdoom" then
+    local tab =
+    {
+      tech =
+      {
+        wide_halls = 
+        {
+          subway = 10
+        },
+
+        window_groups =
+        {
+          gtd_dem_windows = 40
+        }
+      },
+
+      urban =
+      {
+        wide_halls =
+        {
+          subway = 50
+        },
+
+        window_groups =
+        {
+          gtd_dem_windows = 40
+        }
+      }
+    }
+
+    table.deep_merge(GAME.THEMES, tab, 4)
+    --[[GAME.THEMES.tech.wide_halls["subway"] = 10
+    GAME.THEMES.urban.wide_halls["subway"] = 50
+    GAME.THEMES.tech.window_groups["gtd_dem_windows"] = 40
+    GAME.THEMES.urban.window_groups["gtd_dem_windows"] = 40]]
   end
 end
 
@@ -305,14 +417,8 @@ function DOOM.get_levels()
 
       -- nature mode
       if PARAM.float_nature_mode and not LEV.has_streets then
-        if OB_CONFIG.batch == "yes" then
-          if rand.odds(OB_CONFIG.float_nature_mode) then
-            LEV.is_nature = true
-          end
-        else
-          if rand.odds(PARAM.float_nature_mode) then
-            LEV.is_nature = true
-          end
+        if rand.odds(PARAM.float_nature_mode) then
+          LEV.is_nature = true
         end
       end
 
@@ -332,5 +438,6 @@ function DOOM.get_levels()
       GAME.levels[#GAME.levels - 2].dist_to_end = 3
     end
   end
-  DOOM.nolimit_themes()
+
+  DOOM.themes_alts()
 end

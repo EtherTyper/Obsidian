@@ -7,8 +7,8 @@
 --  Copyright (C) 2008-2018 Andrew Apted
 --  Copyright (C) 2008-2009 Jon Vail
 --  Copyright (C)      2009 Enhas
---  Copyright (C) 2010-2021 Armaetus
---  Copyright (C) 2010-2021 MsrSgtShooterPerson
+--  Copyright (C) 2010-2022 Armaetus
+--  Copyright (C) 2010-2022 MsrSgtShooterPerson
 --  Copyright (C) 2020 EpicTyphlosion
 --
 --  This program is free software; you can redistribute it and/or
@@ -155,7 +155,9 @@ namelib.NAMES =
         ["Misery"]=10,
         ["Nihility"]=10,
         ["Numb"]=10,
+        ["Obliteration"]=10,
         ["Pain"]=10,
+        ["Peril"]=10,
         ["Possession"]=10,
         ["Purity"]=10,
         ["Redemption"]=10,
@@ -239,19 +241,22 @@ namelib.NAMES =
 
         -- OwO what's this? More from Armaetus?!
         -- Just straight up weird or funny, rarely chosen though. Some memey stuff present!
-        ["I Accidentally Hotel Doom"]=2, -- YouTube "I Accidentally Hotel Mario"
+        ["A Stupid Level Name"]=2,
+        ["Another Generated Map"]=2,
+        ["Comment Ninja"]=2,
         ["It's Been One of Those Days"]=2, -- See above
         ["Hetfield's Inflated Ego"]=2,
         ["lol"]=2,
-        ["Marty's Loveable Funhouse"]=2, -- Refers to MArty Stratton, one of id's executive producers
+        ["Marty's Loveable Funhouse"]=2, -- Refers to Marty Stratton, one of id's executive producers
         ["OH NOES"]=2,
+        ["OwO"]=2,
         ["Phobos and Deimos Kissfest"]=2,
-        ["Reverse Cowgirl with a PC"]=2, -- YouTube "Reverse Cowgirl with a CD-I"
         ["Romero's Oversized Mindset"]=2,
         ["Take It Like a Man"]=2,
         ["The Trail to the Toilet"]=2, -- In-joke with Obsidian team, I blame Shooter for this lol
         ["Tom Hall's Halls"]=2,
-        ["We are not COMPET-N friendly"]=2,
+        ["UwU"]=2,
+        ["We are not COMPET-N friendly!"]=2,
 
         -- What do we have? MORE Naming? Owo
         -- A bunch of abstract shit is here too! - Armaetus, Jun. 13, 2021
@@ -397,7 +402,23 @@ namelib.NAMES =
 
         -- Foreign shit for the luls
         ["Chaos und Verachtung"]=10, -- "Chaos and Contempt"
-        ["No se puede inventar esta mierda"]=10 -- "You Can't Make This Shit Up" in Spanish
+        ["No se puede inventar esta mierda"]=10, -- "You Can't Make This Shit Up" in Spanish
+
+        -- End of 2021 additions
+        ["Angles of Hell"]=10,
+        ["Among Predaceous Cliffs"]=10,
+        ["Ascending the Unknown"]=10,
+        ["Choice and Consequence"]=10,
+        ["Crafting the Demise"]=10,
+        ["Everything Has Its Place"]=10, -- Chapter name from Dead Space 3
+        ["Hell's Heavy Burden"]=10,
+        ["History's Ember"]=10, -- Chapter name from Dead Space 3
+        ["Reaching the Sky"]=10,
+        ["Rude Awakening"]=10,
+        ["Testing One's Limits"]=10,
+        ["The Fading Skies"]=10,
+        ["The Long Way Forward"]=10,
+        ["Turning the Page"]=10
 
       },
 
@@ -432,32 +453,6 @@ namelib.NAMES =
 
         ["Adventure to the"]=10,
         ["A Jaunt to the"]=10,
-
-        --[[ 
-        -- More annoyed types by Armaetus
-        ["Oh God Not Another"]=5,
-        ["Yet Another"]=5,
-        ["Just Another"]=5,
-        ["Oh Dear Not Another"]=10,
-        ["It's Totally Another"]=10,
-        ["Just stop with the"]=5,
-        ["Fuck off with the"]=5,
-        ["No, not another"]=5,
-        ["Great, it's another"]=5,
-        ["Great, another"]=5,
-        ["Enough with the"]=5,
-        ["Meh, another"]=5,
-        ["Come on, another"]=5,
-        ["Eh, it's just a"]=5,
-        ["Oh, it's another"]=5,
-        ["Why another"]=5,
-        ["Piss off with the"]=5,
-        ["Wait, why another"]=5,
-        ["Good lord, another"]=5,
-
-        -- 2021 additions!
-        ["Really, another"]=5,
-        ["Wow, another"]=5,]]
 
         -- these by MSSP
         ["Battle for the"]=15,
@@ -2253,6 +2248,18 @@ namelib.NAMES =
         ["We Shun the Light"]=10,
         ["Wretched Human Mirror"]=10, -- Bloodbath song name
 
+        -- End of 2021 naming convention by Armaetus
+        ["Black As The Void"]=10,
+        ["Bubbling Blisters"]=10,
+        ["Corpse Dumpster"]=10,
+        ["Destructive by Design"]=10,
+        ["Fuel For The Hellpit"]=10,
+        ["Hatework"]=10,
+        ["Morbid Angels"]=10, -- Morbid Angel is a very good death metal band.
+        ["Shattered Suffering"]=10,
+        ["Terminal Hellocity"]=10,
+        ["Where Filth Resides"]=10,
+
         -- Foreign named things!
         -- I used DeepL for nearly all of these instead of Google Translate..
         -- Please provide corrections if any of these are off/incorrect!
@@ -2487,12 +2494,12 @@ namelib.NAMES =
 
         -- territories
         City=20, Town=20, Village=10,
-        World=5, Country=10, Zone=10,
-        Square=5, Kingdom=15,
+        --[[World=5, Country=10,]] Zone=10,
+        Square=5, --[[Kingdom=15,]]
         District=10, Precinct=10,
         Dominion=10, Domain=3, Trail=10,
         Region=10, Territory=5, Path=5,
-        Province=10, Jurisdiction=10,
+        --[[Province=10,]] Jurisdiction=10,
         Township=10, Municipality=7, Borough=7,
 
         -- adventure
@@ -3013,7 +3020,72 @@ namelib.NAMES =
 
         -- MSSP adds more names as well
         ["Damned Demon Destruction"]=10, -- Demios
-        ["Nothing Personnel"]=10
+        ["Nothing Personnel"]=10,
+
+        -- End of 2021 additions by Armaetus
+        ["A Weeping Statue"]=10,
+        ["As Shade Falls Upon Thee"]=10,
+        ["As The Candle Fades"]=10,
+        ["Ashes and Remembrance"]=10,
+        ["Ballad of Fog"]=10,
+        ["Bereavement of Earth"]=10,
+        ["Broken Future"]=10,
+        ["Cathedris Titanus Ruina"]=10,
+        ["Concrete and Twisted Metal"]=10,
+        ["Could it Get Worse?"]=10,
+        ["Dawn's Covenant"]=10,
+        ["Death Tally: Billions"]=10,
+        ["Discarded Kevlar"]=10,
+        ["Embracing Silent Death"]=10,
+        ["Empty Streets"]=10,
+        ["Fading From Existence"]=10,
+        ["Flatline Earth"]=10,
+        ["Her Silence is Telling Us"]=10,
+        ["Hunted Like Dogs"]=10,
+        ["Hunkered Down"]=10,
+        ["Induced Self-Destruction"]=10,
+        ["Lights That Lead"]=10,
+        ["Nameless Seeker"]=10,
+        ["Of Dust And Ash"]=10,
+        ["On Scorched Grounds"]=10,
+        ["Only Silent Skies"]=10,
+        ["Permanent Blackout"]=10,
+        ["Raindrops and Ashfall"]=10,
+        ["Reach For The Stars"]=10,
+        ["Requiem For The Planet"]=10,
+        ["Scattered To The Winds"]=10,
+        ["Seeing Dark Skies"]=10,
+        ["Shrouded Hopelessness"]=10,
+        ["Stardrifter"]=10,
+        ["Take Us Away"]=10,
+        ["That Special City.."]=10,
+        ["The Hobo's Den"]=10,
+        ["The Memories of Life"]=10,
+        ["The Ravens Come To Us"]=10,
+        ["The Skyward Gaze"]=10,
+        ["The Slow Death"]=10,
+        ["The Walls Whisper My Name"]=10,
+        ["Urban Hellscape"]=10,
+        ["Weaponized Despair"]=10,
+        ["World of Shit"]=10,
+
+        -- New Year's Eve 2021 additions by Armaetus!
+        ["Architects of Sadism"]=10,
+        ["Candlestick Bitch"]=10,
+        ["Chaotic Opportunism"]=10,
+        ["Cries of the Shadows"]=10,
+        ["Dusk Overture"]=10,
+        ["Fourthcoming Kingdoms"]=10,
+        ["Incense, Gore and Nihility"]=10,
+        ["Jump In The Acid"]=10, -- Play on Metallica's "Jump in the Fire" song
+        ["Liquid Blood Skies"]=10,
+        ["Lost in the Bloody Haze"]=10,
+        ["Nightmarish Fixation"]=10,
+        ["Nothingness Hereforth"]=10,
+        ["Our Evil Oaths"]=10,
+        ["The Wizards of Gore"]=10,
+        ["When the Skin Strand Pops"]=10,
+        ["Winds That Shred Skin"]=10
       }
     }
   },
@@ -3964,9 +4036,9 @@ namelib.NAMES =
         Emirate = 3,
         Empire = 5,
         ["Free State"] = 3,
-        Kingdom = 7,
+        --Kingdom = 7,
         Principality = 3,
-        Hegemony = 10,
+        --Hegemony = 10,
 
         -- medieval
         Citadel = 15,
@@ -5636,6 +5708,7 @@ namelib.NAMES =
         ["Another New World!"] = 30,
         ["Are You Man Enough?"] = 20,
         ["As Above, So Below"] = 30,
+        ["Best Played With Friends!"]=20,
         ["Billions of Potential Levels!"] = 40,
         ["Blasted Into Bits"] = 25,
         ["Blasting Away!"] = 20,
@@ -5655,6 +5728,7 @@ namelib.NAMES =
         ["Cleansed By Fire"] = 25,
         ["Complete Destruction"]=20,
         ["Constantly Being Improved!"] = 30,
+        ["Contains 200% More Subway Tunnels"]=15,
         ["Continued Destruction"] = 20,
         ["Corruption Abound"]=20,
         ["Corruption Unfettered"] = 20,
@@ -5706,10 +5780,12 @@ namelib.NAMES =
         ["Made with Blood, Sweat and Tears"] = 20,
         ["Make it Dark, Make it Evil"] = 30,
         ["Make it Like Silent Hill!"] = 25,
+        ["Mandatory Destruction"]=20,
         ["Max out Trap Difficulty!"]=15,
         ["Masochism For Imps!"] = 30,
         ["Mods Usually Make Things Better!"] = 20,
         ["Move it up a Notch"] = 25,
+        ["Move Your Ass!"]=20,
         ["More Maps to Kill Things On!"] = 35,
         ["Nailed Via Obsidian Spikes"] = 20,
         ["Nappies Required to Play"]=15,
@@ -5760,6 +5836,7 @@ namelib.NAMES =
         ["There's Always More!"] = 25,
         ["There Is No Rationale"] = 20,
         ["Third Strike"] = 20, -- Also by Craneo
+        ["This Fading Earth"]=15,
         ["This Generator Slays Demons"] = 25,
         ["This Is a Subtitle!"] = 20,
         ["This WAD Shouldn't Suck"] = 25,
@@ -8466,7 +8543,6 @@ end
 function namelib.test()
   local function test_theme(T)
     for set = 1,30 do
-      gui.rand_seed(set)
       local list = namelib.generate(T, 12, 28)
 
       for _,name in pairs(list) do

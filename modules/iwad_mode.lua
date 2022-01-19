@@ -1,9 +1,9 @@
 ----------------------------------------------------------------
 --  MODULE: id software mode
 ----------------------------------------------------------------
---  Copyright (C) 2021 Armaetus
---  Copyright (C) 2021 dasho
---  Copyrighr (C) 2021 MsrSgtShooterPerson
+--  Copyright (C) 2022 Armaetus
+--  Copyright (C) 2022 dasho
+--  Copyrighr (C) 2022 MsrSgtShooterPerson
 --
 --  This program is free software; you can redistribute it and/or
 --  modify it under the terms of the GNU General Public License
@@ -29,17 +29,27 @@
 -- nearby and distant/remote switches, fences, porches, big rooms/outdoors, ambushes,
 -- scenics, symmetry, parks/park detail, caves, hallways, etc.
 
+-- PARAMETERS FOUND THAT CAN BE USED --
+
 -- LEVEL.size_multiplier
 -- LEVEL.area_multiplier
 -- LEVEL.size_consistency = "strict"/"normal"
 -- LEVEL.sky_light = # here
 -- LEVEL.has_streets = true/false
--- PARAM.brightness_offset
+-- LEVEL.squareishness = 0 to 100
+-- LEVEL.liquid_usage = # ? (0-100)
+-- LEVEL.room_height_style
+-- LEVEL.has_outdoors = "true/false?"
+-- PARAM.room_heights = "normal/short-ish/short/tall/tall-ish" ???
+-- or LEVEL.room_height_style ?
+-- PARAM.wad_minimum_brightness /  PARAM.wad_maximum_brightness
+
+-- END PARAMETERS --
 
 IWAD_MODE = { }
 
 -- Needs the following:
--- Brightness offset, sink style, switch goals/remote switch choices,
+-- Min/Max light levels, sink style, switch goals/remote switch choices,
 -- cliffs and more.
 
 ------------
@@ -63,7 +73,7 @@ IWAD_MODE.styles = {
     ambushes = "few",
     doors = "few", -- side room and exit doors
     windows = "few", -- one window
-    switches = "none", -- secret switch doesn't count
+    switches = "few", -- secret switch doesn't count
     keys = "none",
     trikeys= "none",
     scenics = "few",
@@ -307,7 +317,7 @@ IWAD_MODE.styles = {
     scenics = "few"
   },
 
-  -- MAP11 Approximate map dimensions: 3,600 x 29000 map units
+  -- MAP11 Approximate map dimensions: 3,600 x 2,900 map units
   MAP11 =
   {
     outdoors = "heaps", -- It *is* outside mostly..
@@ -1306,6 +1316,68 @@ E2M6 =
   fences = "none"
 },
 
+-- E2M7 Approximate map dimensions: 4,000 x 2,800 map units
+E2M7 =
+{
+  outdoors = "few",
+  caves = "none",
+  parks = "few",
+  liquids = "few",
+  hallways = "some",
+  big_rooms = "few",
+  big_outdoor_rooms = "none",
+  teleporters = "few",
+  steepness = "some",
+  traps = "some",
+  cages = "none",
+  secrets = "few",
+  doors = "heaps",
+  windows = "some",
+  switches = "few",
+  keys = "heaps",
+  trikeys = "none",
+  scenics = "few",
+  park_detail = "some",
+  symmetry = "none",
+  pictures = "some",
+  barrels = "few",
+  beams = "few",
+  porches = "few",
+  fences = "few"
+},
+
+-- E2M8 Approximate map dimensions: 3,300 x 5,000 map units
+-- This is also a procedural gotcha! Cyberdemon placement and
+-- defeat must be enforced! No switch to leave.
+E2M8 =
+{
+  outdoors = "heaps",
+  caves = "none",
+  parks = "none",
+  liquids = "none",
+  hallways = "few",
+  big_rooms = "none",
+  big_outdoor_rooms = "heaps",
+  teleporters = "none",
+  steepness = "few",
+  traps = "few",
+  cages = "none",
+  secrets = "few",
+  doors = "few",
+  windows = "few",
+  switches = "few",
+  keys = "none",
+  trikeys = "none",
+  scenics = "heaps",
+  park_detail = "none",
+  symmetry = "heaps",
+  pictures = "some",
+  barrels = "none",
+  beams = "few",
+  porches = "heaps",
+  fences = "none"
+},
+
 -- This is a template!
 -- EXMX Approximate map dimensions: X x Y map units
 EXMX =
@@ -1346,47 +1418,49 @@ function IWAD_MODE.begin_level()
   local nt = assert(namelib.NAMES)
 
   if LEVEL.name == "MAP01" then
-    LEVEL.map_W = 18
+    LEVEL.map_W = 22
     LEVEL.description = rand.key_by_probs(nt.TECH.lexicon.e)
     LEVEL.size_multiplier = 0.6
     LEVEL.size_consistency = "strict"
     LEVEL.sky_light = 192
-    PARAM.brightness_offset = "0"
+    LEVEL.room_height_style = "short-ish"
   elseif LEVEL.name == "MAP02" then
-    LEVEL.map_W = 22
-    LEVEL.size_multiplier = 0.5
+    LEVEL.map_W = 26
+    LEVEL.size_multiplier = 0.6
+    LEVEL.area_multiplier = 0.5
     LEVEL.size_consistency = "strict"
     LEVEL.sky_light = 192
     LEVEL.description = rand.key_by_probs(nt.TECH.lexicon.e)
-    PARAM.brightness_offset = "-1"
+    LEVEL.room_height_style = "short"
   elseif LEVEL.name == "MAP03" then
     LEVEL.map_W = 25
     LEVEL.size_multiplier = 0.75
     LEVEL.sky_light = 144
     LEVEL.size_consistency = "normal"
-    PARAM.brightness_offset = "-1"
     LEVEL.description = "The " .. rand.key_by_probs(nt.TECH.lexicon.n)
+    LEVEL.room_height_style = "normal"
   elseif LEVEL.name == "MAP04" then
     LEVEL.map_W = 20
     LEVEL.size_multiplier = 0.6
     LEVEL.size_consistency = "strict"
     LEVEL.sky_light = 160
-    PARAM.brightness_offset = "-2"
     LEVEL.description = rand.key_by_probs(nt.TECH.lexicon.e)
+    LEVEL.room_height_style = "short"
   elseif LEVEL.name == "MAP05" then
     LEVEL.map_W = 28
-    LEVEL.size_multiplier = 0.8
+    LEVEL.size_multiplier = 0.7
     LEVEL.sky_light = 144
     LEVEL.size_consistency = "normal"
     LEVEL.description = rand.key_by_probs(nt.TECH.lexicon.e)
-    PARAM.brightness_offset = "-2"
+    LEVEL.squareishness = 35
+    LEVEL.room_height_style = "tall-ish"
   elseif LEVEL.name == "MAP06" then
     LEVEL.map_W = 30
     LEVEL.size_multiplier = 0.7
     LEVEL.size_consistency = "normal"
     LEVEL.sky_light = 192
-    PARAM.brightness_offset = "-1"
     LEVEL.description = "The " .. rand.key_by_probs(nt.TECH.lexicon.n)
+    LEVEL.room_height_style = "tall-ish"
   elseif LEVEL.name == "MAP07" then
     LEVEL.map_W = 26
     LEVEL.size_consistency = "strict"
@@ -1395,46 +1469,46 @@ function IWAD_MODE.begin_level()
     LEVEL.description = rand.key_by_probs(nt.TECH.lexicon.c) .. " Simple"
     LEVEL.size_multiplier = 1.2
     LEVEL.area_multiplier = 0.75
-    PARAM.brightness_offset = "+1"
+    LEVEL.room_height_style = "short-ish"
   elseif LEVEL.name == "MAP08" then
     LEVEL.map_W = 28
     LEVEL.size_multiplier = 0.8
     LEVEL.size_consistency = "strict"
     LEVEL.sky_light = 192
     LEVEL.description = rand.key_by_probs(nt.TECH.lexicon.d) .. " and Traps"
-    PARAM.brightness_offset = "0"
+    LEVEL.room_height_style = "tall-ish"
   elseif LEVEL.name == "MAP09" then
     LEVEL.map_W = 26
     LEVEL.size_multiplier = 0.7
     LEVEL.size_consistency = "normal"
     LEVEL.sky_light = 144
-    PARAM.brightness_offset = "-1"
     LEVEL.description = "The " .. rand.key_by_probs(nt.URBAN.lexicon.o)
+    LEVEL.room_height_style = "tall"
   elseif LEVEL.name == "MAP10" then
     LEVEL.map_W = 32
     LEVEL.size_multiplier = 1.2
     LEVEL.area_multiplier = 0.7
     LEVEL.size_consistency = "normal"
     LEVEL.sky_light = 144
-    PARAM.brightness_offset = "+2"
     LEVEL.description = rand.key_by_probs(nt.TECH.lexicon.e)
     LEVEL.squareishness = 30
+    LEVEL.room_height_style = "tall-ish"
   elseif LEVEL.name == "MAP11" then
     LEVEL.map_W = 26
     LEVEL.size_multiplier = 0.8
     LEVEL.size_consistency = "normal"
     LEVEL.sky_light = 160
     LEVEL.description = rand.key_by_probs(nt.TECH.lexicon.n) .. " of Destruction"
-    PARAM.brightness_offset = "0"
+    LEVEL.room_height_style = "tall"
   elseif LEVEL.name == "MAP12" then
     LEVEL.map_W = 36
     LEVEL.size_consistency = "strict"
     LEVEL.size_multiplier = 0.75
     LEVEL.has_streets = true -- Its shape implies this
     LEVEL.sky_light = 144
-    PARAM.brightness_offset = "+1"
     LEVEL.squareishness = 55
     LEVEL.description = "The " .. rand.key_by_probs(nt.URBAN.lexicon.n)
+    LEVEL.room_height_style = "tall-ish"
   elseif LEVEL.name == "MAP13" then
     LEVEL.map_W = 40
     LEVEL.size_multiplier = 0.7
@@ -1442,51 +1516,52 @@ function IWAD_MODE.begin_level()
     LEVEL.sky_light = 128
     LEVEL.has_streets = true
     LEVEL.description = rand.key_by_probs(nt.URBAN.lexicon.a) .. " Downtown"
-    PARAM.brightness_offset = "-1"
-    LEVEL.squareishness = 40
+    LEVEL.squareishness = 60
+    LEVEL.room_height_style = "tall"
   elseif LEVEL.name == "MAP14" then
-    LEVEL.map_W = 28
+    LEVEL.map_W = 30
     LEVEL.size_multiplier = 0.5
     LEVEL.size_consistency = "strict"
     LEVEL.area_multiplier = 0.8
     LEVEL.sky_light = 144
-    PARAM.brightness_offset = "0"
     LEVEL.squareishness = 25
     LEVEL.description = rand.key_by_probs(nt.URBAN.lexicon.a) .. " Dens"
+    LEVEL.room_height_style = "normal"
   elseif LEVEL.name == "MAP15" then
-    LEVEL.map_W = 38
+    LEVEL.map_W = 44
     LEVEL.size_multiplier = 0.8
     LEVEL.area_multiplier = 1.1
     LEVEL.size_consistency = "normal"
     LEVEL.sky_light = 160
     LEVEL.has_streets = true -- Shaped enough for this
     LEVEL.description = rand.key_by_probs(nt.URBAN.lexicon.a) .. " Industrial Zone"
-    PARAM.brightness_offset = "+1"
-    LEVEL.squareishness = 40
+    LEVEL.squareishness = 55
+    LEVEL.room_height_style = "tall"
   elseif LEVEL.name == "MAP16" then -- Streets mode
-    LEVEL.map_W = 36
+    LEVEL.map_W = 38
     LEVEL.size_multiplier = 1.2
     LEVEL.area_multiplier = 0.8
     LEVEL.size_consistency = "normal"
     LEVEL.has_streets = true
     LEVEL.sky_light = 144
-    PARAM.brightness_offset = "-1"
     LEVEL.squareishness = 30
+    LEVEL.room_height_style = "normal"
   elseif LEVEL.name == "MAP17" then
     LEVEL.map_W = 26
     LEVEL.size_multiplier = 0.65
     LEVEL.area_multiplier = 1.2
     LEVEL.size_consistency = "strict"
     LEVEL.sky_light = 192
-    PARAM.brightness_offset = "0"
+    LEVEL.room_height_style = "tall"
   elseif LEVEL.name == "MAP18" then
-    LEVEL.map_W = 24
+    LEVEL.map_W = 26
     LEVEL.size_multiplier = 0.7
     LEVEL.size_consistency = "strict"
     LEVEL.area_multiplier = 0.75
     LEVEL.sky_light = 160
     LEVEL.description = "The " .. rand.key_by_probs(nt.GOTHIC.lexicon.n)
-    PARAM.brightness_offset = "+1"
+    LEVEL.squareishness = 60
+    LEVEL.room_height_style = "tall-ish"
   elseif LEVEL.name == "MAP19" then
     LEVEL.map_W = 34
     LEVEL.size_multiplier = 0.7
@@ -1494,31 +1569,31 @@ function IWAD_MODE.begin_level()
     LEVEL.size_consistency = "normal"
     LEVEL.sky_light = 176
     LEVEL.description = rand.key_by_probs(nt.URBAN.lexicon.a) .. " Citadel"
-    PARAM.brightness_offset = "-1"
     LEVEL.squareishness = 40
+    LEVEL.room_height_style = "normal"
   elseif LEVEL.name == "MAP20" then
-    LEVEL.map_W = 36
+    LEVEL.map_W = 40
     LEVEL.size_multiplier = 0.9
     LEVEL.area_multiplier = 2.0
     LEVEL.size_consistency = "normal"
     LEVEL.sky_light = 255 -- dunno why id put 255
-    PARAM.brightness_offset = "0"
+    LEVEL.room_height_style = "tall"
   elseif LEVEL.name == "MAP21" then
-    LEVEL.map_W = 20
+    LEVEL.map_W = 22
     LEVEL.size_multiplier = 0.5
     LEVEL.area_multiplier = 1.2
     LEVEL.sky_light = 160
     LEVEL.size_consistency = "strict"
-    PARAM.brightness_offset = "-2"
+    LEVEL.room_height_style = "short-ish"
   elseif LEVEL.name == "MAP22" then
-    LEVEL.map_W = 22
+    LEVEL.map_W = 24
     LEVEL.size_multiplier = 0.5
     LEVEL.area_multiplier = 1.2
     LEVEL.sky_light = 192
     LEVEL.size_consistency = "strict"
     LEVEL.description =  "The " .. rand.key_by_probs(nt.GOTHIC.lexicon.n)
-    PARAM.brightness_offset = "-1"
     LEVEL.squareishness = 30
+    LEVEL.room_height_style = "normal"
   elseif LEVEL.name == "MAP23" then
     LEVEL.map_W = 26
     LEVEL.size_multiplier = 0.7
@@ -1526,31 +1601,31 @@ function IWAD_MODE.begin_level()
     LEVEL.sky_light = 160
     LEVEL.size_consistency = "normal"
     LEVEL.description = "Barrels o' " .. rand.key_by_probs(nt.URBAN.lexicon.h)
-    PARAM.brightness_offset = "0"
+    LEVEL.room_height_style = "tall-ish"
   elseif LEVEL.name == "MAP24" then
     LEVEL.map_W = 30
     LEVEL.size_multiplier = 0.8
     LEVEL.area_multiplier = 1.5
     LEVEL.size_consistency = "normal"
     LEVEL.sky_light = 144 -- guess, can't find indoors
-    PARAM.brightness_offset = "-1"
     LEVEL.description =  "The " .. rand.key_by_probs(nt.GOTHIC.lexicon.n)
+    LEVEL.room_height_style = "tall"
   elseif LEVEL.name == "MAP25" then
     LEVEL.map_W = 26
     LEVEL.size_multiplier = 0.6
     LEVEL.area_multiplier = 1.3
     LEVEL.sky_light = 128
     LEVEL.size_consistency = "strict"
-    PARAM.brightness_offset = "-2"
     LEVEL.description = rand.key_by_probs(nt.GOTHIC.lexicon.a) .. " Bloodfalls"
+    LEVEL.room_height_style = "normal"
   elseif LEVEL.name == "MAP26" then
     LEVEL.map_W = 30
     LEVEL.size_multiplier = 0.8
     LEVEL.area_multiplier = 1.5
     LEVEL.size_consistency = "normal"
     LEVEL.sky_light = 144
-    PARAM.brightness_offset = "-1"
     LEVEL.description = rand.key_by_probs(nt.GOTHIC.lexicon.a) .. " Mines"
+    LEVEL.room_height_style = "tall-ish"
   elseif LEVEL.name == "MAP27" then
     LEVEL.map_W = 24
     LEVEL.size_multiplier = 0.6
@@ -1558,15 +1633,15 @@ function IWAD_MODE.begin_level()
     LEVEL.size_consistency = "strict"
     LEVEL.sky_light = 144
     LEVEL.description =  "Monster " .. rand.key_by_probs(nt.GOTHIC.lexicon.n)
-    PARAM.brightness_offset = "-2"
     LEVEL.squareishness = 45
+    LEVEL.room_height_style = "short-ish"
   elseif LEVEL.name == "MAP28" then
     LEVEL.map_W = 28
-    LEVEL.size_multiplier = 0.9
+    LEVEL.size_multiplier = 0.8
     LEVEL.area_multiplier = 1.5
     LEVEL.size_consistency = "strict"
     LEVEL.sky_light = 144
-    PARAM.brightness_offset = "0"
+    LEVEL.room_height_style = "tall"
   elseif LEVEL.name == "MAP29" then
     LEVEL.map_W = 32
     LEVEL.size_multiplier = 0.8
@@ -1574,7 +1649,7 @@ function IWAD_MODE.begin_level()
     LEVEL.size_consistency = "strict"
     LEVEL.sky_light = 144
     LEVEL.description =  "The Living " .. rand.key_by_probs(nt.GOTHIC.lexicon.h)
-    PARAM.brightness_offset = "-1"
+    LEVEL.room_height_style = "tall"
   elseif LEVEL.name == "MAP30" then
     LEVEL.map_W = 36
     LEVEL.size_multiplier = 1.5
@@ -1583,23 +1658,23 @@ function IWAD_MODE.begin_level()
     LEVEL.is_procedural_gotcha = true
     LEVEL.sky_light = 144
     LEVEL.description = "Icon of " .. rand.key_by_probs(nt.GOTHIC.lexicon.h)
-    PARAM.brightness_offset = "-1"
+    LEVEL.room_height_style = "tall-ish"
   elseif LEVEL.name == "MAP31" then
     LEVEL.map_W = 28
     LEVEL.size_multiplier = 0.5
     LEVEL.area_multiplier = 0.75
-    LEVEL.size_consistency = "strict"
+    LEVEL.size_consistency = "normal"
     LEVEL.sky_light = 192
-    PARAM.brightness_offset = "+2"
     LEVEL.squareishness = 90
+    LEVEL.room_height_style = "short"
   elseif LEVEL.name == "MAP32" then
     LEVEL.map_W = 24
     LEVEL.size_multiplier = 0.6
-    LEVEL.area_multiplier = 0.6
+    LEVEL.area_multiplier = 0.5
     LEVEL.size_consistency = "strict"
     LEVEL.sky_light = 192
-    PARAM.brightness_offset = "+2"
     LEVEL.squareishness = 80
+    LEVEL.room_height_style = "short"
     end
 
     --[[ TODO Doom/Ult. Doom
@@ -1610,51 +1685,51 @@ function IWAD_MODE.begin_level()
     LEVEL.size_consistency = "strict"
     LEVEL.sky_light = 255
     LEVEL.description = rand.key_by_probs(nt.URBAN.lexicon.a) .. " Hangar"
-    PARAM.brightness_offset = "0"
+    LEVEL.room_height_style = "short-ish"
     elseif LEVEL.name == "E1M2" then
     LEVEL.map_w = 30
     LEVEL.size_multiplier = 0.7
     LEVEL.area_multiplier = 1.2
     LEVEL.size_consistency = "strict"
     LEVEL.sky_light = 255
-    PARAM.brightness_offset = "-1"
+    LEVEL.room_height_style = "short"
     elseif LEVEL.name == "E1M3" then
     LEVEL.map_W = 28
     LEVEL.size_multiplier = 0.6
     LEVEL.area_multiplier = 0.8
     LEVEL.size_consistency = "strict"
     LEVEL.sky_light = 255
-    PARAM.brightness_offset = "-1"
+    LEVEL.room_height_style = "short-ish"
     elseif LEVEL.name == "E1M4" then
     LEVEL.map_W = 30
     LEVEL.size_multiplier = 0.85
-    LEVEL.area_multiplier = 1.3
+    LEVEL.area_multiplier = 1.2
     LEVEL.size_consistency = "normal"
     LEVEL.sky_light = 255
-    PARAM.brightness_offset = "0"
+    LEVEL.room_height_style = "tall-ish"
     elseif LEVEL.name == "E1M5" then
     LEVEL.map_W = 28
     LEVEL.size_multiplier = 0.7
     LEVEL.area_multiplier = 0.8
     LEVEL.size_consistency = "strict"
     LEVEL.sky_light = 160
+    LEVEL.room_height_style = "short-ish"
     LEVEL.description = rand.key_by_probs(nt.URBAN.lexicon.a) .. " Lab"
-    PARAM.brightness_offset = "-2"
     elseif LEVEL.name == "E1M6" then
     LEVEL.map_W = 36
     LEVEL.size_multiplier = 0.7
     LEVEL.area_multiplier = 1.25
     LEVEL.size_consistency = "strict"
     LEVEL.sky_light = 255
+    LEVEL.room_height_style = "normal"
     LEVEL.description = rand.key_by_probs(nt.TECH.lexicon.n) .. " Processing" -- We'll get Post Processing out of this lolol
-    PARAM.brightness_offset = "-1"
     elseif LEVEL.name == "E1M7" then
     LEVEL.map_W = 36
     LEVEL.size_multiplier = 0.6
     LEVEL.area_multiplier = 1.4
     LEVEL.size_consistency = "normal"
     LEVEL.sky_light = 192
-    PARAM.brightness_offset = "-1"
+    LEVEL.room_height_style = "short-ish"
     elseif LEVEL.name == "E1M8" then
     LEVEL.map_W = 30
     LEVEL.size_multiplier = 1.2
@@ -1662,39 +1737,40 @@ function IWAD_MODE.begin_level()
     LEVEL.size_consistency = "strict"
     LEVEL.is_procedural_gotcha = true
     LEVEL.sky_light = 192
+    LEVEL.room_height_style = "normal"
     LEVEL.description = "Sign of " .. rand.key_by_probs(nt.GOTHIC.lexicon.h)
-    PARAM.brightness_offset = "-1"
     elseif LEVEL.name == "E1M9" then
     LEVEL.map_W = 28
     LEVEL.size_multiplier = 0.7
     LEVEL.area_multiplier = 1.1
     LEVEL.size_consistency = "normal"
     LEVEL.sky_light = 255
+    LEVEL.room_height_style = "short-ish"
     LEVEL.description = rand.key_by_probs(nt.URBAN.lexicon.a) .. " Base"
-    LEVEL.squarishness = 66
-    PARAM.brightness_offset = "+1"
+    LEVEL.squareishness = 66
     elseif LEVEL.name == "E2M1" then
     LEVEL.map_W = 24
     LEVEL.size_multiplier = 0.5
     LEVEL.area_multiplier = 1.2
     LEVEL.size_consistency = "strict"
+    LEVEL.room_height_style = "normal"
     LEVEL.description = rand.key_by_probs(nt.URBAN.lexicon.a) .. " Anomaly"
-    PARAM.brightness_offset = "+1"
     elseif LEVEL.name == "E2M2" then
     LEVEL.map_W = 30
     LEVEL.size_multiplier = 0.8
     LEVEL.area_multiplier = 1.33
     LEVEL.size_consistency = "strict"
+    LEVEL.room_height_style = "short"
     LEVEL.description = "Containment " .. rand.key_by_probs(nt.TECH.lexicon.a)
-    LEVEL.squarishness = 70
-    PARAM.brightnesS_offset = "+2"
+    LEVEL.squareishness = 70
     elseif LEVEL.name == "E2M3" then
     LEVEL.map_w = 26
     LEVEL.size_multiplier = 0.6
     LEVEL.area_multiplier = 0.4
     LEVEL.size_consistency = "strict"
+    LEVEL.room_height_style = "normal"
     LEVEL.description = rand.key_by_probs(nt.TECH.lexicon.e) -- Will this work, MSSP?
-    LEVEL.squarishness = 33
+    LEVEL.squareishness = 33
   end
   ]]
 

@@ -39,35 +39,46 @@ HEXEN.THEMES =
     {
       k_axe = 50,
       k_cave = 50,
-      --k_castle = 50,
-      --k_dungeon = 50,
-      --k_emerald = 50,
-      --k_fire = 20,
-      --k_horn = 50,
-      --k_rusty = 50,
-      --k_silver = 50,
-      --k_swamp = 50,
       k_steel = 50,
     },
 
     hub_keys = 
     {
-      k_axe = 50,
-      k_cave = 50,
-      --k_castle = 50,
-      --k_dungeon = 50,
-      --k_emerald = 50,
-      --k_fire = 20,
-      --k_horn = 50,
-      --k_rusty = 50,
-      --k_silver = 50,
-      --k_swamp = 50,
-      k_steel = 50,
+      k_castle = 50,
+      k_dungeon = 50,
+      k_emerald = 50,
+      k_fire = 20,
+      k_horn = 50,
+      k_rusty = 50,
+      k_silver = 50,
+      k_swamp = 50,
     },   
 
     skyboxes =
     {
 
+    },
+
+    style_list =
+    {
+      caves = { none=80, few=12, some=5, heaps=3 },
+      outdoors = { none=80, few=18, some=2 },
+      pictures = { few=20, some=80, heaps=30 },
+      hallways = { none=30, few=80, some=15, heaps=10 },
+      windows = { few=25, some=50, heaps=90 },
+      cages = { none=60, few=20, some=10, heaps=10 },
+      liquids = { none=45, few=30, some=20, heaps=5 },
+      doors = { few=20, some=70, heaps=30 },
+      steepness = { few=25, some=50, heaps=90 },
+      big_rooms = { none=15, few=60, some=20, heaps=5 },
+      ambushes = { none=5, few=50, some=45, heaps=30 },
+      teleporters = { none=0, few=0, some=0, heaps=0 },
+      keys = { none=15, few=50, some=50, heaps=20 },
+      symmetry = { none=40, few=30, some=35, heaps=25 },
+      switches = { none=20, few=60, some=40, heaps=10 },
+      secrets = { few=5, some=80, heaps=25 },
+      traps   = { none=10, few=40, some=70, heaps=25 },
+      barrels = { none=10, few=50, some=20, heaps=5 }
     },
 
   },
@@ -94,6 +105,7 @@ HEXEN.THEMES =
       fence_groups =
       {
         PLAIN = 50,
+        crenels = 12,
       },
 
       beam_groups =
@@ -101,9 +113,46 @@ HEXEN.THEMES =
         beam_metal = 50,
       },
 
+      narrow_halls =
+      {
+        vent = 50,
+      },
+  
+      wide_halls =
+      {
+        curve = 50,
+        deuce = 50,
+      },
+
+      window_groups = 
+      {
+        straddle = 70,
+        tall   = 80,
+        grate  = 45,
+        barred = 10,
+        supertall = 60,
+        slits = 20,
+        pillbox = 20,
+        slumpish = 30,
+        window_crossfire = 10,
+        window_arched = 10,
+        window_arched_tall = 10,
+        window_arched_inverted = 10
+      },
+
       wall_groups =
       {
         PLAIN = 0.01,
+        mid_band = 10,
+        lite1 = 20,
+        lite2 = 20,
+        torches1 = 12,
+        torches2 = 12,
+        high_gap = 25,
+        vert_gap = 25,
+        wallgutters = 10,
+        lamptorch = 16,
+        runic = 10,
       },
 
       fences =
@@ -149,6 +198,8 @@ HEXEN.THEMES =
       },
 
       steps_mat = "F_011",
+
+      post_mat  = "_STRUCT",
 
     },
 

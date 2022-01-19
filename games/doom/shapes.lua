@@ -5,7 +5,7 @@
 --  // Obsidian //
 --
 --  Copyright (C) 2015-2017 Andrew Apted
---  Copyright (C) 2018-2021 MsrSgtShooterPerson
+--  Copyright (C) 2018-2022 MsrSgtShooterPerson
 --
 --  This program is free software; you can redistribute it and/or
 --  modify it under the terms of the GNU General Public License
@@ -843,7 +843,7 @@ SPROUT_DIRECT_4 =
     conn = { x=1, y=1, w=4, dir=8 },
 
     symmetry = { kind="mirror", x=2, y=2, w=2, dir=8 },
-    symmetry2 = { kind="mirror", x=2, y=2, dir=4 },
+    --symmetry2 = { kind="mirror", x=2, y=2, w=4, dir=4 },
     symmetry3 = { kind="rotate", x=1, y=2, x2=4, y2=3 }
   }
 },
@@ -1273,9 +1273,9 @@ SPROUT_JOINER_4x2 =
 
   new_room =
   {
-    symmetry = { kind="mirror", x=4, y=4, dir=8 },
-    symmetry = { kind="mirror", x=4, y=4, dir=6 },
-    symmetry = { kind="rotate", x=2, y=3, x2=5, y2=5 },
+    symmetry = { kind="mirror", x=3, y=4, dir=8 },
+    --symmetry2 = { kind="mirror", x=3, y=5, dir=4 },
+    symmetry3 = { kind="rotate", x=2, y=3, x2=5, y2=5 },
   },
 
   joiner =
@@ -1307,7 +1307,7 @@ SPROUT_JOINER_4x2_SYMM =
   new_room =
   {
     symmetry = { kind="mirror", x=3, y=8, dir=6},
-    symmetry2 = { kind="mirror", x=2, y=8, dir=4},
+    symmetry2 = { kind="mirror", x=3, y=8, dir=4},
     symmetry3 = { kind="rotate", x=2, y=6, x2=5, y2=9}
   },
 
@@ -2689,8 +2689,8 @@ GROW_STAIRPAIR_4C =
 
 GROW_STAIRPAIR_5 =
 {
-  prob = 20, --20,
-  skip_prob = 45, --50,
+  prob = 15, --20,
+  skip_prob = 80, --50,
   aversion = 5,
 
   z_dir = "up",
@@ -2976,8 +2976,8 @@ AUX_LIQUID_3 =
 
 GROW_STAIR_TRI =
 {
-  prob = 40,
-  skip_prob = 50,
+  prob = 25,
+  skip_prob = 75,
 
   structure =
   {
@@ -2985,7 +2985,7 @@ GROW_STAIR_TRI =
     ".....","AAAAA",
     ".....","^A^A^",
     ".....","11111",
-    "x111x","x111x",
+    "11xxx","11xxx",
   }
 },
 
@@ -3055,7 +3055,8 @@ GROW_COLONNADE_TINY =
     "...","1#1",
     "...","111",
     "...","1.1",
-    "111","111",
+    "...","111",
+    "11x","11x"
   }
 },
 
@@ -3066,10 +3067,10 @@ GROW_COLONNADE_PARTHENON =
 
   structure =
   {
+    "1....","11>AA",
+    "1....","11#AA",
     "x....","x1>AA",
-    "x....","x1#AA",
-    "1....","11>AA",
-    "1....","11>AA",
+    "x....","x1>AA",
     "x....","x1#AA",
     "x....","x1>AA",
   }
@@ -3082,11 +3083,11 @@ GROW_COLONNADE_PARTHENON_3P =
 
   structure =
   {
-    "x....","x1>AA",
-    "x....","x1.AA",
     "1....","11>AA",
     "1....","11.AA",
-    "1....","11>AA",
+    "x....","x1>AA",
+    "x....","x1.AA",
+    "x....","x1>AA",
     "x....","x1.AA",
     "x....","x1>AA",
   }
@@ -3100,9 +3101,9 @@ GROW_COLONNADE_PARTHENON_LAKE =
 
   structure =
   {
-    "x.......","x111>>AA",
     "1.......","1111>>AA",
-    "1.......","11/~#~%A",
+    "1.......","1111>>AA",
+    "x.......","x1/~#~%A",
     "x.......","x1~~~~~A",
     "xx.....x","xx%~~~/x",
   },
@@ -3121,10 +3122,10 @@ GROW_COLONNADE_MOAT_1X =
 
   structure =
   {
-    "x......","x11>>AA",
+    "1......","111>>AA",
     "1......","111~~AA",
-    "1......","111~#AA",
-    "1......","111~~AA",
+    "x......","x11~#AA",
+    "x......","x11~~AA",
     "x......","x11>>AA",
   }
 },
@@ -3136,12 +3137,12 @@ GROW_COLONNADE_MOAT_2X =
 
   structure =
   {
-    "x......","x11>>AA",
-    "x......","x11~~AA",
-    "x......","x11~#AA",
-    "1......","111~~AA",
     "1......","111>>AA",
     "1......","111~~AA",
+    "x......","x11~#AA",
+    "x......","x11~~AA",
+    "x......","x11>>AA",
+    "x......","x11~~AA",
     "x......","x11~#AA",
     "x......","x11~~AA",
     "x......","x11>>AA",
@@ -3234,7 +3235,7 @@ GROW_COLONNADE_510_STAIRS_STRAIGHT =
     ".........","AA#^^^#AA",
     ".........","AAA111AAA",
     ".........","AAA111AAA",
-    "xxx111xxx","xxx111xxx",
+    "xxxx11xxx","xxxx11xxx",
   }
 },
 
@@ -3270,7 +3271,7 @@ GROW_COLONNADE_510_STAIRS_TRI =
     "..........","AA<1111>AA",
     "..........","AA<1111>AA",
     "..........","AA<1111>AA",
-    "xxxx11xxxx","xxxx11xxxx",
+    "xxxxx11xxx","xxxxx11xxx",
   }
 },
 
@@ -3290,7 +3291,7 @@ GROW_COLONNADE_VAULT =
     "........","11111111",
     "........","11#11#11",
     "........","11111111",
-    "xxx11xxx","xxx11xxx",
+    "xxxxxx11","xxxxxx11",
   }
 },
 
@@ -3381,7 +3382,7 @@ GROW_COLONNADE_STRAIGHT_VAULT_FROM_SIDE =
     "......","AAAAAA",
     "......","AAAAAA",
     "......","111111",
-    "xx11xx","xx11xx",
+    "xxxx11","xxxx11",
   }
 },
 
@@ -3398,7 +3399,7 @@ GROW_COLONNADE_STRAIGHT_VAULT_LARGE =
     "........","AA1111AA",
     "........","AA1111AA",
     "........","AA1111AA",
-    "xxx11xxx","xxx11xxx",
+    "xxxx11xx","xxxx11xx",
   }
 },
 
@@ -3415,7 +3416,7 @@ GROW_COLONNADE_STRAIGHT_VAULT_LARGE_LIQUID =
     "........","AA1~~1AA",
     "........","AA1~~1AA",
     "........","AA1111AA",
-    "xxx11xxx","xxx11xxx",
+    "xxxx11xx","xxxx11xx",
   }
 },
 
@@ -3432,7 +3433,7 @@ GROW_COLONNADE_STRAIGHT_VAULT_LARGE_FROM_SIDE =
     "........","AAAAAAAA",
     "........","11111111",
     "........","11111111",
-    "xxx11xxx","xxx11xxx",
+    "xxxxxx11","xxxxxx11",
   }
 },
 
@@ -3451,7 +3452,7 @@ GROW_COLONNADE_STRAIGHT_VAULT_LARGE_FROM_SIDE_LIQUID =
     "........","AAAAAAAA",
     "........","11111111",
     "........","11111111",
-    "xxx11xxx","xxx11xxx",
+    "xxxxxx11","xxxxxx11",
   }
 },
 
@@ -3469,7 +3470,7 @@ GROW_COLONNADE_STRAIGHT_VAULT_BELT =
     "..........","AA%/11%/AA",
     "..........","%AA1111AA/",
     "x........x","xAA1111AAx",
-    "xxxx11xxxx","xxxx11xxxx",
+    "xxx11xxxxx","xxx11xxxxx",
   },
 
   diagonals =
@@ -3488,7 +3489,7 @@ GROW_COLONNADE_CLOISTER =
 
   structure =
   {
-    "xxxx111xxxx","xxxx111xxxx",
+    "11xxxxxxxxx","11xxxxxxxxx",
     "...........","11111111111",
     "...........","11111111111",
     "...........","11#1#1#1#11",
@@ -3510,7 +3511,7 @@ GROW_COLONNADE_CLOISTER_LIQUID =
 
   structure =
   {
-    "xxxx111xxxx","xxxx111xxxx",
+    "11xxxxxxxxx","11xxxxxxxxx",
     "...........","11111111111",
     "...........","11111111111",
     "...........","11#1#1#1#11",
@@ -3524,6 +3525,7 @@ GROW_COLONNADE_CLOISTER_LIQUID =
     "...........","11111111111",
   }
 },
+
 -- 3.57-style rules
 
 GROW_357_OPEN_ROOF_LIQUID =
@@ -3545,7 +3547,7 @@ GROW_357_OPEN_ROOF_LIQUID =
     "............","11AAAAAAAA11",
     "............","1#11111111#1",
     "............","111111111111",
-    "xxxxx11xxxxx","xxxxx11xxxxx",
+    "xxxxxxxxxx11","xxxxxxxxxx11",
   }
 },
 
@@ -3568,7 +3570,7 @@ GROW_357_OPEN_ROOF_NEW_AREA =
     "............","11AAAAAAAA11",
     "............","1#11111111#1",
     "............","111111111111",
-    "xxxxx11xxxxx","xxxxx11xxxxx",
+    "xxxxxxxxxx11","xxxxxxxxxx11",
   }
 },
 
@@ -3579,6 +3581,7 @@ GROW_357_ROUND_HOLLOW_1 =
 
   structure =
   {
+    "xx11xxxxxx","xx11xxxxxx",  
     "x........x","x/111111%x",
     "..........","/11111111%",
     "..........","11/#vv#%11",
@@ -3591,7 +3594,6 @@ GROW_357_ROUND_HOLLOW_1 =
     "..........","11%#^^#/11",
     "..........","%11111111/",
     "x........x","x%111111/x",
-    "xxxx11xxxx","xxxx11xxxx",  
   },
 
   diagonals =
@@ -3614,6 +3616,7 @@ GROW_357_ROUND_HOLLOW_1_LIQUID =
 
   structure =
   {
+    "xx11xxxxxx","xx11xxxxxx",
     "x........x","x/111111%x",
     "..........","/11111111%",
     "..........","11/#vv#%11",
@@ -3626,7 +3629,6 @@ GROW_357_ROUND_HOLLOW_1_LIQUID =
     "..........","11%#^^#/11",
     "..........","%11111111/",
     "x........x","x%111111/x",
-    "xxxx11xxxx","xxxx11xxxx",  
   },
 
   diagonals =
@@ -3651,6 +3653,7 @@ GROW_357_ROUND_HOLLOW_2 =
 
   structure =
   {
+    "xx11xxxxxx","xx11xxxxxx",
     "x........x","x/111111%x",
     "..........","/11111111%",
     "..........","11/#AA#%11",
@@ -3663,7 +3666,6 @@ GROW_357_ROUND_HOLLOW_2 =
     "..........","11%#AA#/11",
     "..........","%11111111/",
     "x........x","x%111111/x",
-    "xxxx11xxxx","xxxx11xxxx",
   },
 
   diagonals =
@@ -3671,8 +3673,8 @@ GROW_357_ROUND_HOLLOW_2 =
          ".1","1.",
          ".1","1.",
          "1.",".1",
-    ".1",".1","1.","1.",
-    ".1",".1","1.","1.",
+    "1.",".1","1.",".1",
+    "1.",".1","1.",".1",
          "1.",".1",
          ".1","1.",
          ".1","1.",
@@ -3693,12 +3695,12 @@ GROW_357_ROUND_HOLLOW_HALF =
     "..........","11%#^^#/11",
     "..........","%11111111/",
     "x........x","x%111111/x",
-    "xxxx11xxxx","xxxx11xxxx",
+    "xx11xxxxxx","xx11xxxxxx",
   },
 
   diagonals =
   {
-    ".1",".A","A.","1.",
+    "1.",".A","A.",".1",
          "1.",".1",
          ".1","1.",
          ".1","1.",
@@ -3719,7 +3721,7 @@ GROW_357_ROUND_HOLLOW_HALF_LIQUID =
     "..........","11%#^^#/11",
     "..........","%11111111/",
     "x........x","x%111111/x",
-    "xxxx11xxxx","xxxx11xxxx",
+    "xx11xxxxxx","xx11xxxxxx",
   },
 
   diagonals =
@@ -3734,18 +3736,18 @@ GROW_357_ROUND_HOLLOW_HALF_LIQUID =
 
 GROW_357_ROUND_ARCH =
 {
-  prob = 40,
+  prob = 35,
   skip_prob = 75,
 
   structure =
   { 
-    ".......","1111111",
+    "11xxxxx","11xxxxx",
     ".......","1111111",
     ".......","1/AAA%1",
     ".......","1#AAA#1",
     ".......","1%AAA/1",
     ".......","1111111",
-    "xx111xx","xx111xx",
+    ".......","1111111",
   },
 
   diagonals =
@@ -3757,11 +3759,12 @@ GROW_357_ROUND_ARCH =
 
 GROW_357_ROUND_ARCH_STAIRS =
 {
-  prob = 40,
+  prob = 35,
   skip_prob = 75,
 
   structure =
   { 
+    "11xxxxx","11xxxxx",
     ".......","1111111",
     ".......","11vvv11",
     ".......","1/AAA%1",
@@ -3769,7 +3772,6 @@ GROW_357_ROUND_ARCH_STAIRS =
     ".......","1%AAA/1",
     ".......","11^^^11",
     ".......","1111111",
-    "xx111xx","xx111xx",
   },
 
   diagonals =
@@ -3786,13 +3788,13 @@ GROW_357_ROUND_ARCH_ALT =
 
   structure =
   { 
-    ".......","1111111",
+    "11xxxxx","11xxxxx",
     ".......","1111111",
     ".......","1/AAA%1",
     ".......","AA#A#AA",
     ".......","1%AAA/1",
     ".......","1111111",
-    "xx111xx","xx111xx",
+    ".......","1111111",
   },
 
   diagonals =
@@ -3809,13 +3811,13 @@ GROW_357_ROUND_ARCH_ALT_STAIRS =
 
   structure =
   { 
-    ".......","1111111",
+    "11xxxxx","11xxxxx",
     ".......","1111111",
     ".......","v/AAA%v",
     ".......","AA#A#AA",
     ".......","^%AAA/^",
     ".......","1111111",
-    "xx111xx","xx111xx",
+    ".......","1111111",
   },
 
   diagonals =
@@ -3832,13 +3834,13 @@ GROW_357_ROUND_ARCH_ALT_2 =
 
   structure =
   { 
+    "xx111xx","xx111xx",
     ".......","11AAA11",
     ".......","11AAA11",
     ".......","1/A#A%1",
     ".......","1AAAAA1",
     ".......","1%A#A/1",
     ".......","11AAA11",
-    "xx111xx","xx111xx",
   },
 
   diagonals =
@@ -3894,7 +3896,7 @@ GROW_LIQUID_POOL_1X1 =
     "...","111",
     "...","1~1",
     "...","111",
-    "x1x","x1x",
+    "11x","11x",
   },
 },
 
@@ -3911,7 +3913,7 @@ GROW_LIQUID_POOL_2X2 =
     "....","1~~1",
     "....","1~~1",
     "....","1111",
-    "x11x","x11x",
+    "11xx","11xx",
   },
 },
 
@@ -3927,14 +3929,33 @@ GROW_LIQUID_POOL_2X2_NEW_AREA =
     "......","AA~~AA",
     "......","AA~~AA",
     "x....x","x1111x",
-    "xx11xx","xx11xx",
+    "xxx11x","xxx11x",
   },
+},
+
+GROW_LIQUID_POOL_2_2x2_STAIR =
+{
+  prob = 25,
+  skip_prob = 75,
+
+  structure =
+  {
+    "x....x","x1111x",
+    "x....x","x1111x",
+    "......","~~vv~~",
+    "......","~~AA~~",
+    "......","~~AA~~",
+    "......","~~^^~~",
+    "x....x","x1111x",
+    "x....x","x1111x",
+    "xxx11x","xxx11x",
+  }
 },
 
 GROW_LIQUID_POOL_3X1 =
 {
-  prob = 3,
-  skip_prob = 85,
+  prob = 30,
+  skip_prob = 75,
 
   structure =
   {
@@ -3944,14 +3965,14 @@ GROW_LIQUID_POOL_3X1 =
     "...","1~1",
     "...","1~1",
     "...","111",
-    "x1x","x1x",
+    "x11","x11",
   },
 },
 
 GROW_LIQUID_POOL_3X1_NEW_AREA =
 {
-  prob = 3,
-  skip_prob = 85,
+  prob = 30,
+  skip_prob = 75,
 
   structure =
   {
@@ -3961,13 +3982,13 @@ GROW_LIQUID_POOL_3X1_NEW_AREA =
     ".....","AA~AA",
     ".....","AA~AA",
     "x...x","x111x",
-    "xx1xx","xx1xx",
+    "xx11x","xx11x",
   },
 },
 
 GROW_LIQUID_POOL_3X1_NEW_AREA_ALT =
 {
-  prob = 25,
+  prob = 35,
   skip_prob = 75,
 
   structure =
@@ -3980,14 +4001,14 @@ GROW_LIQUID_POOL_3X1_NEW_AREA_ALT =
     "...","A~A",
     "...","^1^",
     "...","111",
-    "x1x","x1x",
+    "x11","x11",
   },
 },
 
 GROW_LIQUID_POOL_3X1_TRIPLE =
 {
-  prob = 35,
-  skip_prob = 65,
+  prob = 30,
+  skip_prob = 75,
 
   structure =
   {
@@ -3997,14 +4018,14 @@ GROW_LIQUID_POOL_3X1_TRIPLE =
     ".......","1~1~1~1",
     ".......","1~1~1~1",
     ".......","1111111",
-    "xx111xx","xx111xx",
+    "xxxxx11","xxxxx11",
   },
 },
 
 GROW_LIQUID_POOL_3X1_TRIPLE_NEW_AREA =
 {
-  prob = 35,
-  skip_prob = 75,
+  prob = 30,
+  skip_prob = 80,
 
   structure =
   {
@@ -4016,7 +4037,7 @@ GROW_LIQUID_POOL_3X1_TRIPLE_NEW_AREA =
     ".......","A~A~A~A",
     ".......","^1^1^1^",
     ".......","1111111",
-    "xx111xx","xx111xx",
+    "xxxxx11","xxxxx11",
   }
 },
 
@@ -4035,7 +4056,7 @@ GROW_LIQUID_POOL_DEPRESSED =
     "........","^^~~~~^^",
     "........","11111111",
     "........","11111111",
-    "xxx11xxx","xxx11xxx",
+    "xxxxxx11","xxxxxx11",
   }
 },
 
@@ -4057,7 +4078,7 @@ GROW_LIQUID_POOL_DEPRESSED_DIAG =
     "........","^^~~~~^^",
     "........","11111111",
     "........","11111111",
-    "xxx11xxx","xxx11xxx",
+    "11xxxxxx","11xxxxxx",
   },
 
   diagonals =
@@ -4070,7 +4091,7 @@ GROW_LIQUID_POOL_DEPRESSED_DIAG =
 GROW_LIQUID_PILLAR_CENTER =
 {
   prob = 10,
-  skip_prob = 50,
+  skip_prob = 75,
 
   structure =
   {
@@ -4080,7 +4101,7 @@ GROW_LIQUID_PILLAR_CENTER =
     ".....","1~.~1",
     ".....","1%~/1",
     ".....","11111",
-    "x111x","x111x",
+    "11xxx","11xxx",
   },
 
   diagonals =
@@ -4093,7 +4114,7 @@ GROW_LIQUID_PILLAR_CENTER =
 GROW_LIQUID_PILLAR_CENTER_LONG =
 {
   prob = 10,
-  skip_prob = 50,
+  skip_prob = 75,
 
   structure =
   {
@@ -4105,11 +4126,38 @@ GROW_LIQUID_PILLAR_CENTER_LONG =
     ".....","1~.~1",
     ".....","1%~/1",
     ".....","11111",
-    "x111x","x111x",
+    "11xxx","11xxx",
   },
 
-    diagonals =
+  diagonals =
   {
+    "1~","~1",
+    "1~","~1",
+  },
+},
+
+GROW_LIQUID_PILLAR_CENTER_CROSS =
+{
+  prob = 10,
+  skip_prob = 50,
+
+  structure =
+  {
+    ".......","1111111",
+    ".......","1111111",
+    ".......","11/~%11",
+    ".......","1/~.~%1",
+    ".......","1~...~1",
+    ".......","1%~.~/1",
+    ".......","11%~/11",
+    ".......","1111111",
+    "11xxxxx","11xxxxx",
+  },
+
+  diagonals =
+  {
+    "1~","~1",
+    "1~","~1",
     "1~","~1",
     "1~","~1",
   },
@@ -4122,10 +4170,10 @@ GROW_LIQUID_SIDE_POOL_THICC =
 
   structure =
   {
-    "x....","x/~~%",
-    "x....","x%~~/",
-    "1....","11111",
-    "1....","11111",
+    "x....x","x/~~%x",
+    "x....x","x%~~/x",
+    "1.....","111111",
+    "1.....","111111",
   },
 
   diagonals =
@@ -4142,15 +4190,153 @@ GROW_LIQUID_SIDE_POOL_THIN =
 
   structure =
   {
-    "x....","x/~~%",
-    "1....","11111",
-    "1....","11111",
+    "x....x","x/~~%x",
+    "1.....","111111",
+    "1.....","111111",
   },
 
   diagonals =
   {
     ".~","~.",
   },
+},
+
+GROW_LIQUID_POOL_VENT_DOUBLE =
+{
+  prob = 10,
+  skip_prob = 75,
+
+  structure =
+  {
+    "x.............","x1111111111111",
+    "x.............","x11/~~~1~~~%11",
+    "1.............","111~~~~1~~~~11",
+    "1.............","11111111111111",
+  },
+
+  diagonals =
+  {
+    "1~","~1",
+  }
+},
+
+GROW_LIQUID_POOL_VENT_QUAD =
+{
+  prob = 15,
+  skip_prob = 75,
+
+  structure =
+  {
+    "1.............","11111111111111",
+    "1.............","111/~~~1~~~%11",
+    "x.............","x11~~~~1~~~~11",
+    "x.............","x1111111111111",
+    "x.............","x11~~~~1~~~~11",
+    "x.............","x11%~~~1~~~/11",
+    "x.............","x1111111111111",
+  },
+
+  diagonals =
+  {
+    "1~","~1",
+    "1~","~1",
+  }
+},
+
+GROW_LIQUID_POOL_VENT_QUAD_STAIRS =
+{
+  prob = 15,
+  skip_prob = 75,
+
+  structure =
+  {
+    "1.............","1111>>AAAAAAAA",
+    "1.............","111/~~~1~~~%AA",
+    "x.............","x11~~~~1~~~~AA",
+    "x.............","x11111111111AA",
+    "x.............","x11~~~~1~~~~AA",
+    "x.............","x11%~~~1~~~/AA",
+    "x.............","x111>>AAAAAAAA",
+  },
+
+  diagonals =
+  {
+    "1~","~A",
+    "1~","~A",
+  }
+},
+
+GROW_LIQUID_POOL_VENT_QUAD_STAIR =
+{
+  prob = 15,
+  skip_prob = 75,
+
+  structure =
+  {
+    "1.............","1111>AAAAA<111",
+    "1.............","111/~~~A~~~%11",
+    "x.............","x11~~~~A~~~~11",
+    "x.............","x11>AAAAAAA<11",
+    "x.............","x11~~~~A~~~~11",
+    "x.............","x11%~~~A~~~/11",
+    "x.............","x111>AAAAA<111",
+  },
+
+  diagonals =
+  {
+    "1~","~1",
+    "1~","~1",
+  }
+},
+
+GROW_LIQUID_POOL_VENT_QUAD_CENTER_BRIDGE =
+{
+  prob = 15,
+  skip_prob = 75,
+
+  structure =
+  {
+    "1.............","11111111111111",
+    "1.............","111/~~~~~~~%11",
+    "x.............","x11~~/111%~~11",
+    "x.............","x1111111111111",
+    "x.............","x11~~%111/~~11",
+    "x.............","x11%~~~~~~~/11",
+    "x.............","x1111111111111",
+  },
+
+  diagonals =
+  {
+    "1~","~1",
+    "~1","1~",
+    "~1","1~",
+    "1~","~1",
+  }
+},
+
+GROW_LIQUID_POOL_VENT_QUAD_CENTER_BRIDGE_STAIR =
+{
+  prob = 15,
+  skip_prob = 75,
+
+  structure =
+  {
+    "1.............","1111>AAAAAAAAA",
+    "1.............","111/~~~~~~~%AA",
+    "x.............","x11~~/AAA%~~AA",
+    "x.............","x11>AAAAAAAAAA",
+    "x.............","x11~~%AAA/~~AA",
+    "x.............","x11%~~~~~~~/AA",
+    "x.............","x111>AAAAAAAAA",
+  },
+
+  diagonals =
+  {
+    "1~","~A",
+    "~A","A~",
+    "~A","A~",
+    "1~","~A",
+  }
 },
 
 GROW_LIQUID_FIGURE_CORRIDOR =
@@ -4473,6 +4659,56 @@ GROW_RAMP_THIN_SINK_LIQUID =
   },
 },
 
+GROW_RAMP_INTERSECTION =
+{
+  prob = 20,
+  skip_prob = 75,
+
+  structure =
+  {
+    "xxx11xxx","xxx11xxx",
+    "........","/AA11AA%",
+    "........","AAA11AAA",
+    "........","AA^11^AA",
+    "........","11111111",
+    "........","11111111",
+    "........","AAv11vAA",
+    "........","AAA11AAA",
+    "........","%AA11AA/"
+  },
+
+  diagonals =
+  {
+    ".A","A.",
+    ".A","A."
+  }
+},
+
+GROW_RAMP_INTERSECTION_QUARTERS =
+{
+  prob = 20,
+  skip_prob = 75,
+
+  structure =
+  {
+    "xxx11xxx","xxx11xxx",
+    "........","/AA1111%",
+    "........","AAA11111",
+    "........","AA^11111",
+    "........","11111111",
+    "........","11111111",
+    "........","11111vAA",
+    "........","11111AAA",
+    "........","%1111AA/"
+  },
+
+  diagonals =
+  {
+    ".A","1.",
+    ".1","A."
+  }
+},
+
 GROW_RAMP_THIN_RISE =
 {
   prob = 20,
@@ -4643,7 +4879,6 @@ GROW_REVERSE_FUNNEL =
     "1A",
   },
 },
-
 
 GROW_REVERSE_FUNNEL_REVERSE =
 {
@@ -5439,7 +5674,7 @@ GROW_CAGE_DOOM_MAP01 =
     "......","111111",
     "......","1C11C1",
     "......","111111",
-    "xx11xx","xx11xx",
+    "11xxxx","11xxxx",
   }
 },
 
@@ -5458,20 +5693,20 @@ GROW_CAGE_DOOM_MAP01_PILLARED =
     "......","1#11#1",
     "......","1C11C1",
     "......","111111",
-    "xx11xx","xx11xx",
+    "11xxxx","11xxxx",
   }
 },
 
-DECORATE_CAGE_ON_LIQUID_CANAL_SIDE =
+GROW_CAGE_ON_LIQUID_CANAL_SIDE =
 {
   prob = 10,
 
   structure =
   {
-    "~~~~","~CC~",
-    "1111","1111",
-    "1111","1111",
-    "~~~~","~CC~",
+    "x~~~~","x~CC~",
+    "11111","11111",
+    "11111","11111",
+    "x~~~~","x~CC~",
   },
 },
 
@@ -5490,7 +5725,7 @@ GROW_CAGE_ROUND_ARENA =
     ".....","1CCC1",
     ".....","1%C/1",
     ".....","11111",
-    "x111x","x111x",
+    "11xxx","11xxx",
   },
 
   diagonals =
@@ -5539,7 +5774,7 @@ GROW_CAGE_SIDEWAYS_BOTH_SIDES =
 
   structure =
   {
-    "xxx11xxx","xxx11xxx",
+    "11xxxxxx","11xxxxxx",
     "........","11111111",
     "........","11#11#11",
     "........","11C11C11",
@@ -5875,7 +6110,7 @@ GROW_DIAGONAL_SIDE_BLOB_ALT =
     "x..xxx","xAAxxx",
     "x...xx","xAA%xx",
     "x....x","xAAA%x",
-    "!.....","!%AA/1",
+    "x.....","x%AA/1",
     "xx....","xx%/11",
     "xxx.11","xxx111",
   },
@@ -5910,6 +6145,56 @@ GROW_DIAGONAL_SIDE_BLOB_ALT_2 =
     "1A","A.",
     ".A","A1",
     ".A","A1",
+  },
+},
+
+GROW_DIAGONAL_SIDE_BLOB_ALT_L =
+{
+  prob = 15,
+  skip_prob = 75,
+
+  structure =
+  {
+    ".....x","111/%x",
+    "......","11/AA%",
+    "xx....","xx%AA/",
+    "xxx...","xxx%/1",
+    "xxxx..","xxxx11",
+    "xxxx11","xxxx11",
+  },
+
+  diagonals =
+  {
+    "1A","A.",
+    "1A","A.",
+    ".A","A1",
+    ".A","A1",
+  },
+},
+
+GROW_DIAGONAL_SIDE_BLOB_ALT_PILLARED =
+{
+  prob = 10,
+  skip_prob = 75,
+
+  structure =
+  {
+    "....xxxx","1111xxxx",
+    "....xxxx","1111xxxx",
+    ".....xxx","11#A%xxx",
+    "......xx","11AAA%xx",
+    "xx......","xx%AAA11",
+    "xxx.....","xxx%A#11",
+    "xxxx....","xxxx1111",
+    "xxxx..11","xxxx1111",
+  },
+
+  diagonals =
+  {
+    "A.",
+    "A.",
+    ".A",
+    ".A",
   },
 },
 
@@ -6835,7 +7120,7 @@ GROW_TWO_WAY_SMALL =
     "....","AAAA",
     "....","^^11",
     "....","1111",
-    "x11x","x11x",
+    "11xx","11xx",
   }
 },
 
@@ -6852,7 +7137,7 @@ GROW_THREE_WAY_SMALL =
     "......","AAAAAA",
     "......","^^11^^",
     "......","111111",
-    "xx11xx","xx11xx",
+    "11xxxx","11xxxx",
   }
 },
 
@@ -7946,7 +8231,7 @@ GROW_PILLAR_3X3_STAIRS =
   diagonals =
   {
     "1.",".1",
-    "1.",".1",
+    "A.",".A",
   },
 },
 
@@ -10400,9 +10685,9 @@ GROW_DIAGONAL_STALK_LIQUID_STAIRS =
 
   structure =
   {
-    "xxx.....","xxx11111",
-    "xx......","xx/1111/",
-    "x.......","x/~111//",
+    "xxx.....","xxxAAAAA",
+    "xx......","xx/AAAA/",
+    "x.......","x/~AAA//",
     "x......x","x~~^^~~x",
     ".......x","//111~/x",
     "......xx","/1111/xx",
@@ -10411,8 +10696,8 @@ GROW_DIAGONAL_STALK_LIQUID_STAIRS =
 
   diagonals =
   {
-         ".~","1~",
-    ".~"     ,"1~","~.",
+         ".~","A~",
+    ".~"     ,"A~","~.",
     ".~","~1",     "~.",
          "~1","~.",
   },
@@ -10678,7 +10963,7 @@ GROW_EXTRUSION_CORNER_4x4_NEW_AREA =
 GROW_EXTRUSION_4X6 =
 {
   prob = 50,
-  skip_prob = 10,
+  skip_prob = 25,
 
   structure =
   {
@@ -10695,7 +10980,7 @@ GROW_EXTRUSION_4X6 =
 GROW_EXTRUSION_4X4 =
 {
   prob = 65,
-  skip_prob = 10,
+  skip_prob = 25,
 
   structure =
   {
@@ -10710,7 +10995,7 @@ GROW_EXTRUSION_4X4 =
 GROW_EXTRUSION_NEW_AREA_4x2 =
 {
   prob = 35,
-  skip_prob = 10,
+  skip_prob = 25,
 
   structure =
   {
@@ -10723,7 +11008,7 @@ GROW_EXTRUSION_NEW_AREA_4x2 =
 GROW_EXTRUSION_NEW_AREA_4x2_RETURN =
 {
   prob = 45,
-  skip_prob = 10,
+  skip_prob = 30,
 
   structure =
   {

@@ -5,7 +5,7 @@
 --  // Obsidian //
 --
 --  Copyright (C) 2006-2017 Andrew Apted
---  Copyright (C) 2019-2021 MsrSgtShooterPerson
+--  Copyright (C) 2019-2022 MsrSgtShooterPerson
 --
 --  This program is free software; you can redistribute it and/or
 --  modify it under the terms of the GNU General Public License
@@ -2078,6 +2078,21 @@ function Room_choose_kind(R, last_R)
     out_prob = style_sel("outdoors", 0, 30, 60, 100)
   end
 
+  -- alternating outdoors: 
+  if LEVEL.alternating_outdoors then
+    if last_R then
+      if last_R.is_outdoor then
+        out_prob = 0
+      else
+        out_prob = 100
+      end
+    end
+  end
+
+  if not LEVEL.has_outdoors then
+    out_prob = 0
+  end
+
   local is_outdoor = rand.odds(out_prob)
 
   if LEVEL.is_nature then
@@ -2118,8 +2133,7 @@ function Room_choose_size(R, not_big)
   -- some extra size experiments - should be revised for
   -- more direct control. In fact, maybe this whole size
   -- decision code could use a clean-up
-  if (R.is_start and PARAM.bool_start_room_size
-  and PARAM.bool_start_room_size == 1)
+  if not R.is_start
   or not R.is_secret then
     if LEVEL.size_multiplier then
       sum = sum * LEVEL.size_multiplier
@@ -2218,8 +2232,7 @@ function Room_choose_size(R, not_big)
 
   end
 
-  if (R.is_start and PARAM.bool_start_room_size
-  and PARAM.bool_start_room_size == 1)
+  if not R.is_start
   or not R.is_secret then
     if LEVEL.area_multiplier then
       R.floor_limit = int(R.floor_limit * LEVEL.area_multiplier)
@@ -3381,7 +3394,7 @@ function Room_floor_ceil_heights()
     -- whereas normal is Oblige's default behavior
 
     if R.height_style == "short" then
-      if add_h > 128 then add_h = 128 end
+      if add_h > 144 then add_h = 144 end
     elseif R.height_style == "tall" then
 
       local tall_offsets =

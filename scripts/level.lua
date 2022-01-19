@@ -5,7 +5,7 @@
 --  // Obsidian //
 --
 --  Copyright (C) 2006-2017 Andrew Apted
---  Copyright (C) 2020-2021 MsrSgtShooterPerson
+--  Copyright (C) 2020-2022 MsrSgtShooterPerson
 --  Copyright (C) 2020 Armaetus
 --
 --  This program is free software; you can redistribute it and/or
@@ -150,20 +150,24 @@ function Level_determine_map_size(LEV)
   -- Since we have other sizes and Auto-Detail, we can have these bigger sizes
   -- now. -Armaetus, July 9th, 2019,
   
-  local ob_size
-    
-  if OB_CONFIG.batch == "yes" then
-    ob_size = OB_CONFIG.float_size
-  else
-    ob_size = PARAM.float_size
-  end
+  local ob_size = PARAM.float_size
     
   local W, H
 
   if LEV.custom_size then
     ob_size = LEV.custom_size
     W = ob_size
-    goto continue
+    goto customsize
+  end
+
+  if LEV.custom_w then
+    if LEV.custom_h then
+      return LEV.custom_w, LEV.custom_h
+    else
+      ob_size = LEV.custom_size
+      W = ob_size
+      goto customsize
+    end
   end
 
   -- there is no real "progression" when making a single level.
@@ -226,7 +230,7 @@ function Level_determine_map_size(LEV)
     W = ob_size
   end
 
-  ::continue::
+  ::customsize::
 
   if not W then
     error("Invalid value for size : " .. tostring(ob_size))
@@ -264,21 +268,28 @@ function Episode_determine_map_sizes()
     LEV.size_multiplier = 1
     LEV.area_multiplier = 1
     LEV.size_consistency = "normal"
-
+    local mix_type = "normal"
+    
     if PARAM.room_size_multiplier then
-      if PARAM.room_size_multiplier == "mixed" then
-        LEV.size_multiplier = rand.key_by_probs(ROOM_SIZE_MULTIPLIER_MIXED_PROBS)
-      elseif PARAM.room_size_multiplier ~= "vanilla" then
+      if PARAM.room_size_multiplier ~= "vanilla"
+      and PARAM.room_size_multiplier ~= "mixed" then
         LEV.size_multiplier = tonumber(PARAM.room_size_multiplier)
       end
     end
 
     if PARAM.room_area_multiplier then
-      if PARAM.room_area_multiplier == "mixed" then
-        LEV.area_multiplier = rand.key_by_probs(ROOM_AREA_MULTIPLIER_MIXED_PROBS)
-      elseif PARAM.room_area_multiplier ~= "vanilla" then
+      if PARAM.room_area_multiplier ~= "vanilla"
+      and PARAM.room_area_multiplier ~= "mixed" then
         LEV.area_multiplier = tonumber(PARAM.room_area_multiplier)
       end
+    end
+
+    if PARAM.room_size_mix_type and PARAM.room_size_multiplier == "mixed" then
+      LEV.size_multiplier = rand.key_by_probs(ROOM_SIZE_MULTIPLIER_MIXED_PROBS[PARAM.room_size_mix_type])
+    end
+
+    if PARAM.room_area_mix_type and PARAM.room_area_multiplier == "mixed" then
+      LEV.area_multiplier = rand.key_by_probs(ROOM_AREA_MULTIPLIER_MIXED_PROBS[PARAM.room_area_mix_type])
     end
 
     if PARAM.room_size_consistency then
@@ -426,7 +437,7 @@ function Episode_plan_monsters()
       end
 
       -- default probability
-      if not info.prob then
+      if not info.prob and not info.replaces then -- Try to keep replacement-only monsters from being added to the palette - Dasho
         info.prob = 50
       end
 
@@ -440,27 +451,16 @@ function Episode_plan_monsters()
 
   local function calc_monster_level(LEV)
   
-    local mon_strength
+    local mon_strength = PARAM.float_strength
     
-    if OB_CONFIG.batch == "yes" then
-      mon_strength = OB_CONFIG.float_strength
-    else
-      mon_strength = PARAM.float_strength
-    end
-  
     if mon_strength == 12 then
       LEV.monster_level = mon_strength
       return
     end
 
-    local ramp_up
-    
     local mon_along = LEV.game_along
-    if OB_CONFIG.batch == "yes" then
-      ramp_up = OB_CONFIG.float_ramp_up
-    else
-      ramp_up = PARAM.float_ramp_up
-    end
+
+    local ramp_up = PARAM.float_ramp_up
 
     -- this is for Doom 1 / Ultimate Doom / Heretic
     if PARAM.episodic_monsters or ramp_up == "Episodic" then
@@ -548,7 +548,7 @@ function Episode_plan_monsters()
 
 
   local function is_monster_usable(LEV, mon, info)
-    if info.prob <= 0 then return false end
+    if not info.prob or info.prob <= 0 then return false end
 
     if info.level > LEV.monster_level 
     + (MONSTER_KIND_JUMPSTART_LEVELS[OB_CONFIG.mon_variety_jumpstart] or 0)
@@ -765,7 +765,7 @@ function Episode_plan_monsters()
 
 
   local function prob_for_guard(LEV, info)
-    if info.prob <= 0 then return 0 end
+    if not info.prob or info.prob <= 0 then return 0 end
 
     -- simply too weak
     if info.health < 45 then return 0 end
@@ -1708,25 +1708,13 @@ function Episode_plan_weapons()
 
     -- prefer simpler weapons for start rooms
     -- [ except in crazy monsters mode, player may need a bigger weapon! ]
-    if OB_CONFIG.batch == "yes" then
-      if is_start and tonumber(OB_CONFIG.float_strength) < 12 or LEV.is_procedural_gotcha ~= "true" then
-        if level <= 2 then prob = prob * 4 end
-        if level == 3 then prob = prob * 2 end
+    if is_start and PARAM.float_strength < 12 or LEV.is_procedural_gotcha ~= "true" then
+      if level <= 2 then prob = prob * 4 end
+      if level == 3 then prob = prob * 2 end
 
-        -- also want NEW weapons to appear elsewhere in the level
-        if level >= 3 and table.has_elem(LEV.new_weapons, name) then
-          prob = prob / 1000
-        end
-      end        
-    else
-      if is_start and PARAM.float_strength < 12 or LEV.is_procedural_gotcha ~= "true" then
-        if level <= 2 then prob = prob * 4 end
-        if level == 3 then prob = prob * 2 end
-
-        -- also want NEW weapons to appear elsewhere in the level
-        if level >= 3 and table.has_elem(LEV.new_weapons, name) then
-          prob = prob / 1000
-        end
+      -- also want NEW weapons to appear elsewhere in the level
+      if level >= 3 and table.has_elem(LEV.new_weapons, name) then
+        prob = prob / 1000
       end
     end
 
@@ -2581,25 +2569,23 @@ function Level_choose_darkness()
     --prob = style_sel("darkness", 0, 10, 30, 90) --Original
   end
 
-  -- Daytime will be varying degrees of bright here, from morning (152) to afternoon (224).
-  LEVEL.sky_light  = rand.pick({ 152,160,168,176,176,192,192,200,208,216,224 })
+  LEVEL.sky_light  = rand.pick(SKY_LIGHT_NORMAL)
   LEVEL.sky_shadow = 32
 
-  local darkness_messages =
-  {
-    "Darkness falls across the land...\n\n",
-    "This land becomes shrouded in darkness...\n\n",
-    "The world has become dark...\n\n",
-    "The Sun has been blotted out...\n\n",
-  }
-
-  -- Dark areas will be varying degrees of dark, from dusky (144) to stygian (104).
   if rand.odds(prob) then
-    gui.printf(rand.pick(darkness_messages))
+    gui.printf("Level is dark.\n")
 
     LEVEL.is_dark = true
-    LEVEL.sky_light  = rand.pick({ 104,112,120,128,136,144 })
+    LEVEL.sky_light = rand.pick(SKY_LIGHT_DARK)
     LEVEL.sky_shadow = 32
+  end
+
+  LEVEL.sky_light = math.clamp(PARAM.wad_minimum_brightness or 0, 
+    LEVEL.sky_light, PARAM.wad_maximum_brightness or 255)
+
+    if (LEVEL.sky_light - LEVEL.sky_shadow) <= (PARAM.wad_minimum_brightness or 0) then
+    LEVEL.sky_shadow = math.abs((LEVEL.sky_light - LEVEL.sky_shadow)
+    - (PARAM.wad_minimum_brightness or 0))
   end
 end
 
@@ -2608,6 +2594,15 @@ function Level_choose_misc()
   LEVEL.squareishness = rand.pick({ 0,25,50,75,90 })
 
   LEVEL.room_height_style = PARAM.room_heights or "mixed"
+
+  if rand.odds(style_sel("outdoors", 0, 50, 50, 100)) then
+    LEVEL.has_outdoors = true
+
+    if rand.odds(style_sel("outdoors", 0, 15, 25, 0)) then
+      LEVEL.alternating_outdoors = true
+      gui.printf("-- Alternating Outdoors! --\n\n")
+    end
+  end
 
   LEVEL.room_height_style_tab = 
   {
@@ -2627,6 +2622,23 @@ function Level_choose_misc()
   elseif PARAM.room_heights == "short-ish" then
     LEVEL.room_height_style_tab["tall"] = 0
   end
+
+  LEVEL.shape_transform_mode = rand.pick({"linear","random"})
+
+  LEVEL.shape_transform_possiblities =
+  {
+    {0, 0, 0},
+    {0, 0, 1},
+    {0, 1, 0},
+    {0, 1, 1},
+    {1, 0, 0},
+    {1, 0, 1},
+    {1, 1, 0},
+    {1, 1, 1},
+  }
+
+  gui.printf("Level shape transform mode: %s\n", LEVEL.shape_transform_mode)
+  rand.shuffle(LEVEL.shape_transform_possiblities)
 end
 
 
@@ -2802,15 +2814,6 @@ function Level_handle_prebuilt()
   return "ok"
 end
 
-
-function Level_between_clean()
-  LEVEL    = nil
-  SEEDS    = nil
-
-  collectgarbage("collect")
-end
-
-
 function Level_make_level(LEV)
   assert(LEV)
   assert(LEV.name)
@@ -2839,27 +2842,19 @@ function Level_make_level(LEV)
     gui.printf("Level " .. LEV.id .. " title: " .. LEV.description)
   end
 
-  -- copy level info, so that all new information added into the LEVEL
-  -- object by the generator can be garbage collected once this level is
-  -- finished.
-  LEVEL = table.copy(LEV)
+  LEVEL = LEV
 
   gui.at_level(LEVEL.name, index, total)
 
   gui.printf("\n\n~~~~~~| %s |~~~~~~\n", LEVEL.name)
 
-  LEVEL.seed = gui.random_int()
-  gui.printf("Level seed: %u\n", LEVEL.seed)
   LEVEL.ids  = {}
 
-  THEME = table.copy(assert(LEVEL.theme))
+  THEME = assert(LEVEL.theme)
 
   if GAME.THEMES.DEFAULTS then
     table.merge_missing(THEME, GAME.THEMES.DEFAULTS)
   end
-
-  gui.rand_seed(LEVEL.seed)
-
 
   -- use a pre-built level ?
 
@@ -2880,8 +2875,6 @@ function Level_make_level(LEV)
 
   gui.begin_level()
   gui.property("level_name", LEVEL.name);
-
-  gui.rand_seed(gui.random_int())
 
   Level_do_styles()
 
@@ -2904,9 +2897,6 @@ function Level_make_level(LEV)
     end
   end
 
-
-  gui.rand_seed(gui.random_int())
-
   local res = Level_build_it()
   if res ~= "ok" then
     return res
@@ -2915,11 +2905,6 @@ function Level_make_level(LEV)
   ob_invoke_hook("end_level")
 
   gui.end_level()
-
-
-  if index < total then
-    Level_between_clean()
-  end
 
   if gui.abort() then return "abort" end
 
@@ -2931,23 +2916,16 @@ function Level_make_all()
   GAME.episodes = {}
 
   -- semi-supported games warning
-  if OB_CONFIG.game ~= "doom2" then
-    if not PARAM.bool_extra_games or PARAM.bool_extra_games == 0 then
-      error("Warning: ObAddon development is mostly focused " ..
-    "on creating content for the Doom 2 game setting.\n\n" ..
-    "As a consequence, other games available on the list are " ..
-    "lagging behind in features. These games' " ..
-    "content and feature set are currently " ..
-    "only updated for compatibility being legacy choices " ..
-    "provided by vanilla Oblige. To ignore this warning " ..
+  if ob_match_game({ game = { hexen=1, nukem=1, quake=1, strife=1} }) then
+    if not PARAM.bool_experimental_games or PARAM.bool_experimental_games == 0 then
+      error("Warning: The game that you have selected is in an experimental " ..
+    "state. WADs may not build successfully and certain gameplay features may not " ..
+    "be implemented yet!. To ignore this warning " ..
     "and continue generation for these games, set " ..
-    "Extra Games under Debug Control Module to 'Yes'.\n\n" ..
+    "Experimental Games under Debug Control Module to 'Yes'.\n\n" ..
     "This message will change should development scope expand.")
     end
   end
-
-
-  gui.rand_seed(gui.random_int())
 
   ob_invoke_hook("get_levels")
 
@@ -2958,14 +2936,9 @@ function Level_make_all()
   table.index_up(GAME.levels)
   table.index_up(GAME.episodes)
 
-
-  gui.rand_seed(gui.random_int())
-
   Level_choose_themes()
 
   ob_invoke_hook("get_levels_after_themes")
-
-  gui.rand_seed(gui.random_int())
 
   Episode_plan_game()
 

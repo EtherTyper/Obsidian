@@ -103,7 +103,8 @@ HACX.THEMES =
 
     wide_halls =
     {
-      deuce = 50
+      curve = 50,
+      deuce = 50,
     },
 
     floor_sinks =
@@ -148,7 +149,8 @@ HACX.THEMES =
 
     fence_groups =
     {
-      PLAIN = 50
+      PLAIN = 50,
+      crenels = 12,
     },
 
     fence_posts =
@@ -161,16 +163,32 @@ HACX.THEMES =
       beam_metal = 50
     },
 
-    window_groups =
+    window_groups = 
     {
-      square = 70,
-      tall   = 30
+      straddle = 70,
+      tall   = 80,
+      grate  = 45,
+      barred = 10,
+      supertall = 60,
+      slits = 20,
+      pillbox = 20,
+      slumpish = 30,
+      window_crossfire = 10,
     },
 
     wall_groups =
     {
-      PLAIN = 50,
-      torches1 = 10
+      PLAIN = 0.01,
+      mid_band = 10,
+      lite1 = 20,
+      lite2 = 20,
+      torches1 = 12,
+      torches2 = 12,
+      high_gap = 25,
+      vert_gap = 25,
+      wallgutters = 10,
+      lamptorch = 16,
+      runic = 10,
     },
 
     cave_torches =
@@ -245,7 +263,45 @@ HACX.ROOM_THEMES =
     }
   },
 
- hacx_urban_Hallway_deuce =
+ hacx_urban_Hallway_curve =
+  {
+    env   = "hallway",
+    group = "curve",
+    prob = 50,
+
+    walls =
+    {
+      MODWALL3 = 30,
+      STONY1 = 10,
+      TECHY1 = 20,
+      CAVEY1 = 10,
+      BLOCKY1 = 30,
+      BLOCKY2 = 10,
+    },
+
+    floors =
+    {
+      MODWALL3 = 50,
+      STONY1 = 50,
+      TECHY1 = 50,
+      CAVEY1 = 50,
+      BLOCKY1 = 50,
+      WOODY1 = 50,
+      WOOD_TILE = 50
+    },
+
+    ceilings =
+    {
+      MODWALL3 = 30,
+      STONY1 = 10,
+      TECHY1 = 20,
+      CAVEY1 = 10,
+      BLOCKY1 = 30,
+      WOODY1 = 10,
+    }
+  },
+
+  hacx_urban_Hallway_deuce =
   {
     env   = "hallway",
     group = "deuce",

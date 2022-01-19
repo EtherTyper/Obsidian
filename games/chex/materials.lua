@@ -1,7 +1,7 @@
 CHEX3.LIQUIDS =
 {
   water  = { mat="WATER", light_add=16, special=0 },
-  slime0 = { mat="BLOOD1", light_add=16, special=16, damage=20 },
+  slime0 = { mat="SLIME0", light_add=16, special=16, damage=20 },
   slime1 = { mat="SLIME1", light_add=16, special=16, damage=20 },
   slime2   = { mat="SLIME2", light_add=24, special=16, damage=20 }    
 }
@@ -12,14 +12,18 @@ CHEX3.MATERIALS =
   _DEFAULT = { t="COMPSPAN", f="CEIL5_1" },
   _ERROR = { t="COMPSPAN", f="CEIL5_1" },
   _SKY   = { t="COMPSPAN", f="F_SKY1" },
-  _FLATLIT = { t="XX", f="FLAT5_8"},
   _LIQUID = { t="GSTFONT1", f="FWATER1" },
 
   -- materials for generic prefab set --
 
   -- The idea is to have one singular default material for these; variants should be specified in theme-specific PREFAB_FIELDS tables as replacements - Dasho
-
-  _SBARS = { t="STEP4", f="XX" }, -- Short bars, i.e. railings
+  _RUNIC = { t="GRAYDANG", f="CJFSHIP3" },
+  _STAIRS = { t="STEP2", f="FLAT5_6" },
+  _VOID = { t="REDWALL", f="XX"}, -- Need to be creative with offsets - Dasho
+  _FLATLIT = { t="COMPSPAN", f="LABFLAT" },
+  _WALLLIT = { t="FIREWALL", f="XX"},
+  _LIFT  = { t="COMPSTA1", f="CJFCOMM3" },
+  _SBARS = { t="LITEMET", f="XX" }, -- Short bars, i.e. railings
   _MBARS = { t="BARS", f="XX" }, -- Medium bars, i.e. barred windows
   _TBARS = { t="LITE4", f = "XX" }, -- Tall bars, i.e. cage/jail bars
   
@@ -27,10 +31,9 @@ CHEX3.MATERIALS =
   _CRATE2  = { t="CRATE2",   f="CRATOP1" },
   _CRATWID = { t="CRATWIDE", f="CRATOP1"}, -- Wide crate
     
-  _WATER   = { t="GSTFONT1", f="FWATER1" }, -- "Standing water", sorta
-  _WTRFALL = { t="GSTFONT1", f="FWATER1" }, -- "Flowing water", sorta
-  
-  _DOOR  = { t="BIGDOOR4", f="STEEL32" }, -- Open says me
+  _SMLDOOR = { t="SP_DUDE4", f="STEP1" }, -- 64 units wide, around 64 high (Chex Quest will probably require a lot of offset trickery)
+  _BIGDOOR = { t="BIGDOOR1", f="FLAT5_6" }, -- 128x128
+  _TALDOOR = { t="SP_DUDE4", f="STEP1" },
   _DORRAIL = { t="COMPSTA1", f="STEP1"}, -- Inner door slider thingys
   
   _NPIC    = { t="FIREWALL", f="XX"}, -- Narrow (non-tiling) pic box insert, 64 pixels wide
@@ -44,10 +47,12 @@ CHEX3.MATERIALS =
   _KEYTRM3 = { t="DOORBLU", f="XX" }, -- Trim for locked door, Key 3
   
   _EXITDR = { t="BIGDOOR7", f="FLAT5_6" }, -- Exit door
-  _EXITSW = { t="SW1METAL", f="FLAT1"  }, -- Exit switch
-  _EXITRM = { t="STARG3", f="CJFLOD06"}, -- Exit room walls (to match switch)
+  _EXITSW = { t="SW1SLAD", f="STEEL32" }, -- Exit switch
+  _EXITTR = { t="CEMENT1", f="STEEL32" },
+  _EXITRM = { t="CEMENT1", f="STEEL32" }, -- Exit room walls (to match switch)
+  _EXITSGN = { t="CQ3_EXIT", f="CJFCOMM3"},
   
-  _SW  = { t="SW1COMP",  f="CEIL5_1" }, -- General purpose swtich, full size
+  _SW  = { t="SW1COMP",  f="CEIL5_1" }, -- Switch is roughly 32x32 in size, rest of the texture is 'hidden' (Chex needs its own fabs for this because of its switch dimensions)
   _SWTRIM = { t="COMPSPAN",  f="CEIL5_1" }, -- Trim for switch
 
   _STRUCT = {t="COMPSPAN", f="CEIL5_1"}, -- "Structural" texture (window trim, beams, other areas where a window/floor flat just isn't always right)
@@ -78,9 +83,9 @@ CHEX3.MATERIALS =
   GRAY_PIPES   = { t="STONE",    f="FLAT5_6" },
   GRAY_PANELS  = { t="STONE3",   f="FLAT5_6" },
   GRAY_LITE    = { t="LITESTON", f="FLAT5_6" },
-  GRAY_STRIPE  = { t="GRAY7",    f="FLAT5_6" },
+  GRAY7  = { t="GRAY7",    f="FLAT5_6" },
 
-  ORANGE_TILE   = { t="STARG3",   f="FLAT2" },
+  STARG3   = { t="STARG3",   f="FLAT2" },
   ORANGE_LAB    = { t="COMPUTE3", f="FLAT2" },
   ORANGE_SLIMED = { t="SKINMET2", f="FLAT2" },
   ORANGE_CUPBD  = { t="DOOR3",    f="FLAT2" },
@@ -126,13 +131,19 @@ CHEX3.MATERIALS =
 
   MET_SLADS = { t="SP_DUDE4", f="STEP1" },
 
-  STEP_ORANGE = { t="STEP1",    f="FLAT2" },
+  STEP1 = { t="STEP1", f="FLAT2" },
   STEP_GRAY   = { t="STEP2",    f="FLAT5_6" },
   STEP_WHITE  = { t="SW2SATYR", f="FLAT5_6" },
   STEP_CAVE   = { t="SKSNAKE2", f="CEIL3_1" },
 
 
   -- floors --
+  
+  FLOOR0_6 = { t="GRAYTALL", f="FLOOR0_6" },
+  FLAT1 = { t="STARG3", f="FLAT1" },
+  CEIL5_1 = { t="COMPSPAN", f="CEIL5_1" },
+  CEIL4_2 = { t="COMPSPAN", f="CEIL4_2" },
+  FLOOR0_2 = { t="SP_DUDE2", f="FLOOR0_2" },
 
   ENDFLAT2 = { f="ENDFLAT2", t="GRAY2"},
 
@@ -140,7 +151,7 @@ CHEX3.MATERIALS =
 
   VERYDARK_BLUE = { f="CEIL4_1",  t="SP_DUDE2" },
   ANOTHER_BLUE  = { f="FLOOR1_1", t="SP_DUDE2" },
-  BLUE_CARPET   = { f="FLAT14",   t="SP_DUDE2" },
+  FLAT14  = { f="FLAT14",   t="SP_DUDE2" },
 
   CAVE_POOL = { f="FLAT19", t="SKSNAKE2" },
 
@@ -174,6 +185,7 @@ CHEX3.MATERIALS =
   DOOR_RED    = { t="BRNBIGL",  f="FLAT5_6" },
   DOOR_YELLOW = { t="BRNSMAL2", f="FLAT5_6" },
 
+  BIGDOOR2   = { t="BIGDOOR2", f="ENDFLAT1" },
   DOOR_LAB   = { t="BIGDOOR4", f="FLAT5_6" },
   DOOR_ARBOR = { t="BIGDOOR5", f="FLAT2" },
   DOOR_HYDRO = { t="BIGDOOR6", f="FLAT2" },
@@ -203,9 +215,11 @@ CHEX3.MATERIALS =
 
 
   -- rails --
-
+  MIDVINE1  = { t="MIDVINE1", f="BROWN" },
+  GSTVINE1 = { t="GSTVINE1", f="BLOOD1"},
   VINE1  = { t="MIDVINE1", rail_h=128 },
   VINE2  = { t="MIDVINE2", rail_h=128 },
+  LITE4_RAIL  = { t="LITE4", rail_h=128 },
 
 
   -- liquids --
@@ -506,9 +520,9 @@ CHEX3.MATERIALS =
   CJFVIL05 = { f="CJFVIL05", t="CJVILL01" },
   CJFVIL06 = { f="CJFVIL06", t="CJVILL01" },
 
-  MARS_GROUND = { f="ENDFLAT3", t="BAZOIK1" },
+  BAZOIK1 = { f="ENDFLAT3", t="BAZOIK1" },
 
-  SIMPLE_TILE = { f="FLAT1_1", t="GRAYTALL" },
+  FLAT1_1 = { f="FLAT1_1", t="GRAYTALL" },
   YELLOWISH   = { f="FLAT5_8", t="SP_ROCK2" },
 
   FLOURO_LITE = { f="LABFLAT", t="FIREWALL" },
@@ -540,17 +554,30 @@ CHEX3.MATERIALS =
 
 CHEX3.PREFAB_FIELDS = 
 {
-  -- These are used for converting generic locked door linedefs --
-  line_700 = 28,
-  line_701 = 27,
-  line_702 = 26,
-
+  -- These are used for converting generic linedefs --
+  line_700 = 28, -- Key one
+  line_701 = 27, -- Key two
+  line_702 = 26, -- Key three
+  line_703 = 1,  -- Regular door open
+  line_704 = 11, -- Switch, exit
+  line_705 = 51, -- Switch, secret exit
+  line_706 = 52, -- Walk-over line, exit
+  line_707 = 124, -- Walk-over line, secret exit
+  line_708 = 97, -- Walk-over line, teleport
+  --line_709 = 888, -- Switch (don't think I need this one)
+  line_710 = 123, -- Switched, lower lift, wait, raise (fast) -- Is this too specific? - Dasho
+  line_711 = 31, -- Door open stay
+  line_712 = 109, -- Walk-over, door open stay (fast)
+  line_713 = 23, -- Switched, floor lower to nearest floor
+  line_714 = 103, -- Switched, door open stay
+  line_715 = 126, -- Walk-over line, teleport (monsters only)
+  
   -- These are used for converting generic fab things --
   thing_11000 = 2035, -- Barrel
   thing_11001 = 46, -- Ceiling light
-  thing_11002 = 35, -- Standalone light
-  thing_11003 = 34, -- Wall light (torch)
-  thing_11004 = 2028, -- Wide standalone light
+  thing_11002 = 2028, -- Standalone light 
+  thing_11003 = 0, -- Wall light (torch)
+  thing_11004 = 34, -- Short standalone light
   thing_11005 = 32, -- Small pillar
   thing_11006 = 13, -- Key one
   thing_11007 = 6, -- Key two

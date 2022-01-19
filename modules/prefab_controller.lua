@@ -2,7 +2,7 @@
 --  MODULE: Prefab Controller
 ------------------------------------------------------------------------
 --
---  Copyright (C) 2019-2020 MsrSgtShooterPerson
+--  Copyright (C) 2019-2022 MsrSgtShooterPerson
 --
 --  This program is free software; you can redistribute it and/or
 --  modify it under the terms of the GNU General Public License
@@ -107,15 +107,58 @@ PREFAB_CONTROL.FILTER_CATEGORIES =
 
 function PREFAB_CONTROL.setup(self)
   for name,opt in pairs(self.options) do
-    if opt.valuator then
-      if opt.valuator == "button" then
-        PARAM[opt.name] = gui.get_module_button_value(self.name, opt.name)
-      elseif opt.valuator == "slider" then
-        PARAM[opt.name] = gui.get_module_slider_value(self.name, opt.name)      
+    if OB_CONFIG.batch == "yes" then
+      if opt.valuator then
+        if opt.valuator == "slider" then 
+          if opt.increment < 1 then
+            PARAM[opt.name] = tonumber(OB_CONFIG[opt.name])
+          else
+            PARAM[opt.name] = int(tonumber(OB_CONFIG[opt.name]))
+          end
+        elseif opt.valuator == "button" then
+          PARAM[opt.name] = tonumber(OB_CONFIG[opt.name])
+        end
+      else
+        PARAM[opt.name] = OB_CONFIG[opt.name]
       end
+      if RANDOMIZE_GROUPS then
+        for _,group in pairs(RANDOMIZE_GROUPS) do
+          if opt.randomize_group and opt.randomize_group == group then
+            if opt.valuator then
+              if opt.valuator == "button" then
+                  PARAM[opt.name] = rand.sel(50, 1, 0)
+                  goto done
+              elseif opt.valuator == "slider" then
+                  if opt.increment < 1 then
+                    PARAM[opt.name] = rand.range(opt.min, opt.max)
+                  else
+                    PARAM[opt.name] = rand.irange(opt.min, opt.max)
+                  end
+                  goto done
+              end
+            else
+              local index
+              repeat
+                index = rand.irange(1, #opt.choices)
+              until (index % 2 == 1)
+              PARAM[opt.name] = opt.choices[index]
+              goto done
+            end
+          end
+        end
+      end
+      ::done::
     else
-      PARAM[name] = self.options[name].value
-    end
+	    if opt.valuator then
+		    if opt.valuator == "button" then
+		        PARAM[opt.name] = gui.get_module_button_value(self.name, opt.name)
+		    elseif opt.valuator == "slider" then
+		        PARAM[opt.name] = gui.get_module_slider_value(self.name, opt.name)      
+		    end
+      else
+        PARAM[opt.name] = opt.value
+	    end
+	  end
   end
 end
 
@@ -133,6 +176,15 @@ function PREFAB_CONTROL.fine_tune_filters()
       end
     end
 
+  end
+
+  if PARAM.bool_jump_crouch == 0 and OB_CONFIG.engine ~= "nolimit" then
+    if PARAM.obsidian_resource_pack_active then
+      GAME.THEMES.hell.wide_halls.organs = 0
+      GAME.THEMES.hell.wide_halls.conveyorh = 0
+    end
+    PREFABS["Item_secret_garage_closet"] = nil
+    PREFABS["Arch_gtd_beed28_door_crouch"] = nil
   end
 end
 
@@ -296,17 +348,6 @@ OB_MODULES["prefab_control"] =
       priority = 47
     },
 
-    bool_start_room_size =
-    {
-      name = "bool_start_room_size",
-      label = _ ("Start Size Variance"),
-      valuator = "button",
-      default = 1,
-      tooltip = "Affects whether Room Size Variance also influences start rooms.",
-      priority = 46,
-      gap = 1
-    },
-
     --
 
     pf_crushers =
@@ -364,6 +405,17 @@ OB_MODULES["prefab_control"] =
       tooltip="Changes probabilities for high-step ladders (stairs).",
       default="1",
       priority = 8,
+      gap = 1
+    },
+
+    bool_jump_crouch =
+    {
+      name = "bool_jump_crouch",
+      label=("Jump/Crouch Fabs"),
+      valuator = "button",
+      default = 1,
+      tooltip = "Enables or disables prefabs that require jumping or crouching to navigate.",
+      priority = 7,
       gap = 1
     },
 

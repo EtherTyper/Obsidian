@@ -2,12 +2,12 @@
 --  MODULE: ZDoom Story Tables
 ----------------------------------------------------------------
 --
---  Copyright (C) 2021 MsrSgtShooterPerson
---  Copyright (C) 2021 Armaetus
---  Copyright (C) 2021 Tapwave
---  Copyright (C) 2021 Simon-v
---  Copyright (C) 2021 EpicTyphlosion
---  Copyright (C) 2021 Beed28,
+--  Copyright (C) 2022 MsrSgtShooterPerson
+--  Copyright (C) 2022 Armaetus
+--  Copyright (C) 2022 Tapwave
+--  Copyright (C) 2022 Simon-v
+--  Copyright (C) 2022 EpicTyphlosion
+--  Copyright (C) 2022 Beed28
 --
 --  This program is free software; you can redistribute it and/or
 --  modify it under the terms of the GNU General Public License
@@ -2698,6 +2698,7 @@ ZDOOM_STORIES.QUIT_MESSAGES =
   [[Oblige is the machine. Obsidian is the ghost in the machine.]], -- credits to FrozSoul!
   [[Obsidian can generate more maps than you will ever speak words in your whole life.]],
   [[Poor you. Demons don't have a housing crisis. Obsidian provides free real estate for all of them.]],
+  [[Karma's a bitch. Then you die. -Tina Belcher]],
 
   -- helpful // technical
   [[Obsidian is always improving. Stop by our Discord server, talk to the denizens and report bugs to us there!]],
@@ -2707,7 +2708,7 @@ ZDOOM_STORIES.QUIT_MESSAGES =
   [[Was this not big enough? Try jacking up the Max Level Size or Upper Bound in settings to Colossal, Gargantuan or Transcendent.]],
   [[If you are reporting an error and already closed Obsidian, do NOT reopen the program as it will wipe the LOGS.TXT file clean! Open it via a text editor.]],
   [[Map sizes too big? Reduce the Map Size or Upper Bound size if using Mix It Up.]],
-  [[Gargantuan or Transcendent maps looking like Minecraft Far Lands? Please keep Auto Detail on, not much else can be done about that, stupid Doom Engine limits.]],
+  [[Gargantuan or Transcendent maps looking like Minecraft Far Lands? Please keep Auto Detail on if you're using binary format, otherwise use UDMF format which allows unlimited detail.]],
   [[Too hard? Turn down Quantity and/or Strength. Same applies to too easy: Turn Quantity up.]],
 
   -- important facts
@@ -2737,5 +2738,6 @@ ZDOOM_STORIES.QUIT_MESSAGES =
   -- Game related
   [[I was weak. That's why I needed you, needed someone to punish me for my sins. But that's all over now, I know the truth. Now it's time to end this.]], -- Silent Hill 2
   [[It's too soon to give up. This Craziness can't go on forever.]], -- Silent Hill 3
-  [[The fear of the blood tends to create fear for the flesh.]] -- Silent Hill
+  [[The fear of blood tends to create fear for the flesh.]], -- Silent Hill
+  [[...This is no time to be looking at a stupid quit message.]] -- Based on Silent Hill 2, in Brookhaven Hospital looking at a pin-up where "quit message" is "poster"
 }

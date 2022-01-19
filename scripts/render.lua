@@ -5,7 +5,7 @@
 --  // Obsidian //
 --
 --  Copyright (C) 2008-2017 Andrew Apted
---  Copyright (C) 2019-2021 MsrSgtShooterPerson
+--  Copyright (C) 2019-2022 MsrSgtShooterPerson
 --
 --  This program is free software; you can redistribute it and/or
 --  modify it under the terms of the GNU General Public License
@@ -21,9 +21,24 @@
 
 
 function Render_add_exit_sign(E, z)
-  if PARAM.bool_exit_signs and PARAM.bool_exit_signs ~= 1 then return end
 
-  local def = PREFABS["Decor_exit_sign"]
+  if not PARAM.bool_exit_signs then return end
+
+  if PARAM.bool_exit_signs ~= 1 then return end
+
+  -- These games need an engine that supports TX_START/TX_END merging
+  if ob_match_game({ game = { chex3=1, hacx=1, heretic=1} }) then
+     if not ob_match_engine({ engine = { edge=1, eternity=1, zdoom=1 } }) then return end
+  end
+
+  local def
+
+  if OB_CONFIG.game == "strife" then -- Strife needs special offsets for its "exit sign"
+    def = PREFABS["Decor_exit_sign_strife"]
+  else
+    def = PREFABS["Decor_exit_sign"]
+  end
+
   if not def then return end
 
   assert(z)
@@ -625,8 +640,8 @@ function Render_edge(E)
       T = Trans.edge_transform(E, z, 0, 0, def.deep, def.over)
     end
 
-    -- choose lighting to be the minimum of each side
-    local min_light = math.min(E.area.lighting, E.peer.area.lighting)
+    -- choose lighting to be the average of each side
+    local min_light = (int)((E.area.lighting + E.peer.area.lighting) / 2)
     Ambient_push(min_light)
 
     -- for fences, add impassable lines on certain occasions
@@ -682,7 +697,7 @@ function Render_edge(E)
     end
 
     -- choose lighting to be the minimum of each side
-    local min_light = math.min(E.area.lighting, E.peer.area.lighting)
+    local min_light = (int)((E.area.lighting + E.peer.area.lighting) / 2)
     Ambient_push(min_light)
 
     Fabricate(A.room, def, T, { skin })
@@ -985,7 +1000,7 @@ stderrf("dA = (%1.1f %1.1f)  dB = (%1.1f %1.1f)\n", adx, ady, bdx, bdy)
     end
 
     -- choose lighting to be the minimum of each side
-    local min_light = math.min(E.area.lighting, E.peer.area.lighting)
+    local min_light = (int)((E.area.lighting + E.peer.area.lighting) / 2)
     Ambient_push(min_light)
 
     Fabricate(A.room, def, T, { skin })
@@ -2116,7 +2131,50 @@ chunk.goal.action = "S1_OpenDoor"  -- FIXME IT SHOULD BE SET WHEN JOINER IS REND
     local skin1 = { }
 
     skin1.switch_tag    = assert(chunk.goal.tag)
-    skin1.switch_action = Action_lookup(chunk.goal.action)
+    if OB_CONFIG.game == "hexen" then
+      local info = Action_lookup_hexen(chunk.goal.action)
+      skin1.switch_action = info.id
+      if info.arg1 then
+        if info.arg1 == "tag" then
+          skin1.switch_arg1 = skin1.switch_tag
+        else
+          skin1.switch_arg1 = info.arg1
+        end
+      end
+      if info.arg2 then
+        if info.arg2 == "tag" then
+          skin1.switch_arg2 = skin1.switch_tag
+        else
+          skin1.switch_arg2 = info.arg2
+        end
+      end
+      if info.arg3 then
+        if info.arg3 == "tag" then
+          skin1.switch_arg3 = skin1.switch_tag
+        else
+          skin1.switch_arg3 = info.arg3
+        end
+      end
+      if info.arg4 then
+        if info.arg4 == "tag" then
+          skin1.switch_arg4 = skin1.switch_tag
+        else
+          skin1.switch_arg4 = info.arg4
+        end
+      end
+      if info.arg5 then
+        if info.arg5 == "tag" then
+          skin1.switch_arg5 = skin1.switch_tag
+        else
+          skin1.switch_arg5 = info.arg5
+        end
+      end
+      if info.flags then
+        skin1.switch_flags = info.flags
+      end
+    else
+      skin1.switch_action = Action_lookup(chunk.goal.action)
+    end
 
     local T = Trans.spot_transform(chunk.mx, chunk.my, z1, dir)
 
@@ -2434,7 +2492,51 @@ chunk.goal.action = "S1_OpenDoor"  -- FIXME IT SHOULD BE SET WHEN JOINER IS REND
     local goal = assert(chunk.goal)
 
     skin.switch_tag = assert(goal.tag)
-    skin.switch_action = Action_lookup(goal.action)
+    if OB_CONFIG.game == "hexen" then
+      local info = Action_lookup_hexen(goal.action)
+      skin.switch_action = info.id
+      if info.arg1 then
+        if info.arg1 == "tag" then
+          skin.switch_arg1 = skin.switch_tag
+        else
+          skin.switch_arg1 = info.arg1
+        end
+      end
+      if info.arg2 then
+        if info.arg2 == "tag" then
+          skin.switch_arg2 = skin.switch_tag
+        else
+          skin.switch_arg2 = info.arg2
+        end
+      end
+      if info.arg3 then
+        if info.arg3 == "tag" then
+          skin.switch_arg3 = skin.switch_tag
+        else
+          skin.switch_arg3 = info.arg3
+        end
+      end
+      if info.arg4 then
+        if info.arg4 == "tag" then
+          skin.switch_arg4 = skin.switch_tag
+        else
+          skin.switch_arg4 = info.arg4
+        end
+      end
+      if info.arg5 then
+        if info.arg5 == "tag" then
+          skin.switch_arg5 = skin.switch_tag
+        else
+          skin.switch_arg5 = info.arg5
+        end
+      end
+      if info.flags then
+        skin.switch_flags = info.flags
+      end
+    else
+      skin.switch_action = Action_lookup(chunk.goal.action)
+    end
+
   end
 
   local function do_remote_switch()
@@ -3622,7 +3724,7 @@ function Render_properties_for_area(A)
 
       -- porchy worchy -- MSSP
       if A.is_porch then
-        A.lighting = A.lighting - 32
+        A.lighting = A.lighting - LEVEL.sky_shadow
       end
 
     elseif A.room and A.room.is_outdoor then
@@ -3681,6 +3783,58 @@ function Render_triggers()
     C.tag     = assert(trig.tag)
   end
 
+  local function setup_coord_hexen(C, trig)
+    local info = Action_lookup_hexen(trig.action)
+    C.special = info.id
+    if info.arg1 then
+      if info.arg1 == "tag" then
+        C.arg1 = assert(trig.tag)
+      else
+        C.arg1 = info.arg1
+      end
+    else
+      C.arg1 = 0
+    end
+    if info.arg2 then
+      if info.arg2 == "tag" then
+        C.arg2 = assert(trig.tag)
+      else
+        C.arg2 = info.arg2
+      end
+    else
+      C.arg2 = 0
+    end
+    if info.arg3 then
+      if info.arg3 == "tag" then
+        C.arg3 = assert(trig.tag)
+      else
+        C.arg3 = info.arg3
+      end
+    else
+      C.arg3 = 0
+    end
+    if info.arg4 then
+      if info.arg4 == "tag" then
+        C.arg4 = assert(trig.tag)
+      else
+        C.arg4 = info.arg4
+      end
+    else
+      C.arg4 = 0
+    end
+    if info.arg5 then
+      if info.arg5 == "tag" then
+        C.arg5 = assert(trig.tag)
+      else
+        C.arg5 = info.arg5
+      end
+    else
+      C.arg5 = 0
+    end
+    if info.flags then
+      C.flags = info.flags
+    end
+  end
 
   local function handle_brush(brush, trig)
     brushlib.set_kind(brush, "trigger")
@@ -3705,7 +3859,11 @@ function Render_triggers()
     end
 
     for _,C in pairs(brush) do
-      setup_coord(C, trig)
+      if OB_CONFIG.game == "hexen" then
+        setup_coord_hexen(C, trig)
+      else
+        setup_coord(C, trig)
+      end
     end
 
     handle_brush(brush, trig)
@@ -3741,7 +3899,12 @@ function Render_triggers()
 
       -- two sides have the trigger info, other two sides are empty
       if side_num >= 3 then
-        setup_coord(C, trig)
+        print("RENDER STAGE")
+        if OB_CONFIG.game == "hexen" then
+          setup_coord_hexen(C, trig)
+        else
+          setup_coord(C, trig)
+        end
       end
 
       table.insert(brush, C)
@@ -3790,7 +3953,11 @@ function Render_triggers()
 
       -- three sides have the trigger info, other one is empty
       if side_num >= 2 then
-        setup_coord(C, trig)
+        if OB_CONFIG.game == "hexen" then
+          setup_coord_hexen(C, trig)
+        else
+          setup_coord(C, trig)
+        end
       end
 
       table.insert(brush, C)

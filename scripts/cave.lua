@@ -5,7 +5,7 @@
 --  // Obsidian //
 --
 --  Copyright (C) 2009-2017 Andrew Apted
---  Copyright (C) 2020-2021 MsrSgtShooterPerson
+--  Copyright (C) 2020-2022 MsrSgtShooterPerson
 --
 --  This program is free software; you can redistribute it and/or
 --  modify it under the terms of the GNU General Public License
@@ -4803,7 +4803,9 @@ function Cave_prepare_scenic_vista(area)
 
   vista_type = rand.key_by_probs(vista_list)
 
-  local nice_view_prob = style_sel("scenics", 0, 33, 67, 100)
+  local nice_view_prob = style_sel("scenics", 0, 16, 33, 50)
+  if room.is_outdoor then nice_view_prob = style_sel("scenics", 5, 50, 75, 100) end
+
   nice_view_prob = math.clamp(0, nice_view_prob - (LEVEL.autodetail_group_walls_factor * 4) + 1, 100)
 
   if not rand.odds(nice_view_prob) then

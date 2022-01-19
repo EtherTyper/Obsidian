@@ -4,7 +4,7 @@
 --
 --  // Obsidian //
 --
---  Copyright (C) 2019 MsrSgtShooterPerson
+--  Copyright (C) 2019-2022 MsrSgtShooterPerson
 --
 --  This program is free software; you can redistribute it and/or
 --  modify it under the terms of the GNU General Public License
@@ -32,6 +32,17 @@ certain lumps if required such as the need for ZScript editor
 numbers to be defined in a MAPINFO instead of within the script
 file itself.
 ]]
+
+
+function ScriptMan_combine_script(script, text)
+  if script then
+    script = script .. text
+  else
+    script = text
+  end
+
+  return script
+end
 
 
 function ScriptMan_assemble_acs_lump()
@@ -79,6 +90,9 @@ function ScriptMan_assemble_mapinfo_lump()
       "DoomedNums\n",
       "{\n",
   }
+  if SCRIPTS.doomednums then
+    table.insert(doomednum_lines,SCRIPTS.doomednums)
+  end
   if SCRIPTS.fauna_mapinfo then
     for _,line in pairs(SCRIPTS.fauna_mapinfo) do
       table.insert(doomednum_lines,line)
@@ -89,20 +103,11 @@ function ScriptMan_assemble_mapinfo_lump()
       table.insert(doomednum_lines,line)
     end
   end
-  if #doomednum_lines > 2 then
-    table.insert(doomednum_lines, "}\n")
-    for _,line in pairs(doomednum_lines) do
-      table.insert(mapinfo_lines,line)
-    end
-  end
 
-  if PARAM.mapinfolump ~= nil then
-    for _,line in pairs(PARAM.mapinfolump) do
-      table.insert(mapinfo_lines,line)
-    end
-  end
+  table.insert(mapinfo_lines, SCRIPTS.mapinfolump)
 
   if #mapinfo_lines > 2 then
+    print(table.tostr(mapinfo_line))
     gui.wad_add_text_lump("MAPINFO", mapinfo_lines)
   end
 end

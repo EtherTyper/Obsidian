@@ -2,9 +2,9 @@
 --  MODULE: Miscellaneous Stuff
 ------------------------------------------------------------------------
 --
---  Copyright (C) 2009      Enhas
+--  Copyright (C) 2009 Enhas
 --  Copyright (C) 2009-2017 Andrew Apted
---  Copyright (C) 2019-2021 MsrSgtShooterPerson
+--  Copyright (C) 2019-2022 MsrSgtShooterPerson
 --
 --  This program is free software; you can redistribute it and/or
 --  modify it under the terms of the GNU General Public License
@@ -43,13 +43,6 @@ MISC_STUFF.LIGHT_CHOICES =
   "+1",   _("Brighter"),
   "+2",   _("Vivid"),
   "+3",   _("Radiant"),
-}
-
-MISC_STUFF.LIVEMAP_CHOICES =
-{
-  "step", _("Per Step (Very Slow)"),
-  "room", _("Per Room (Slightly Slow)"),
-  "none", _("No Live Minimap"),
 }
 
 MISC_STUFF.SINK_STYLE_CHOICES =
@@ -137,22 +130,91 @@ MISC_STUFF.ROOM_SIZE_CONSISTENCY_CHOICES =
   "mixed", _("Mix It Up")
 }
 
+MISC_STUFF.ROOM_SIZE_MIX_FINE_TUNE_CHOICES =
+{
+  "smallish", _("Small-ish"),
+  "small", _("Small"),
+  "large", _("Large"),
+  "largeish", _("Large-ish"),
+  "normal", _("Normal"),
+  "conservative", _("Conservative"),
+  "very_conservative", _("Very Conservative"),
+  "random", _("Random")
+}
+
+MISC_STUFF.ROOM_AREA_MIX_FINE_TUNE_CHOICES =
+{
+  "lessish", _("Less-ish"),
+  "less", _("Less"),
+  "more", _("More"),
+  "moreish", _("More-ish"),
+  "normal", _("Normal"),
+  "conservative", _("Conservative"),
+  "very_conservative", _("Very Conservative"),
+  "random", _("Random")
+}
+
 function MISC_STUFF.setup(self)
   -- these parameters have to be instantiated in this hook
   -- because begin_level happens *after* level size decisions
-  for _,opt in pairs(self.options) do
-    if opt.name == "room_size_multiplier" or
-    opt.name == "room_area_multiplier" or
-    opt.name == "room_size_consistency" then
-      PARAM[opt.name] = opt.value
-    elseif opt.valuator then
-      if opt.valuator == "button" then
-        PARAM[opt.name] = gui.get_module_button_value(self.name, opt.name)
-      elseif opt.valuator == "slider" then
-        PARAM[opt.name] = gui.get_module_slider_value(self.name, opt.name)      
+  for name,opt in pairs(self.options) do
+    if OB_CONFIG.batch == "yes" then
+      if opt.valuator then
+        if opt.valuator == "slider" then 
+          if opt.increment < 1 then
+            PARAM[opt.name] = tonumber(OB_CONFIG[opt.name])
+          else
+            PARAM[opt.name] = int(tonumber(OB_CONFIG[opt.name]))
+          end
+        elseif opt.valuator == "button" then
+          PARAM[opt.name] = tonumber(OB_CONFIG[opt.name])
+        end
+      else
+        PARAM[opt.name] = OB_CONFIG[opt.name]
       end
-    end
+      if RANDOMIZE_GROUPS then
+        for _,group in pairs(RANDOMIZE_GROUPS) do
+          if opt.randomize_group and opt.randomize_group == group then
+            if opt.valuator then
+              if opt.valuator == "button" then
+                  PARAM[opt.name] = rand.sel(50, 1, 0)
+                  goto done
+              elseif opt.valuator == "slider" then
+                  if opt.increment < 1 then
+                    PARAM[opt.name] = rand.range(opt.min, opt.max)
+                  else
+                    PARAM[opt.name] = rand.irange(opt.min, opt.max)
+                  end
+                  goto done
+              end
+            else
+              local index
+              repeat
+                index = rand.irange(1, #opt.choices)
+              until (index % 2 == 1)
+              PARAM[opt.name] = opt.choices[index]
+              goto done
+            end
+          end
+        end
+      end
+      ::done::
+    else
+	    if opt.valuator then
+		    if opt.valuator == "button" then
+		        PARAM[opt.name] = gui.get_module_button_value(self.name, opt.name)
+		    elseif opt.valuator == "slider" then
+		        PARAM[opt.name] = gui.get_module_slider_value(self.name, opt.name)      
+		    end
+      else
+        PARAM[opt.name] = opt.value
+	    end
+	  end
   end
+
+  --Brightness sliders
+  PARAM["wad_minimum_brightness"] = math.min(PARAM.float_minimum_brightness, PARAM.float_maximum_brightness)
+  PARAM["wad_maximum_brightness"] = math.max(PARAM.float_minimum_brightness, PARAM.float_maximum_brightness)
 end
 
 function MISC_STUFF.begin_level(self)
@@ -252,7 +314,37 @@ OB_MODULES["misc"] =
         "Vanilla: Original behavior. Rooms in a level have vary in size from each other. Big Rooms options are respected.\n\n" ..
         "Strict: All rooms in the level have a single set size/coverage.\n\n" ..
         "Mix It Up: A mixture of 75% Vanilla, 25% Strict.",
-      gap = 1,
+        gap = 1
+    },
+    {
+      name="room_size_mix_type", label=_("Room Size Mix Fine Tune"),
+      choices = MISC_STUFF.ROOM_SIZE_MIX_FINE_TUNE_CHOICES,
+      default = "normal",
+      tooltip = "Alters the behavior of Mix It Up for Room Size Multiplier options.\n\n" ..
+      "Normal: Mix it up uses a normal curve distribution. Traditional-sized rooms are common and smaller or larger sizes" ..
+      "are slightly less so.\n\n" ..
+      "Small-ish: Only smaller room sizes, but biased towards normal sizes.\n\n"..
+      "Small: Biased towards smaller room sizes with no larger room sizes.\n\n" ..
+      "Large: Biased towards large rooms sizes with no smaller room sizes..\n\n" ..
+      "Large-ish: Only larger room sizes, but biased towards normal sizes.\n\n"..
+      "Conservative: Probability is biased more towards regular room sizes, making much smaller or much larger rooms significantly rarer.\n\n" ..
+      "Very Conservative: Bias is even stronger towards regular and smaller rooms sizes, while larger rooms are very rare.\n\n" ..
+      "Random: No curve distribution - room sizes and room area counts are picked completely randomly.",
+    },
+    {
+      name="room_area_mix_type", label=_("Room Area Mix Fine Tune"),
+      choices = MISC_STUFF.ROOM_AREA_MIX_FINE_TUNE_CHOICES,
+      default = "normal",
+      tooltip = "Alters the behavior of Mix It Up for Room Area Multiplier options.\n\n" ..
+      "Normal: Mix it up uses a normal curve distribution.\n\n" ..
+      "Less-ish: Only rooms with less floors and simple ceilings, but biased towards normal counts.\n\n"..
+      "Less: Biased towards rooms with less floors and simple ceilings.\n\n" ..
+      "More: Biased towards rooms with more floors and complex ceilings.\n\n" ..
+      "More-ish: Only rooms with more floors and complex ceilings, but biased towards normal counts.\n\n"..
+      "Conservative: Biased towards normal area counts.\n\n" ..
+      "Very Conservative: Further biased towards normal area counts.\n\n" ..
+      "Random: No curve distribution - room area counts are picked completely randomly.",
+      gap = 1
     },
 
     { name="big_rooms",   label=_("Big Rooms"),      choices=STYLE_CHOICES },
@@ -341,12 +433,36 @@ OB_MODULES["misc"] =
     },
 
     { name="darkness",    label=_("Dark Outdoors"),  choices=STYLE_CHOICES },
-    { name="brightness_offset",
-      label=_("Brightness Offset"),
-      choices=MISC_STUFF.LIGHT_CHOICES,
-      tooltip = "Creates an extra brightness offset for rooms. Does not change the lighting palette for rooms.",
-      default = "none",
+    { 
+      name="float_minimum_brightness", 
+      label=_("Minimum Brightness"),
+      valuator = "slider",
+      units = "",
+      min = 0,
+      max = 256,
+      increment = 16,
+      default = 0,
+      nan = "",
+      presets = "",
+      tooltip = "Sets the minimum brightness for the map.",
+      longtip = "",
     },
+
+    { 
+      name="float_maximum_brightness", 
+      label=_("Maximum Brightness"),
+      valuator = "slider",
+      units = "",
+      min = 0,
+      max = 256,
+      increment = 16,
+      default = 256,
+      nan = "",
+      presets = "",
+      tooltip = "Sets the maximum brightness for the map.",
+      longtip = "",
+    },
+
     { name="barrels",     label=_("Barrels"),        choices=STYLE_CHOICES, gap=1 },
 
     { name="doors",       label=_("Doors"),          choices=STYLE_CHOICES },
@@ -407,14 +523,6 @@ OB_MODULES["misc"] =
       "Heaps means all dead ends are preserved (Oblige default)."),
       default = "heaps",
       gap = 1,
-    },
-
-    {
-      name="live_minimap",
-      label=_("Live Growth Minimap"),
-      choices=MISC_STUFF.LIVEMAP_CHOICES,
-      default="none",
-      tooltip=_("Shows more steps Oblige performs on rooms as they are grown on the GUI minimap. May take a hit on generation speed.")
     },
 
 ---- PLANNED (UNFINISHED) STUFF ----

@@ -2,7 +2,7 @@
 --  MODULE: Debug Statement Control
 ------------------------------------------------------------------------
 --
---  Copyright (C) 2019-2020 MsrSgtShooterPerson
+--  Copyright (C) 2019-2022 MsrSgtShooterPerson
 --
 --  This program is free software; you can redistribute it and/or
 --  modify it under the terms of the GNU General Public License
@@ -32,17 +32,67 @@ DEBUG_CONTROL.GROWTH_STEP_CHOICES =
   "no",       _("No"),
 }
 
+DEBUG_CONTROL.LIVEMAP_CHOICES =
+{
+  "step", _("Per Step (Very Slow)"),
+  "room", _("Per Room (Slightly Slow)"),
+  "none", _("No Live Minimap"),
+}
+
 function DEBUG_CONTROL.setup(self)
   for name,opt in pairs(self.options) do
-    if opt.valuator then
-      if opt.valuator == "button" then
-        PARAM[opt.name] = gui.get_module_button_value(self.name, opt.name)
-      elseif opt.valuator == "slider" then
-        PARAM[opt.name] = gui.get_module_slider_value(self.name, opt.name)      
+    if OB_CONFIG.batch == "yes" then
+      if opt.valuator then
+        if opt.valuator == "slider" then 
+          if opt.increment < 1 then
+            PARAM[opt.name] = tonumber(OB_CONFIG[opt.name])
+          else
+            PARAM[opt.name] = int(tonumber(OB_CONFIG[opt.name]))
+          end
+        elseif opt.valuator == "button" then
+          PARAM[opt.name] = tonumber(OB_CONFIG[opt.name])
+        end
+      else
+        PARAM[opt.name] = OB_CONFIG[opt.name]
       end
+      if RANDOMIZE_GROUPS then
+        for _,group in pairs(RANDOMIZE_GROUPS) do
+          if opt.randomize_group and opt.randomize_group == group then
+            if opt.valuator then
+              if opt.valuator == "button" then
+                  PARAM[opt.name] = rand.sel(50, 1, 0)
+                  goto done
+              elseif opt.valuator == "slider" then
+                  if opt.increment < 1 then
+                    PARAM[opt.name] = rand.range(opt.min, opt.max)
+                  else
+                    PARAM[opt.name] = rand.irange(opt.min, opt.max)
+                  end
+                  goto done
+              end
+            else
+              local index
+              repeat
+                index = rand.irange(1, #opt.choices)
+              until (index % 2 == 1)
+              PARAM[opt.name] = opt.choices[index]
+              goto done
+            end
+          end
+        end
+      end
+      ::done::
     else
-      PARAM[name] = self.options[name].value
-    end
+	    if opt.valuator then
+		    if opt.valuator == "button" then
+		        PARAM[opt.name] = gui.get_module_button_value(self.name, opt.name)
+		    elseif opt.valuator == "slider" then
+		        PARAM[opt.name] = gui.get_module_slider_value(self.name, opt.name)      
+		    end
+      else
+        PARAM[opt.name] = opt.value
+	    end
+	  end
   end
 end
 
@@ -137,7 +187,7 @@ OB_MODULES["debugger"] =
       priority=95,
     },
     
-    save_svg =
+    bool_save_svg =
     {
       name = "bool_save_svg",
       label = _("Save Map Previews"),
@@ -148,13 +198,29 @@ OB_MODULES["debugger"] =
       gap = 1,
     },
 
-    bool_extra_games =
+    bool_save_gif =
     {
-      name = "bool_extra_games",
-      label = _("Extra Games"),
+      name = "bool_save_gif",
+      label = _("Save Minimap GIF"),
       valuator = "button",
       default = 0,
-      tooltip = "Enables games other than Doom 2 in Game Settings list.",
+      tooltip = "Save an animated GIF of the building process. Recommended in combination with the Live Growth Minimap.",
+      priority=94,
+      gap = 1,
+    },
+
+    bool_experimental_games =
+    {
+      name = "bool_experimental_games",
+      label = _("Experimental Games"),
+      valuator = "button",
+      default = 0,
+      tooltip = "Enables building of levels for experimental games.",
+      longtip = "The following games are in an experimental status, meaning that " ..
+      "they may have errors when building levels, or support for certain gameplay features has" ..
+      " not been implemented yet!\n\n" ..
+      "HEXEN: MULTI-LEVEL WADs NOT RECOMMENDED! Hub system not yet implemented. Teleporter fabs not yet functional.\n\n" ..
+      "STRIFE: MULTI-LEVEL WADs NOT RECOMMENDED! Hub/town system not yet implemented. Must use the \"rift01\" cheat code to start the first map.",
       priority = 60,
       gap = 1,
     },
@@ -169,6 +235,14 @@ OB_MODULES["debugger"] =
         "for easier detection of broken level geometry or missing textures.",
       priority = 50,
       gap = 1,
+    },
+
+    {
+      name="live_minimap",
+      label=_("Live Growth Minimap"),
+      choices=DEBUG_CONTROL.LIVEMAP_CHOICES,
+      default="none",
+      tooltip=_("Shows more steps Oblige performs on rooms as they are grown on the GUI minimap. May take a hit on generation speed.")
     },
 
 --[[

@@ -3,8 +3,8 @@
 --------------------------------------------------------------------
 --
 --  Copyright (C) 2006-2017 Andrew Apted
---  Copyright (C) 2011,2019, 2021 Chris Pisarczyk / Armaetus
---  Copyright (C) 2019 MsrSgtShooterPerson
+--  Copyright (C) 2011,2019, 2021-2022 Armaetus
+--  Copyright (C) 2019-2022 MsrSgtShooterPerson
 --
 --  This program is free software; you can redistribute it and/or
 --  modify it under the terms of the GNU General Public License
@@ -40,8 +40,13 @@ ULTDOOM.PARAMETERS =
 
 ULTDOOM.MATERIALS =
 {
-
   -- materials for generic prefab set --
+  _RUNIC = { t="FIREBLU1", f="FLOOR6_1" },
+  _STAIRS = { t="STEP3",    f="CEIL5_1" },
+  _VOID = { t="O_BLACK", f="XX" },
+  _FLATLIT = { t="METAL", f="TLITE6_6" },
+  _WALLLIT = { t="LITE5", f="XX"},
+  _LIFT  = { t="PLAT1", f="STEP1"},
   _SBARS = { t="MIDBRN1", f="XX" }, -- Short bars, i.e. railings
   _MBARS = { t="MIDBARS3", f="XX" }, -- Medium bars, i.e. barred windows
   _TBARS = { t="MIDBARS1", f="XX" }, -- Tall bars, i.e. cage/jail bars
@@ -50,11 +55,9 @@ ULTDOOM.MATERIALS =
   _CRATE2  = { t="CRATE2",   f="CRATOP1" },
   _CRATWID = { t="CRATWIDE", f="CRATOP1" },
   
-  -- Slime instead of water for Doom
-  _WATER   = { f="NUKAGE1", t="SFALL1" }, -- "Standing water", sorta
-  _WTRFALL = { f="NUKAGE1", t="SFALL1"  }, -- "Flowing water", sorta
-  
-  _DOOR  = { t="DOOR1",    f="FLAT23" }, -- Open says me
+  _SMLDOOR = { t="DOOR1", f="FLAT23" },
+  _BIGDOOR = { t="BIGDOOR2", f="FLAT20" },
+  _TALDOOR = { t="SPCDOOR3", f="FLAT19" },
   _DORRAIL = { t="DOORTRAK", f="FLAT23" }, -- Inner door slider thingys
   
   _NPIC    = { t="COMPBLUE", f="FLAT14" }, -- Narrow (non-tiling) pic box insert, 64 pixels wide x 128 high
@@ -68,13 +71,15 @@ ULTDOOM.MATERIALS =
   _KEYTRM3 = { t="DOORRED",  f="FLAT23" }, -- Trim for locked door, Key 3
   
   _EXITDR = { t="EXITDOOR", f="FLAT5_5" }, -- Exit door
-  _EXITSW  = { t="SW1BLUE",  f="FLAT14" }, -- Exit switch
-  _EXITRM  = { t="COMPBLUE",    f="FLAT14" }, -- Exit switch room
+  _EXITSW  = { t="SW1EXIT",  f="FLAT19" }, -- Exit switch, roughly 32x32
+  _EXITTR  = { t="GRAY1",    f="FLAT19" }, -- Exit switch trim
+  _EXITRM  = { t="GRAY1",    f="FLAT19" }, -- Exit switch room
+  _EXITSGN = { t="EXITSIGN", f="CEIL5_1" }, -- Exit sign
   
   _STRUCT = {t="METAL", f="CEIL5_2"}, -- "Structural" texture (window trim, beams, other areas where a window/floor flat just isn't always right)
 
-  _SW  = { t="SW1COMP",  f="CEIL5_1" }, -- General purpose swtich, full size
-  _SWTRIM = { t="COMPSPAN", f="CEIL5_1" }, -- Trim for switch
+  _SW  = { t="SW1COMM",  f="FLAT23" }, -- Switch is roughly 32x32 in size, rest of the texture is 'hidden'
+  _SWTRIM = { t="SHAWN2", f="FLAT23" }, -- Trim for switch
   
   _TELE = { f="GATE4", t="METAL" }, -- Teleporter
 
@@ -421,13 +426,26 @@ ULTDOOM.PREFAB_FIELDS =
   line_700 = 26,
   line_701 = 27,
   line_702 = 28,
-
+  line_703 = 1,  -- Regular door open
+  line_704 = 11, -- Switch, exit
+  line_705 = 51, -- Switch, secret exit
+  line_706 = 52, -- Walk-over line, exit
+  line_707 = 124, -- Walk-over line, secret exit
+  line_708 = 97, -- Walk-over line, teleport
+  --line_709 = 888, -- Switch (don't think I need this one)
+  line_710 = 123, -- Switched, lower lift, wait, raise (fast) -- Is this too specific? - Dasho
+  line_711 = 31, -- Door open stay
+  line_712 = 109, -- Walk-over, door open stay (fast)
+  line_713 = 23, -- Switched, floor lower to nearest floor
+  line_714 = 103, -- Switched, door open stay
+  line_715 = 126, -- Walk-over line, teleport (monsters only)
+  
   -- These are used for converting generic fab things --
   thing_11000 = 2035, -- Barrel
   thing_11001 = 0, -- Ceiling light
   thing_11002 = 86, -- Standalone light
   thing_11003 = 0, -- Wall light (torch)
-  thing_11004 = 85, -- Wide standalone light
+  thing_11004 = 34, -- Short standalone light
   thing_11005 = 70, -- Small pillar
   thing_11006 = 5, -- Key one
   thing_11007 = 6, -- Key two
@@ -2171,6 +2189,28 @@ ULTDOOM.ROOM_THEMES =
     },
   },
 
+  -- For Limit-Removing/generics - Dasho
+  any_curve_Hallway =
+  {
+    env   = "hallway",
+    group = "curve",
+    prob  = 1,
+
+    walls =
+    {
+      GRAY1 = 50,
+    },
+
+    floors =
+    {
+      FLAT1 = 30,
+    },
+
+    ceilings =
+    {
+      CEIL3_5 = 30,
+    },
+  },
 
   any_deuce_Hallway =
   {
@@ -3776,34 +3816,134 @@ ULTDOOM.PREBUILT_LEVELS =
 function ULTDOOM.nolimit_themes()
   if OB_CONFIG.engine == "nolimit" then
     GAME.THEMES.DEFAULTS.narrow_halls = { vent = 50 }
-    GAME.THEMES.DEFAULTS.wide_halls = { deuce = 50 }
+    GAME.THEMES.DEFAULTS.wide_halls = { curve = 50, deuce = 50 }
     GAME.THEMES.tech.narrow_halls = { vent = 50 }
     GAME.THEMES.tech.beam_groups = { beam_metal = 50 }
-    GAME.THEMES.tech.wall_groups = { PLAIN = 50 }
+    GAME.THEMES.tech.wall_groups = 
+    {
+      PLAIN = 0.01,
+      mid_band = 10,
+      lite1 = 20,
+      lite2 = 20,
+      torches1 = 12,
+      torches2 = 12,
+      high_gap = 25,
+      vert_gap = 25,
+      wallgutters = 10,
+      lamptorch = 16,
+      runic = 10,
+      croix = 10,
+    }
     GAME.THEMES.tech.outdoor_wall_groups = { PLAIN = 50 }
-    GAME.THEMES.tech.window_groups = { square = 70, tall = 30 }
-    GAME.THEMES.tech.fence_groups = { PLAIN = 50 }
+    GAME.THEMES.tech.window_groups = 
+    {
+      straddle = 70,
+      tall   = 80,
+      grate  = 45,
+      barred = 10,
+      supertall = 60,
+      slits = 20,
+      pillbox = 20,
+      slumpish = 30,
+      window_crossfire = 10,
+    }
+    GAME.THEMES.tech.fence_groups = { PLAIN = 50, crenels = 12 }
     GAME.THEMES.tech.fence_posts = { Post = 50 }
     GAME.THEMES.deimos.narrow_halls = { vent = 50 }
     GAME.THEMES.deimos.beam_groups = { beam_metal = 50 }
-    GAME.THEMES.deimos.wall_groups = { PLAIN = 50 }
+    GAME.THEMES.deimos.wall_groups = 
+    {
+      PLAIN = 0.01,
+      mid_band = 10,
+      lite1 = 20,
+      lite2 = 20,
+      torches1 = 12,
+      torches2 = 12,
+      high_gap = 25,
+      vert_gap = 25,
+      wallgutters = 10,
+      lamptorch = 16,
+      runic = 10,
+      croix = 10,
+    }
     GAME.THEMES.deimos.outdoor_wall_groups = { PLAIN = 50 }
-    GAME.THEMES.deimos.window_groups = { square = 70, tall = 30 }
-    GAME.THEMES.deimos.fence_groups = { PLAIN = 50 }
+    GAME.THEMES.deimos.window_groups =
+    {
+      straddle = 70,
+      tall   = 80,
+      grate  = 45,
+      barred = 10,
+      supertall = 60,
+      slits = 20,
+      pillbox = 20,
+      slumpish = 30,
+      window_crossfire = 10,
+    }
+    GAME.THEMES.deimos.fence_groups = { PLAIN = 50, crenels = 12 }
     GAME.THEMES.deimos.fence_posts = { Post = 50 }
     GAME.THEMES.hell.narrow_halls = { vent = 50 }
     GAME.THEMES.hell.beam_groups = { beam_metal = 50 }
-    GAME.THEMES.hell.wall_groups = { PLAIN = 50 }
+    GAME.THEMES.hell.wall_groups = 
+    {
+      PLAIN = 0.01,
+      mid_band = 10,
+      lite1 = 20,
+      lite2 = 20,
+      torches1 = 12,
+      torches2 = 12,
+      high_gap = 25,
+      vert_gap = 25,
+      wallgutters = 10,
+      lamptorch = 16,
+      runic = 10,
+      croix = 10,
+    }
     GAME.THEMES.hell.outdoor_wall_groups = { PLAIN = 50 }
-    GAME.THEMES.hell.window_groups = { square = 70, tall = 30 }
-    GAME.THEMES.hell.fence_groups = { PLAIN = 50 }
+    GAME.THEMES.hell.window_groups = 
+    {
+      straddle = 70,
+      tall   = 80,
+      grate  = 45,
+      barred = 10,
+      supertall = 60,
+      slits = 20,
+      pillbox = 20,
+      slumpish = 30,
+      window_crossfire = 10,
+    }
+    GAME.THEMES.hell.fence_groups = { PLAIN = 50, crenels = 12 }
     GAME.THEMES.hell.fence_posts = { Post = 50 }
     GAME.THEMES.flesh.narrow_halls = { vent = 50 }
     GAME.THEMES.flesh.beam_groups = { beam_metal = 50 }
-    GAME.THEMES.flesh.wall_groups = { PLAIN = 50 }
+    GAME.THEMES.flesh.wall_groups = 
+    {
+      PLAIN = 0.01,
+      mid_band = 10,
+      lite1 = 20,
+      lite2 = 20,
+      torches1 = 12,
+      torches2 = 12,
+      high_gap = 25,
+      vert_gap = 25,
+      wallgutters = 10,
+      lamptorch = 16,
+      runic = 10,
+      croix = 10,
+    }
     GAME.THEMES.flesh.outdoor_wall_groups = { PLAIN = 50 }
-    GAME.THEMES.flesh.window_groups = { square = 70, tall = 30 }
-    GAME.THEMES.flesh.fence_groups = { PLAIN = 50 }
+    GAME.THEMES.flesh.window_groups = 
+    {
+      straddle = 70,
+      tall   = 80,
+      grate  = 45,
+      barred = 10,
+      supertall = 60,
+      slits = 20,
+      pillbox = 20,
+      slumpish = 30,
+      window_crossfire = 10,
+    }
+    GAME.THEMES.flesh.fence_groups = { PLAIN = 50, crenels = 12 }
     GAME.THEMES.flesh.fence_posts = { Post = 50 }
   end
 end

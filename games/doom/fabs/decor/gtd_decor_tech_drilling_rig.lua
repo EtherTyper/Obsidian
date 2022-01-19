@@ -5,7 +5,6 @@ PREFABS.Decor_tech_drilling_rig =
 
   where = "point",
 
-  --rank = 1, -- remove comment to force fab on all possible test cases
   prob = 10000,
   theme = "tech",
   env = "building",
@@ -21,4 +20,44 @@ PREFABS.Decor_tech_drilling_rig =
   delta = 128,
 
   z_fit = "top"
+}
+
+-- group version for mining themed wall set
+PREFABS.Decor_tech_drilling_rig_grouped =
+{
+  template = "Decor_tech_drilling_rig",
+
+  theme = "any",
+
+  group = "gtd_mining_set"
+}
+
+PREFABS.Decor_tech_drilling_rig_small_grouped =
+{
+  template = "Decor_tech_drilling_rig",
+  map = "MAP02",
+
+  theme = "any",
+
+  size = 96,
+  height = 96,
+
+  group = "gtd_mining_set",
+
+  bound_z2 = 96
+}
+
+PREFABS.Decor_tech_drilling_rig_empty_grouped =
+{
+  template = "Decor_tech_drilling_rig",
+  map = "MAP03",
+
+  theme = "any",
+
+  size = 128,
+  height = 48,
+
+  group = "gtd_mining_set",
+
+  bound_z2 = 48
 }

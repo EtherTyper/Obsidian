@@ -5,7 +5,7 @@
 --  // Obsidian //
 --
 --  Copyright (C) 2015-2017 Andrew Apted
---  Copyright (C) 2020-2021 MsrSgtShooterPerson
+--  Copyright (C) 2020-2022 MsrSgtShooterPerson
 --
 --  This program is free software; you can redistribute it and/or
 --  modify it under the terms of the GNU General Public License
@@ -889,14 +889,8 @@ function Grower_calc_rule_probs()
   end
 
   if not LEVEL.is_procedural_gotcha then
-    if OB_CONFIG.batch == "yes" then
-      if rand.odds(tonumber(OB_CONFIG.float_layout_absurdity)) then
-        LEVEL.is_absurd = true       
-      end
-    else 
-      if rand.odds(PARAM.float_layout_absurdity) then
-        LEVEL.is_absurd = true
-      end
+    if rand.odds(PARAM.float_layout_absurdity) then
+      LEVEL.is_absurd = true
     end
   end
 
@@ -3131,53 +3125,74 @@ end
 
     best = { score=-1, areas={} }
 
-    -- no need to mirror a symmetrical pattern
-    local transp_max = sel(cur_rule.t_symmetry, 0, 1)
-    local flip_x_max = sel(cur_rule.x_symmetry, 0, 1)
-    local flip_y_max = sel(cur_rule.y_symmetry, 0, 1)
+    gui.debugf("CURRENT RULE: " .. table.tostr(cur_rule))
+
+    local T
+    local x1, y1, x2, y2
 
     -- exit rooms (and auxiliary pieces) do not rotate or mirror
     if cur_rule.no_rotate then
-      transp_max = 0
-      flip_x_max = 0
-      flip_y_max = 0
-    end
-
-    for transpose = 0, transp_max do
-    for flip_x = 0, flip_x_max do
-    for flip_y = 0, flip_y_max do
-      local T = calc_transform(transpose, flip_x, flip_y)
-
-      local x1,y1, x2,y2 = get_iteration_range(T)
-
+      T = calc_transform(0, 0, 0)
+      x1,y1, x2,y2 = get_iteration_range(T)
+  
       for x = x1, x2 do
-      for y = y1, y2 do
-        local score = gui.random() * 100
-
-        if score < best.score then goto continue end
-
-        T.x = x
-        T.y = y
-
-        if not match_all_focal_points(T) then goto continue end
-
-        if match_or_install_pattern("TEST", T) then
-          best.T = table.copy(T)
-          best.score = score
-
-          -- this is less memory hungry than copying the whole table
-          best.areas[1] = area_map[1]
-          best.areas[2] = area_map[2]
-          best.areas[3] = area_map[3]
-
-          best.link_chunk = link_chunk
-        end
-        ::continue::
-      end -- x, y
+        for y = y1, y2 do
+  
+          T.x = x
+          T.y = y
+  
+          if not match_all_focal_points(T) then goto continue end
+  
+          if match_or_install_pattern("TEST", T) then
+            best.T = table.copy(T)
+            best.score = 1
+  
+            -- this is less memory hungry than copying the whole table
+            best.areas[1] = area_map[1]
+            best.areas[2] = area_map[2]
+            best.areas[3] = area_map[3]
+  
+              best.link_chunk = link_chunk
+            goto justpickone
+          end
+          ::continue::
+        end -- x, y
       end
-    end -- transp, flip_x, flip_y
+    else
+      if LEVEL.shape_transform_mode == "random" then
+        rand.shuffle(LEVEL.shape_transform_possiblities)
+      end
+      for _,transform in pairs(LEVEL.shape_transform_possiblities) do
+        T = calc_transform(transform[1], transform[2], transform[3])
+        x1,y1, x2,y2 = get_iteration_range(T)
+  
+        for x = x1, x2 do
+          for y = y1, y2 do
+    
+            T.x = x
+            T.y = y
+    
+            if not match_all_focal_points(T) then goto continue end
+    
+            if match_or_install_pattern("TEST", T) then
+              best.T = table.copy(T)
+              best.score = 1
+    
+              -- this is less memory hungry than copying the whole table
+              best.areas[1] = area_map[1]
+              best.areas[2] = area_map[2]
+              best.areas[3] = area_map[3]
+    
+                best.link_chunk = link_chunk
+              goto justpickone
+            end
+            ::continue::
+          end -- x, y
+        end
+      end
     end
-    end
+
+    ::justpickone::
 
     if best.score < 0 then
       --gui.printf(" NOPE!\n")
@@ -3410,16 +3425,11 @@ end
 
     local rules = table.copy(rule_tab)
 
-    local loop = 0
-    local max_loop = 20
+    local tries = 5 -- Maybe tune this parameter to test build speed? - Dasho
 
-    repeat
-      -- tried too many?
-      loop = loop + 1
+    if tries > table.size(rules) then tries = table.size(rules) end
 
-      if loop > max_loop then return end
-
-      -- nothing left to try?
+    for x = tries,0,-1 do
       if table.empty(rules) then return end
 
       local name = rand.key_by_probs(rules)
@@ -3431,7 +3441,12 @@ end
       -- don't try this rule again
       rules[name] = nil
 
-    until try_apply_a_rule()
+      if try_apply_a_rule() then goto success end
+
+      if x == 0 then return end
+    end
+
+    ::success::
 
     -- SUCCESS --
 
@@ -3440,7 +3455,7 @@ end
     -- debug statistics
     GROWER_DEBUG_INFO[cur_rule.name].applied = GROWER_DEBUG_INFO[cur_rule.name].applied + 1
 
-    if PARAM.live_minimap == "step" then
+    if PARAM["live_minimap"] == "step" then
       Seed_draw_minimap()
     end
 

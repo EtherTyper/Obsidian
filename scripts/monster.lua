@@ -5,7 +5,7 @@
 --  // Obsidian //
 --
 --  Copyright (C) 2008-2017 Andrew Apted
---  Copyright (C) 2019 MsrSgtShooterPerson
+--  Copyright (C) 2019-2022 MsrSgtShooterPerson
 --
 --  This program is free software; you can redistribute it and/or
 --  modify it under the terms of the GNU General Public License
@@ -534,6 +534,27 @@ function Monster_zone_palettes()
     local pal   = generate_palette(LEVEL.global_pal)
     local tough = palette_toughness(pal)
 
+    -- Check for monsters that we don't want spawning outdoors/with open sky - Dasho
+
+    local has_sky = false
+
+    for _,zone_room in pairs(LEVEL.zones[i].rooms) do
+      if zone_room.is_outdoor == true then
+        has_sky = true
+        goto skyfound
+      end
+    end
+
+    ::skyfound::
+
+    if has_sky == true then 
+      for monster, _ in pairs(pal) do
+        if GAME.MONSTERS[monster].indoor_only and GAME.MONSTERS[monster].indoor_only == true then
+          pal[monster] = 0
+        end
+      end
+    end   
+
     zone_pals[i] = { pal=pal, tough=tough }
   end
 
@@ -839,16 +860,10 @@ function Monster_fill_room(R)
     -- a pinch of randomness
     base_num = base_num + 1.5 * gui.random() ^ 2
 
-    local factor
+    local factor = PARAM.float_mons
     local l_factor = MONSTER_KIND_TAB.few
     local u_factor = MONSTER_KIND_TAB.heaps
-
-    if OB_CONFIG.batch == "yes" then
-        factor = OB_CONFIG.float_mons
-    else
-        factor = PARAM.float_mons
-    end
-    
+   
     assert(factor)
 
     if factor == "Mix It Up" then
@@ -899,18 +914,9 @@ function Monster_fill_room(R)
         end
     end
 
-    local qty
-    local u_range
-    local l_range
-    if OB_CONFIG.batch == "yes" then
-        qty = OB_CONFIG.float_mons
-        u_range = tonumber(OB_CONFIG.float_mix_it_up_upper_range)
-        l_range = tonumber(OB_CONFIG.float_mix_it_up_lower_range)
-    else
-        qty = PARAM.float_mons
-        u_range = PARAM.float_mix_it_up_upper_range
-        l_range = PARAM.float_mix_it_up_lower_range
-    end
+    local qty = PARAM.float_mons
+    local u_range = PARAM.float_mix_it_up_upper_range
+    local l_range = PARAM.float_mix_it_up_lower_range
     
     if tonumber(qty) then qty = tonumber(qty) end
     
@@ -1232,12 +1238,7 @@ function Monster_fill_room(R)
       end
     end
 
-    local mon_strength
-    if OB_CONFIG.batch == "yes" then
-      mon_strength = tonumber(OB_CONFIG.float_strength)
-    else
-      mon_strength = PARAM.float_strength
-    end
+    local mon_strength = PARAM.float_strength
 
     if mon_strength < 1.0 then 
       return 1 / ((1 + mon_strength) ^ factor)
@@ -1325,12 +1326,8 @@ function Monster_fill_room(R)
     local info = GAME.MONSTERS[mon]
 
     local d = info.density or 1
-    local float_strength
-    if OB_CONFIG.batch == "yes" then
-        float_strength = tonumber(OB_CONFIG.float_strength)
-    else
-        float_strength = PARAM.float_strength
-    end
+    local float_strength = PARAM.float_strength
+    
     -- level check
     if float_strength < 12 or LEVEL.is_procedural_gotcha == false then
       local max_level = LEVEL.monster_level * R.lev_along
@@ -2423,6 +2420,8 @@ gui.debugf("FILLING TRAP in %s\n", R.name)
 
 
   local function should_add_decor()
+    if R.is_secret then return false end
+
     return true  -- YES --
   end
 

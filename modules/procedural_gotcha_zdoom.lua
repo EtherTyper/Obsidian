@@ -2,8 +2,8 @@
 --  MODULE: Procedural Gotcha Fine Tune
 ------------------------------------------------------------------------
 --
---  Copyright (C) 2019-2021 MsrSgtShooterPerson
---  Copyright (C) 2021 Armaetus
+--  Copyright (C) 2019-2022 MsrSgtShooterPerson
+--  Copyright (C) 2021-2022 Armaetus
 --
 --  This program is free software; you can redistribute it and/or
 --  modify it under the terms of the GNU General Public License
@@ -1610,15 +1610,58 @@ PROCEDURAL_GOTCHA_FINE_TUNE_ZDOOM.PROC_GOTCHA_CHOICES =
 function PROCEDURAL_GOTCHA_FINE_TUNE_ZDOOM.setup(self)
 
   for name,opt in pairs(self.options) do
-    if opt.valuator then
-      if opt.valuator == "button" then
-        PARAM[opt.name] = gui.get_module_button_value(self.name, opt.name)
-      elseif opt.valuator == "slider" then
-        PARAM[opt.name] = gui.get_module_slider_value(self.name, opt.name)
+    if OB_CONFIG.batch == "yes" then
+      if opt.valuator then
+        if opt.valuator == "slider" then 
+          if opt.increment < 1 then
+            PARAM[opt.name] = tonumber(OB_CONFIG[opt.name])
+          else
+            PARAM[opt.name] = int(tonumber(OB_CONFIG[opt.name]))
+          end
+        elseif opt.valuator == "button" then
+          PARAM[opt.name] = tonumber(OB_CONFIG[opt.name])
+        end
+      else
+        PARAM[opt.name] = OB_CONFIG[opt.name]
       end
+      if RANDOMIZE_GROUPS then
+        for _,group in pairs(RANDOMIZE_GROUPS) do
+          if opt.randomize_group and opt.randomize_group == group then
+            if opt.valuator then
+              if opt.valuator == "button" then
+                  PARAM[opt.name] = rand.sel(50, 1, 0)
+                  goto done
+              elseif opt.valuator == "slider" then
+                  if opt.increment < 1 then
+                    PARAM[opt.name] = rand.range(opt.min, opt.max)
+                  else
+                    PARAM[opt.name] = rand.irange(opt.min, opt.max)
+                  end
+                  goto done
+              end
+            else
+              local index
+              repeat
+                index = rand.irange(1, #opt.choices)
+              until (index % 2 == 1)
+              PARAM[opt.name] = opt.choices[index]
+              goto done
+            end
+          end
+        end
+      end
+      ::done::
     else
-      PARAM[name] = self.options[name].value
-    end
+	    if opt.valuator then
+		    if opt.valuator == "button" then
+		        PARAM[opt.name] = gui.get_module_button_value(self.name, opt.name)
+		    elseif opt.valuator == "slider" then
+		        PARAM[opt.name] = gui.get_module_slider_value(self.name, opt.name)      
+		    end
+      else
+        PARAM[opt.name] = opt.value
+	    end
+	  end
   end
 
   if PARAM.bool_boss_gen == 1 then
@@ -1698,7 +1741,6 @@ OB_MODULES["procedural_gotcha_zdoom"] =
 
   options =
   {
-
      gotcha_frequency=
      {
       name="gotcha_frequency",
@@ -1754,80 +1796,7 @@ OB_MODULES["procedural_gotcha_zdoom"] =
       choices=PROCEDURAL_GOTCHA_FINE_TUNE_ZDOOM.GOTCHA_MAP_SIZES,
       default = "small",
       tooltip = "Size of the procedural gotcha. Start and arena room sizes are relative to map size as well.",
-      priority = 102,
-      gap = 1
-    },
-
-    bool_boss_gen =
-    {
-      name = "bool_boss_gen",
-      label=_("Enable Bosses"),
-      valuator = "button",
-      default = 1,
-      tooltip = "Toggles Boss Monster generation for Gotchas.",
-      priority = 101
-    },
-
-    bool_gotcha_boss_fight =
-    {
-      name = "bool_gotcha_boss_fight",
-      label=_("Force Boss Fight"),
-      valuator = "button",
-      default = 1,
-      tooltip = "EXPERIMENTAL: Forces procedural gotchas to have guaranteed boss fights.",
-      priority = 100
-    },
-
-    boss_gen_diff =
-    {
-      name = "boss_gen_diff",
-      label = _("Boss Difficulty"),
-      choices = PROCEDURAL_GOTCHA_FINE_TUNE_ZDOOM.BOSS_DIFF_CHOICES,
-      default = "default",
-      tooltip = "Increases or reduces chances of boss being based off more powerful monster and getting more powerful traits.",
-      priority = 95
-    },
-
-    boss_gen_health =
-    {
-      name = "boss_gen_health",
-      label = _("Boss Health Modifier"),
-      choices = PROCEDURAL_GOTCHA_FINE_TUNE_ZDOOM.BOSS_HEALTH_CHOICES,
-      default = "default",
-      tooltip = "Makes boss health higher or lower than default, useful when playing with mods that have different average power level of weapons.",
-      priority = 94
-    },
-
-    boss_gen_hitscan =
-    {
-      name = "boss_gen_hitscan",
-      label = _("Hitscan Bosses"),
-      choices = PROCEDURAL_GOTCHA_FINE_TUNE_ZDOOM.BOSS_LESS_HITSCAN,
-      default = "default",
-      tooltip = "Reduces chance of hitscan bosses spawning.",
-      priority = 93,
-      gap = 1
-    },
-
-    bool_boss_gen_hpbar =
-    {
-      name = "bool_boss_gen_hpbar",
-      label = _("Visible Health Bar"),
-      priority = 99,
-      valuator = "button",
-      default = 1,
-      tooltip = "If enabled, an hp bar will appear on UI while boss is active.",
-    },
-
-    bool_boss_gen_music =
-    {
-      name = "bool_boss_gen_music",
-      label=_("Enable Boss Music"),
-      priority = 98,
-      valuator = "button",
-      default = 1,
-      tooltip = "If enabled, encountering a boss will start boss theme music." ..
-      "(For now you have to have your own music files with lumps named D_BOSSx where x is boss number)",
+      priority = 102
     },
 
     boss_gen_steepness =
@@ -1838,6 +1807,80 @@ OB_MODULES["procedural_gotcha_zdoom"] =
       default = "none",
       tooltip = "Influences steepness settings for boss arenas. " ..
       "Boss arena steepness is capped to be less intrusive to boss movement.",
+      priority = 101,
+      gap = 1
+    },
+
+    bool_boss_gen =
+    {
+      name = "bool_boss_gen",
+      label=_("[ZScript] Enable Procedural Bosses"),
+      valuator = "button",
+      default = 1,
+      tooltip = "Toggles Boss Monster generation with special traits for Gotchas. ZScript only.",
+      priority = 100
+    },
+
+    bool_gotcha_boss_fight =
+    {
+      name = "bool_gotcha_boss_fight",
+      label=_("Force Big-Boss Fight"),
+      valuator = "button",
+      default = 1,
+      tooltip = "EXPERIMENTAL: Attempts to guarantee a fight against a boss-type (nasty tier) monster " ..
+      "in the procedural gotcha.",
+      priority = 99
+    },
+
+    boss_gen_diff =
+    {
+      name = "boss_gen_diff",
+      label = _("Boss Difficulty"),
+      choices = PROCEDURAL_GOTCHA_FINE_TUNE_ZDOOM.BOSS_DIFF_CHOICES,
+      default = "default",
+      tooltip = "Increases or reduces chances of boss being based off more powerful monster and getting more powerful traits.",
+      priority = 98
+    },
+
+    boss_gen_health =
+    {
+      name = "boss_gen_health",
+      label = _("Boss Health Modifier"),
+      choices = PROCEDURAL_GOTCHA_FINE_TUNE_ZDOOM.BOSS_HEALTH_CHOICES,
+      default = "default",
+      tooltip = "Makes boss health higher or lower than default, useful when playing with mods that have different average power level of weapons.",
+      priority = 97
+    },
+
+    boss_gen_hitscan =
+    {
+      name = "boss_gen_hitscan",
+      label = _("Hitscan Bosses"),
+      choices = PROCEDURAL_GOTCHA_FINE_TUNE_ZDOOM.BOSS_LESS_HITSCAN,
+      default = "default",
+      tooltip = "Reduces chance of hitscan bosses spawning.",
+      priority = 96,
+    },
+
+    bool_boss_gen_hpbar =
+    {
+      name = "bool_boss_gen_hpbar",
+      label = _("Visible Health Bar"),
+      valuator = "button",
+      default = 1,
+      tooltip = "If enabled, an hp bar will appear on UI while boss is active.",
+      priority = 95
+    },
+
+    bool_boss_gen_music =
+    {
+      name = "bool_boss_gen_music",
+      label=_("Enable Boss Music"),
+      valuator = "button",
+      default = 1,
+      tooltip = "If enabled, encountering a boss will start boss theme music." ..
+      "(For now you have to have your own music files with lumps named D_BOSSx where x is boss number)",
+      priority = 94
     },
 
     boss_gen_reinforce =
@@ -1847,6 +1890,7 @@ OB_MODULES["procedural_gotcha_zdoom"] =
       choices = PROCEDURAL_GOTCHA_FINE_TUNE_ZDOOM.REINFORCE,
       default = "default",
       tooltip = "Influences the strength of reinforcements summoned by bosses",
+      priority = 93
     },
 
     boss_gen_reinforcerate =
@@ -1856,6 +1900,7 @@ OB_MODULES["procedural_gotcha_zdoom"] =
       choices = PROCEDURAL_GOTCHA_FINE_TUNE_ZDOOM.REINFORCER,
       default = "default",
       tooltip = "Influences the spawn rate of reinforcements summoned by bosses",
+      priorty = 92
     },
 
     bool_boss_gen_types =
@@ -1866,6 +1911,7 @@ OB_MODULES["procedural_gotcha_zdoom"] =
       valuator = "button",
       default = 0,
       tooltip = "If enabled, monsters disabled in monster control module cant be chosen as a boss.",
+      priorty = 91,
       gap = 1
     },
 
@@ -1879,6 +1925,7 @@ OB_MODULES["procedural_gotcha_zdoom"] =
       "Hard Limit: Doesn't allow monster types outside of range to ever spawn.\n\n" ..
       "Soft Limit: Reduces the probability of spawning of monster types outside of range.\n\n" ..
       "No Limit: Difficulty doesn't have effect on monster type selection.",
+      priority = 90
     },
 
     boss_gen_weap =
@@ -1888,7 +1935,7 @@ OB_MODULES["procedural_gotcha_zdoom"] =
       choices = PROCEDURAL_GOTCHA_FINE_TUNE_ZDOOM.BOSS_WEAP,
       default = "scatter",
       tooltip = "Influences weapon placement in boss arena.",
-      priority = 90,
+      priority = 89,
       gap = 1
     },
 
@@ -1899,6 +1946,7 @@ OB_MODULES["procedural_gotcha_zdoom"] =
       choices = PROCEDURAL_GOTCHA_FINE_TUNE_ZDOOM.BOSS_EXIT,
       default = "default",
       tooltip = "Changes exit type after boss has been destroyed.",
+      priority = 88
     },
 
     float_boss_gen_ammo =
@@ -1913,7 +1961,7 @@ OB_MODULES["procedural_gotcha_zdoom"] =
       default = 3,
       presets = "",
       tooltip = "Changes multiplier of ammunition items on the boss arena(This is also affected by boss health multiplier).",
-      priority = 91
+      priority = 87
     },
 
     float_boss_gen_heal =
@@ -1928,7 +1976,7 @@ OB_MODULES["procedural_gotcha_zdoom"] =
       default = 3,
       presets = "",
       tooltip = "Changes multiplier of healing items on the boss arena.",
-      priority = 92
+      priority = 86
     },
   },
 }

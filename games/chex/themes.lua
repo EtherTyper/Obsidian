@@ -131,7 +131,8 @@ CHEX3.THEMES =
 
     wide_halls =
     {
-      deuce = 50
+      curve = 50,
+      deuce = 50,
     },
 
     floor_sinks =
@@ -147,8 +148,7 @@ CHEX3.THEMES =
 
     fences =
     {
-      GSTVINE1 = 30,
-      MIDVINE1 = 10
+      LITE4_RAIL = 30,
     },
 
     cage_mats =
@@ -166,7 +166,8 @@ CHEX3.THEMES =
 
     fence_groups =
     {
-      PLAIN = 50
+      PLAIN = 50,
+      crenels = 12,
     },
 
     fence_posts =
@@ -179,16 +180,32 @@ CHEX3.THEMES =
       beam_metal = 50
     },
 
-    window_groups =
+    window_groups = 
     {
-      square = 70,
-      tall   = 30
+      straddle = 70,
+      tall   = 80,
+      grate  = 45,
+      barred = 10,
+      supertall = 60,
+      slits = 20,
+      pillbox = 20,
+      slumpish = 30,
+      window_crossfire = 10,
     },
 
     wall_groups =
     {
-      PLAIN = 50,
-      torches1 = 10
+      PLAIN = 0.01,
+      mid_band = 10,
+      lite1 = 20,
+      lite2 = 20,
+      torches1 = 12,
+      torches2 = 12,
+      high_gap = 25,
+      vert_gap = 25,
+      wallgutters = 10,
+      lamptorch = 16,
+      runic = 10,
     },
 
     cave_torches =
@@ -206,8 +223,7 @@ CHEX3.THEMES =
 
     scenic_fences =
     {
-      VINE1 = 80,
-      VINE2 = 20
+      LITE4_RAIL = 30,
     },
 
     sink_style =
@@ -260,7 +276,8 @@ CHEX3.THEMES =
 
     wide_halls =
     {
-      deuce = 50
+      curve = 50,
+      deuce = 50,
     },
 
     floor_sinks =
@@ -298,7 +315,8 @@ CHEX3.THEMES =
 
     fence_groups =
     {
-      PLAIN = 50
+      PLAIN = 50,
+      crenels = 12,
     },
 
     fence_posts =
@@ -311,16 +329,32 @@ CHEX3.THEMES =
       beam_metal = 50
     },
 
-    window_groups =
+    window_groups = 
     {
-      square = 70,
-      tall   = 30
+      straddle = 70,
+      tall   = 80,
+      grate  = 45,
+      barred = 10,
+      supertall = 60,
+      slits = 20,
+      pillbox = 20,
+      slumpish = 30,
+      window_crossfire = 10,
     },
 
     wall_groups =
     {
-      PLAIN = 50,
-      torches1 = 10
+      PLAIN = 0.01,
+      mid_band = 10,
+      lite1 = 20,
+      lite2 = 20,
+      torches1 = 12,
+      torches2 = 12,
+      high_gap = 25,
+      vert_gap = 25,
+      wallgutters = 10,
+      lamptorch = 16,
+      runic = 10,
     },
 
     cave_torches =
@@ -392,7 +426,8 @@ CHEX3.THEMES =
 
     wide_halls =
     {
-      deuce = 50
+      curve = 50,
+      deuce = 50,
     },
 
     floor_sinks =
@@ -427,7 +462,8 @@ CHEX3.THEMES =
 
     fence_groups =
     {
-      PLAIN = 50
+      PLAIN = 50,
+      crenels = 12,
     },
 
     fence_posts =
@@ -440,16 +476,32 @@ CHEX3.THEMES =
       beam_metal = 50
     },
 
-    window_groups =
+    window_groups = 
     {
-      square = 70,
-      tall   = 30
+      straddle = 70,
+      tall   = 80,
+      grate  = 45,
+      barred = 10,
+      supertall = 60,
+      slits = 20,
+      pillbox = 20,
+      slumpish = 30,
+      window_crossfire = 10,
     },
 
     wall_groups =
     {
-      PLAIN = 50,
-      torches1 = 10
+      PLAIN = 0.01,
+      mid_band = 10,
+      lite1 = 20,
+      lite2 = 20,
+      torches1 = 12,
+      torches2 = 12,
+      high_gap = 25,
+      vert_gap = 25,
+      wallgutters = 10,
+      lamptorch = 16,
+      runic = 10,
     },
 
     cave_torches =
@@ -465,10 +517,9 @@ CHEX3.THEMES =
 
     ceil_light_prob = 70,
 
-    scenic_fences =
+    fences =
     {
-      VINE1 = 80,
-      VINE2 = 20
+      LITE4_RAIL = 30,
     },
 
     sink_style =
@@ -551,6 +602,38 @@ CHEX3.ROOM_THEMES =
   
   },
   
+  bazoik_curve_Hallway =
+  {
+    env   = "hallway",
+    group = "curve",
+    prob  = 50,
+  
+    walls =
+    {
+      GRAY7 = 50,
+      STARG3  = 15,
+    },
+  
+    floors =
+    {
+      FLAT1_1 = 50,
+      FLAT1 = 50,
+      FLAT14 = 50,
+      FLOOR0_2 = 50,
+      STEP1 = 50
+    },
+  
+    ceilings =
+    {
+      FLAT14 = 50,
+      CJFCOMM3 = 50,
+      CEIL5_1 = 50,
+      CEIL4_2 = 25,
+      FLOOR0_6 = 25
+    }
+  
+  },
+
   bazoik_deuce_Hallway =
   {
     env   = "hallway",
@@ -663,6 +746,38 @@ CHEX3.ROOM_THEMES =
   {
     env   = "hallway",
     group = "vent",
+    prob  = 50,
+
+    walls =
+    {
+      SP_DUDE2 = 30,
+      STONE3 = 10,
+      STONE = 20,
+      GRAY7 = 10,
+      STARG3 = 30,
+      TEKWALL5 = 10,
+      BROWN1 = 10
+    },
+
+    floors =
+    {
+      CEIL5_1 = 50,
+      FLAT14 = 50,
+      STARG3 = 50,
+      CEIL4_1 = 50
+    },
+
+    ceilings =
+    {
+      CEIL4_1 = 50
+    }
+
+  },
+
+  spaceport_curve_Hallway =
+  {
+    env   = "hallway",
+    group = "curve",
     prob  = 50,
 
     walls =
@@ -809,6 +924,37 @@ sewer_vent_Hallway =
     GRAY2  = 15,
     SEWERA = 15,
     GREEN_BORDER = 15,
+  },
+
+  floors =
+  {
+    CJFCRA02 = 50,
+    CJFLOD05 = 50,
+    ENDFLAT2 = 50,
+    GREEN_TILE = 50
+  },
+
+  ceilings =
+  {
+    CJFCRA01 = 50,
+    CJFCRA02 = 50,
+    CJFVIL02 = 15,
+  }
+
+},
+
+sewer_curve_Hallway =
+{
+  env   = "hallway",
+  group = "curve",
+  prob  = 50,
+
+  walls =
+  {
+    GREEN_BRICK = 50,
+    GRAY2  = 15,
+    SEWERA = 15,
+    SEWER2 = 15,
   },
 
   floors =

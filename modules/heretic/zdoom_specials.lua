@@ -210,13 +210,6 @@ actor ObLightBeige : ObLightWhite 14993 {}
 actor ObLightPurple : ObLightWhite 14992 {}
 ]]
 
-ZDOOM_SPECIALS_HERETIC.DYNAMIC_LIGHT_EDNUMS =
-[[
-DoomEdNums =
-{
-}
-]]
-
 ZDOOM_SPECIALS_HERETIC.DYNAMIC_LIGHT_GLDEFS =
 [[
 PointLight WhiteLight
@@ -363,15 +356,58 @@ function ZDOOM_SPECIALS_HERETIC.setup(self)
   gui.printf("\n--== ZDoom Special Addons module active ==--\n\n")
 
   for name,opt in pairs(self.options) do
-    if opt.valuator then
-      if opt.valuator == "button" then
-        PARAM[opt.name] = gui.get_module_button_value(self.name, opt.name)
-      elseif opt.valuator == "slider" then
-        PARAM[opt.name] = gui.get_module_slider_value(self.name, opt.name)      
+    if OB_CONFIG.batch == "yes" then
+      if opt.valuator then
+        if opt.valuator == "slider" then 
+          if opt.increment < 1 then
+            PARAM[opt.name] = tonumber(OB_CONFIG[opt.name])
+          else
+            PARAM[opt.name] = int(tonumber(OB_CONFIG[opt.name]))
+          end
+        elseif opt.valuator == "button" then
+          PARAM[opt.name] = tonumber(OB_CONFIG[opt.name])
+        end
+      else
+        PARAM[opt.name] = OB_CONFIG[opt.name]
       end
+      if RANDOMIZE_GROUPS then
+        for _,group in pairs(RANDOMIZE_GROUPS) do
+          if opt.randomize_group and opt.randomize_group == group then
+            if opt.valuator then
+              if opt.valuator == "button" then
+                  PARAM[opt.name] = rand.sel(50, 1, 0)
+                  goto done
+              elseif opt.valuator == "slider" then
+                  if opt.increment < 1 then
+                    PARAM[opt.name] = rand.range(opt.min, opt.max)
+                  else
+                    PARAM[opt.name] = rand.irange(opt.min, opt.max)
+                  end
+                  goto done
+              end
+            else
+              local index
+              repeat
+                index = rand.irange(1, #opt.choices)
+              until (index % 2 == 1)
+              PARAM[opt.name] = opt.choices[index]
+              goto done
+            end
+          end
+        end
+      end
+      ::done::
     else
-      PARAM[name] = self.options[name].value
-    end
+	    if opt.valuator then
+		    if opt.valuator == "button" then
+		        PARAM[opt.name] = gui.get_module_button_value(self.name, opt.name)
+		    elseif opt.valuator == "slider" then
+		        PARAM[opt.name] = gui.get_module_slider_value(self.name, opt.name)      
+		    end
+      else
+        PARAM[opt.name] = opt.value
+	    end
+	  end
   end
 end
 
@@ -440,9 +476,6 @@ function ZDOOM_SPECIALS_HERETIC.do_special_stuff()
     return color
   end
 
-if map_num == 44 then
-        next_level_line = '  next = "EndGame1"\n'
-      end
   local function pick_random_fog_color()
     local function give_random_hex()
       return rand.pick({'0','1','2','3','4','5','6','8','9','a','b','c','d','e','f'})
@@ -1042,13 +1075,13 @@ if map_num == 44 then
       info.interpic = ZDOOM_SPECIALS_HERETIC.INTERPICS[10]
     end
 
-    if not PARAM.episode_sky_color then
-      gui.printf("WARNING: User set fog color to be set by Sky Generator " ..
-      "but Sky Generator is turned off! Behavior will now be Random instead.\n")
-      PARAM.fog_generator = "random"
-    end
-
     if PARAM.fog_generator == "per_sky_gen" then
+      if not PARAM.episode_sky_color then
+        gui.printf("WARNING: User set fog color to be set by Sky Generator " ..
+        "but Sky Generator is turned off! Behavior will now be Random instead.\n")
+        PARAM.fog_generator = "random"
+        goto continue
+      end
       if i <= 9 then
         info.fog_color = pick_sky_color_from_skygen_map(1)
       elseif i > 9 and i <= 18 then
@@ -1056,6 +1089,7 @@ if map_num == 44 then
       elseif i > 18 then
         info.fog_color = pick_sky_color_from_skygen_map(3)
       end
+      ::continue::
     elseif PARAM.fog_generator == "random" then
       info.fog_color = pick_random_fog_color()
     else
@@ -1114,6 +1148,13 @@ if map_num == 44 then
     end
   end
 
+  -- FIX-ME!!! Redo all code here to use strings as per original Doom ZDoom Specials Module.
+  local lines_as_string = ''
+  for _,line in pairs(PARAM.mapinfolump,line) do
+    lines_as_string = lines_as_string .. line
+  end
+  SCRIPTS.mapinfolump = ScriptMan_combine_script(SCRIPTS.mapinfolump, lines_as_string)
+
   if PARAM.story_generator == "proc" then
     -- language lump is written inside the story generator
     ZStoryGen_heretic_init()
@@ -1155,6 +1196,7 @@ OB_MODULES["zdoom_specials_heretic"] =
       choices = ZDOOM_SPECIALS_HERETIC.FOG_GEN_CHOICES,
       default = "no",
       tooltip = "Generates fog colors based on the Sky Generator or generate completely randomly.",
+      randomize_group = "misc"
     },
 
     fog_env = {
@@ -1163,6 +1205,7 @@ OB_MODULES["zdoom_specials_heretic"] =
       choices = ZDOOM_SPECIALS_HERETIC.FOG_ENV_CHOICES,
       default = "all",
       tooltip = "Limits fog to outdoors (sectors with exposed sky ceilings) or allows for all.",
+      randomize_group = "misc"
     },
 
     fog_intensity = {
@@ -1171,6 +1214,7 @@ OB_MODULES["zdoom_specials_heretic"] =
       choices = ZDOOM_SPECIALS_HERETIC.FOG_DENSITY_CHOICES,
       default = "subtle",
       tooltip = "Determines thickness and intensity of fog, if the Fog Generator is enabled. Subtle or Misty is recommended.",
+      randomize_group = "misc"
     },
 
     bool_fog_affects_sky = {
@@ -1181,6 +1225,7 @@ OB_MODULES["zdoom_specials_heretic"] =
       default = 1,
       tooltip = "Tints the sky texture with the fog color, intensity is based on the Fog Intensity selection.",
       gap = 1,
+      randomize_group = "misc"
     },
 
     bool_dynamic_lights = {
@@ -1208,8 +1253,7 @@ OB_MODULES["zdoom_specials_heretic"] =
       priority = 6,
       choices = ZDOOM_SPECIALS_HERETIC.MUSIC_SHUFFLER_CHOICES,
       default = "no",
-      tooltip = "Shuffles music in the MAPINFO lump. Oblige's vanilla music shuffler uses " ..
-                "a BEX lump and is therefore ignored when the ZDoom Addons module is active.",
+      tooltip = "Shuffles music in the MAPINFO lump.",
     },
 
     story_generator = {

@@ -5,7 +5,7 @@
 --  // Obsidian //
 --
 --  Copyright (C) 2006-2017 Andrew Apted
---  Copyright (C) 2020-2021 MsrSgtShooterPerson
+--  Copyright (C) 2020-2022 MsrSgtShooterPerson
 --
 --  This program is free software; you can redistribute it and/or
 --  modify it under the terms of the GNU General Public License
@@ -562,7 +562,8 @@ function Layout_place_hub_gates()
     local count = 0
 
     for _,chunk in pairs(list) do
-      if chunk.content == nil then
+      if chunk.content == nil
+      or chunk.content == "DECORATION" then
         count = count + 1
       end
     end
@@ -2762,24 +2763,6 @@ function Layout_indoor_lighting()
     verydark = 96,
   }
 
-  -- attachment for brightness offset options -MSSP
-  local light_offset = 0
-  if PARAM.brightness_offset == "-3" then
-    light_offset = -48
-  elseif PARAM.brightness_offset == "-2" then
-    light_offset = -24
-  elseif PARAM.brightness_offset == "-1" then
-    light_offset = -16
-  elseif PARAM.brightness_offset == "+1" then
-    light_offset = 16
-  elseif PARAM.brightness_offset == "+2" then
-    light_offset = 24
-  elseif PARAM.brightness_offset == "+3" then
-    light_offset = 48
-  else
-    light_offset = 0
-  end
-
   local function sky_light_to_keyword()
     if LEVEL.sky_light >= 168 then return "bright" end
     if LEVEL.sky_light >= 136 then return "normal" end
@@ -2805,8 +2788,12 @@ function Layout_indoor_lighting()
     end
 
     for _,A in pairs(R.areas) do
-      A.base_light = base_light + light_offset
+      A.base_light = base_light
+      -- brightness clamp
+      A.base_light = math.clamp(PARAM.wad_minimum_brightness or 0, 
+        A.base_light, PARAM.wad_maximum_brightness or 255)
     end
+
   end
 
  -- Very dark here! --Armaetus

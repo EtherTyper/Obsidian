@@ -27,19 +27,14 @@ PREFABS.Locked_medium_key1_diag =
   file   = "door/key_medium.wad",
   map    = "MAP02",
 
-  key    = "k_one",
-
   prob   = 50,
 
   where  = "diagonal",
+  key    = "k_one",
 
   seed_w = 2,
   seed_h = 2,
 }
-
-
-----------------------------------------------
-
 
 PREFABS.Locked_medium_key2 =
 {
@@ -58,7 +53,6 @@ PREFABS.Locked_medium_key2 =
 
   x_fit  = "frame",
 
-  tex__KEYTRM1 = "_KEYTRM2",
 }
 
 
@@ -69,16 +63,12 @@ PREFABS.Locked_medium_key2_diag =
 
   prob   = 50,
 
-  key    = "k_two",
   where  = "diagonal",
+  key    = "k_two",
 
   seed_w = 2,
   seed_h = 2,
 }
-
-
-----------------------------------------------
-
 
 PREFABS.Locked_medium_key3 =
 {
@@ -97,7 +87,6 @@ PREFABS.Locked_medium_key3 =
 
   x_fit  = "frame",
 
-  tex__KEYTRM1 = "_KEYTRM2",
 }
 
 
@@ -108,10 +97,9 @@ PREFABS.Locked_medium_key3_diag =
 
   prob   = 50,
 
-  key    = "k_three",
   where  = "diagonal",
+  key    = "k_three",
 
   seed_w = 2,
   seed_h = 2,
 }
-

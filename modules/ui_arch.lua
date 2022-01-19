@@ -4,7 +4,7 @@
 --
 --  Copyright (C) 2016-2017 Andrew Apted
 --  Copyright (C) 2019 Armaetus
---  Copyright (C) 2019-2020 MsrSgtShooterPerson
+--  Copyright (C) 2019-2022 MsrSgtShooterPerson
 --
 --  This program is free software; you can redistribute it and/or
 --  modify it under the terms of the GNU General Public License
@@ -65,43 +65,91 @@ function UI_ARCH.setup(self)
   -- these parameters have to be instantiated in this hook
   -- because begin_level happens *after* level size decisions
   for _,opt in pairs(self.options) do
-    if opt.valuator then
-      if opt.valuator == "button" then
-        PARAM[opt.name] = gui.get_module_button_value(self.name, opt.name)
-      elseif opt.valuator == "slider" then
-        PARAM[opt.name] = gui.get_module_slider_value(self.name, opt.name)      
-      end
-    end
-  end
-  if OB_CONFIG.engine ~= "vanilla" then
-    if type(PARAM.float_size) == "string" then -- Use upper bound for Mix It Up, Progressive, and Episodic level sizes - Dasho
-    -- MSSP: the absolute maximum size is tightened down to the largest
-    -- agreed map size for performance's sake. Current agreed maximum is 74 W.
-    -- any higher will cause skyboxes and teleporter rooms to start merging with
-    -- the main map.
-
-    -- Dasho: This shifts the default value of 90 for SEED_W and SEED_H to here instead of defs.lua. It will remain 90 unless someone
-    -- who is using slider overrides sets extremely high values for Level Size, then it is changed to prevent assertion errors later on.
-      if (PARAM.float_level_upper_bound > 86) then
-        SEED_W = PARAM.float_level_upper_bound + 4
-        SEED_H = PARAM.float_level_upper_bound + 4
+    if OB_CONFIG.batch == "yes" then
+      if opt.valuator then
+        if opt.valuator == "slider" then 
+          if opt.increment < 1 then
+            PARAM[opt.name] = tonumber(OB_CONFIG[opt.name])
+          else
+            PARAM[opt.name] = int(tonumber(OB_CONFIG[opt.name]))
+          end
+        elseif opt.valuator == "button" then
+          PARAM[opt.name] = tonumber(OB_CONFIG[opt.name])
+        end
       else
-        SEED_W = 90
-        SEED_H = 90
+        PARAM[opt.name] = OB_CONFIG[opt.name]
       end
+      if RANDOMIZE_GROUPS then
+        for _,group in pairs(RANDOMIZE_GROUPS) do
+          if opt.randomize_group and opt.randomize_group == group then
+            if opt.valuator then
+              if opt.valuator == "button" then
+                  PARAM[opt.name] = rand.sel(50, 1, 0)
+                  goto done
+              elseif opt.valuator == "slider" then
+                  if opt.increment < 1 then
+                    PARAM[opt.name] = rand.range(opt.min, opt.max)
+                  else
+                    PARAM[opt.name] = rand.irange(opt.min, opt.max)
+                  end
+                  goto done
+              end
+            else
+              local index
+              repeat
+                index = rand.irange(1, #opt.choices)
+              until (index % 2 == 1)
+              PARAM[opt.name] = opt.choices[index]
+              goto done
+            end
+          end
+        end
+      end
+      ::done::
     else
-      if (PARAM.float_size > 86) then
-        SEED_W = PARAM.float_size + 4
-        SEED_H = PARAM.float_size + 4
+	    if opt.valuator then
+		    if opt.valuator == "button" then
+		        PARAM[opt.name] = gui.get_module_button_value(self.name, opt.name)
+		    elseif opt.valuator == "slider" then
+		        PARAM[opt.name] = gui.get_module_slider_value(self.name, opt.name)      
+		    end
       else
-        SEED_W = 90
-        SEED_H = 90
-      end
-    end
-  else
-    SEED_W = 90
-    SEED_H = 90
+        PARAM[opt.name] = opt.value
+	    end
+	  end
   end
+  
+  if OB_CONFIG.engine ~= "vanilla" then
+    if OB_CONFIG.batch == "yes" or type(PARAM.float_size) ~= "string" then
+      SEED_W = 90
+      SEED_H = 90
+    else
+      if type(PARAM.float_size) == "string" then -- Use upper bound for Mix It Up, Progressive, and Episodic level sizes - Dasho
+      -- MSSP: the absolute maximum size is tightened down to the largest
+      -- agreed map size for performance's sake. Current agreed maximum is 74 W.
+      -- any higher will cause skyboxes and teleporter rooms to start merging with
+      -- the main map.
+
+      -- Dasho: This shifts the default value of 90 for SEED_W and SEED_H to here instead of defs.lua. It will remain 90 unless someone
+      -- who is using slider overrides sets extremely high values for Level Size, then it is changed to prevent assertion errors later on.
+        if (PARAM.float_level_upper_bound > 86) then
+          SEED_W = PARAM.float_level_upper_bound + 4
+          SEED_H = PARAM.float_level_upper_bound + 4
+        else
+          SEED_W = 90
+          SEED_H = 90
+        end
+		  else
+        if (PARAM.float_size > 86) then
+          SEED_W = PARAM.float_size + 4
+          SEED_H = PARAM.float_size + 4
+        else
+          SEED_W = 90
+          SEED_H = 90
+        end
+		  end
+	  end
+  end 
 end
 
 OB_MODULES["ui_arch"] =
@@ -123,6 +171,7 @@ OB_MODULES["ui_arch"] =
 
   options =
   {
+
     float_size=
     { 
       name="float_size", 
@@ -148,7 +197,8 @@ OB_MODULES["ui_arch"] =
       longtip = "WARNING! If you are planning to play on any choices that involve maps " ..
       "at sizes of 50 and above, Autodetail is required on. (on by default if you do not have " ..
       "Prefab Control module on. The stability of maps with sizes 60 and beyond is not predictable.",
-      priority = 100
+      priority = 100,
+      randomize_group="architecture"
     },
 
     float_level_upper_bound =
@@ -172,7 +222,7 @@ OB_MODULES["ui_arch"] =
       "66:66 (Gargantuan)," ..
       "75:75 (Transcendent),",
       tooltip = "Fine tune upper limit when Level Size is set to Episodic, Progressive or Mixed.",
-      priority = 99
+      priority = 99,
     },
 
     float_level_lower_bound =
@@ -197,7 +247,7 @@ OB_MODULES["ui_arch"] =
       "75:75 (Transcendent),",
       tooltip = "Fine tune lower limit when Level Size is set to Episodic, Progressive or Mixed.",
       priority = 98,
-      gap = 1
+      gap = 1,
     },
 
     level_size_ramp_factor =
@@ -214,6 +264,7 @@ OB_MODULES["ui_arch"] =
       choices = UI_ARCH.RAMP_FACTOR,
       default = "0.66",
       priority = 97,
+      randomize_group="architecture"
     },
 
     level_size_bias =
@@ -225,7 +276,8 @@ OB_MODULES["ui_arch"] =
       "become rarer.\n\nCombine with Level Upper and Lower Bounds for greater control.",
       choices = UI_ARCH.SIZE_BIAS,
       default = "default",
-      priority = 96
+      priority = 96,
+      randomize_group="architecture"
     },
 
     mixin_type =
@@ -239,7 +291,8 @@ OB_MODULES["ui_arch"] =
       choices = UI_ARCH.MIXIN_CHOICES,
       default = "normal",
       priority = 88,
-      gap = 1
+      gap = 1,
+      randomize_group="architecture"
     },
   
     float_linear_mode=
@@ -259,7 +312,8 @@ OB_MODULES["ui_arch"] =
       "you may encounter teleports even if you have teleports off. This is necessary " ..
       "in order for linear levels not to prematuraly terminate and therefore become stunted " ..
       "i.e. only have 2-5 rooms.",
-      priority = 85
+      priority = 85,
+      randomize_group="architecture"
     },
 
     float_nature_mode=
@@ -275,7 +329,8 @@ OB_MODULES["ui_arch"] =
       presets = "",
       tooltip = "Forces most of the map to be composed of naturalistic areas (parks and caves). " ..
       "The ratio is decided by Outdoors style setting while competing styles are ignored.",
-      priority = 84
+      priority = 84,
+      randomize_group="architecture"
     },
 
     float_streets_mode=
@@ -290,7 +345,8 @@ OB_MODULES["ui_arch"] =
       default = 15,
       presets = "",
       tooltip = "Allows Oblige to create large street-like outdoor rooms.",
-      priority = 83
+      priority = 83,
+      randomize_group="architecture"
     },
 
     bool_urban_streets_mode=
@@ -301,7 +357,7 @@ OB_MODULES["ui_arch"] =
       default = 1,
       tooltip="Changes streets mode percentage to affect all themes or only urban.",
       gap = 1,
-      priority = 82
+      priority = 82,
     },
 
     bool_prebuilt_levels=
@@ -334,15 +390,16 @@ OB_MODULES["ui_arch"] =
       "Use at your own risk. These options will affect the amount of levels have the absurdity module activated on. " ..
       "Selecting ALL will not necessarily make all levels absurd as it is all still based on chance.",
       gap = 1,
-      priority = 80
+      priority = 80,
+      randomize_group="architecture"
     },
 
-    outdoors = { name="outdoors",     label=_("Outdoors"),   choices=STYLE_CHOICES, priority = 78 },
-    caves = { name="caves",        label=_("Caves"),      choices=STYLE_CHOICES, priority = 77 },
-    liquids = { name="liquids",      label=_("Liquids"),    choices=STYLE_CHOICES, priority = 76 },
-    hallways = { name="hallways",     label=_("Hallways"),   choices=STYLE_CHOICES, priority = 75 },
-    teleporters = { name="teleporters",  label=_("Teleports"),  choices=STYLE_CHOICES, priority = 74 },
-    steepness = { name="steepness",    label=_("Steepness"),  choices=STYLE_CHOICES, gap=1, priority = 73 },
+    outdoors = { name="outdoors",     label=_("Outdoors"),   choices=STYLE_CHOICES, priority = 78, randomize_group="architecture" },
+    caves = { name="caves",        label=_("Caves"),      choices=STYLE_CHOICES, priority = 77, randomize_group="architecture" },
+    liquids = { name="liquids",      label=_("Liquids"),    choices=STYLE_CHOICES, priority = 76, randomize_group="architecture" },
+    hallways = { name="hallways",     label=_("Hallways"),   choices=STYLE_CHOICES, priority = 75, randomize_group="architecture" },
+    teleporters = { name="teleporters",  label=_("Teleports"),  choices=STYLE_CHOICES, priority = 74, randomize_group="architecture" },
+    steepness = { name="steepness",    label=_("Steepness"),  choices=STYLE_CHOICES, gap=1, priority = 73, randomize_group="architecture" },
 
     zdoom_vista=
     {

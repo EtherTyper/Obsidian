@@ -3,7 +3,7 @@
 ------------------------------------------------------------------------
 --
 --  Copyright (C) 2014 Andrew Apted
---  Copyright (C) 2019-2021 Armaetus
+--  Copyright (C) 2019-2022 Armaetus
 --
 --  This program is free software; you can redistribute it and/or
 --  modify it under the terms of the GNU General Public License
@@ -97,6 +97,7 @@ OB_MODULES["megawad_swapper"] =
   game = "doomish",
 
   engine = "!zdoom",
+  engine2 = "!vanilla",
   tooltip=_("Ideal if you have a music WAD replacing all tracks in the game. A note if you are using the ZDoom Specials Shuffle Music option, there is no need to use this module. This is ideal for non-ZDoom ports only."),
 
   hooks =
