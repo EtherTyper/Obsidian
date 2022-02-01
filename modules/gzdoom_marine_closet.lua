@@ -1243,7 +1243,6 @@ class BFGBallAIMarine : BFGBall
 }
 
 MARINE_CLOSET_TUNE.MAPINFO =
-{
 [[
   31000 = AIMarineWaker
   31001 = AIMarinePistol
@@ -1254,7 +1253,6 @@ MARINE_CLOSET_TUNE.MAPINFO =
   31006 = AIMarineRocket
   31007 = AIMarineBFG
 ]]
-}
 
 MARINE_CLOSET_TUNE.TRNSLATE =
 [[
@@ -1298,10 +1296,15 @@ function MARINE_CLOSET_TUNE.setup(self)
     if OB_CONFIG.batch == "yes" then
       if opt.valuator then
         if opt.valuator == "slider" then 
-          if opt.increment < 1 then
-            PARAM[opt.name] = tonumber(OB_CONFIG[opt.name])
+          local value = tonumber(OB_CONFIG[opt.name])
+          if not value then
+            PARAM[opt.name] = OB_CONFIG[opt.name]
           else
-            PARAM[opt.name] = int(tonumber(OB_CONFIG[opt.name]))
+            if opt.increment < 1 then
+              PARAM[opt.name] = value
+            else
+              PARAM[opt.name] = int(value)
+            end
           end
         elseif opt.valuator == "button" then
           PARAM[opt.name] = tonumber(OB_CONFIG[opt.name])
@@ -1516,13 +1519,11 @@ function MARINE_CLOSET_TUNE.all_done()
     scripty = string.gsub(scripty, "MDEATHMESSAGEX", "")
   end
 
-  if SCRIPTS.zscript then
-    SCRIPTS.zscript = SCRIPTS.zscript .. scripty
-  else
-    SCRIPTS.zscript = scripty
-  end
-  --PARAM.MARINESCRIPT = PARAM.MARINESCRIPT .. scripty
-  PARAM.MARINEMAPINFO = MARINE_CLOSET_TUNE.MAPINFO
+  SCRIPTS.zscript = ScriptMan_combine_script(SCRIPTS.zscript,
+    scripty)
+
+  SCRIPTS.doomednums = ScriptMan_combine_script(SCRIPTS.doomednums,
+    MARINE_CLOSET_TUNE.MAPINFO)
 
   if PARAM.m_c_color ~= "MarAI1" then
     PARAM.MARINETRNSLATE = MARINE_CLOSET_TUNE.TRNSLATE

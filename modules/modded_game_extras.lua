@@ -1446,10 +1446,15 @@ function MODDED_GAME_EXTRAS.setup(self)
     if OB_CONFIG.batch == "yes" then
       if opt.valuator then
         if opt.valuator == "slider" then 
-          if opt.increment < 1 then
-            PARAM[opt.name] = tonumber(OB_CONFIG[opt.name])
+          local value = tonumber(OB_CONFIG[opt.name])
+          if not value then
+            PARAM[opt.name] = OB_CONFIG[opt.name]
           else
-            PARAM[opt.name] = int(tonumber(OB_CONFIG[opt.name]))
+            if opt.increment < 1 then
+              PARAM[opt.name] = value
+            else
+              PARAM[opt.name] = int(value)
+            end
           end
         elseif opt.valuator == "button" then
           PARAM[opt.name] = tonumber(OB_CONFIG[opt.name])
@@ -1524,11 +1529,7 @@ function MODDED_GAME_EXTRAS.setup(self)
       {ammo = "shell", count = 50},
     }
 
-    if SCRIPTS.doomednums then
-      SCRIPTS.doomednums = SCRIPTS.doomednums .. MODDED_GAME_EXTRAS.TRAILBLAZER_DOOMEDNUMS
-    else
-      SCRIPTS.doomednums = MODDED_GAME_EXTRAS.TRAILBLAZER_DOOMEDNUMS
-    end
+    SCRIPTS.doomednums = ScriptMan_combine_script(SCRIPTS.doomednums, MODDED_GAME_EXTRAS.TRAILBLAZER_DOOMEDNUMS)
   end
 
   if PARAM.bool_complex_doom == 1 then
